@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="ch.allon.redskin.internal.ui.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perspective"
+            class="ch.allon.redskin.internal.ui.Perspective"
+            id="ch.allon.shop.ui.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Work View"
+            class="ch.allon.redskin.internal.ui.views.WorkView"
+            id="ch.allon.redskin.ui.views.WorkView">
+      </view>
+      <view
+            class="ch.allon.redskin.internal.ui.views.ProductView"
+            icon="icons/obj/ProductCategory.gif"
+            id="ch.allon.redskin.ui.views.ProductView"
+            name="Product View"
+            restorable="true">
+      </view>
+      <view
+            class="ch.allon.redskin.internal.ui.views.PriceCategoryView"
+            icon="icons/obj/PriceCategory.gif"
+            id="ch.allon.redskin.ui.views.PriceCategoryView"
+            name="Price Category View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="ch.allon.redskin.core.model.shop.ProductCategory"
+            objectClass="ch.allon.redskin.core.model.shop.ProductCategory">
+         <action
+               class="ch.allon.redskin.internal.ui.actions.NewProductAction"
+               enablesFor="1"
+               icon="icons/actions/new_product.gif"
+               id="ch.allon.redskin.ui.actions.NewProductAction"
+               label="Neues Produkt"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.NewProductCategoryAction"
+               enablesFor="1"
+               icon="icons/actions/new_product_category.gif"
+               id="ch.allon.redskin.ui.actions.NewProductCategoryAction"
+               label="Neue Kategory"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.EditProductCategory"
+               enablesFor="1"
+               icon="icons/actions/edit_product_category.gif"
+               id="ch.allon.redskin.ui.actions.EditProductCategoryAction.Edit"
+               label="Kategorie bearbeiten"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="ch.allon.redskin.core.model.shop.Product"
+            objectClass="ch.allon.redskin.core.model.shop.Product">
+         <action
+               class="ch.allon.redskin.internal.ui.actions.EditProductAction"
+               enablesFor="1"
+               icon="icons/actions/edit_product.gif"
+               id="ch.allon.redskin.ui.actions.EditProductAction"
+               label="Product bearbeiten"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="ch.allon.redskin.core.model.shop.PriceCategory"
+            objectClass="ch.allon.redskin.core.model.shop.PriceCategory">
+         <action
+               class="ch.allon.redskin.internal.ui.actions.EditPriceCategoryAction"
+               enablesFor="1"
+               icon="icons/actions/edit_price_category.gif"
+               id="ch.allon.redskin.ui.actions.EditPriceCategoryAction"
+               label="Kategorie bearbeiten"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
