@@ -23,7 +23,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getRentedDays <em>Rented Days</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getProductCategory <em>Product Category</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.Product#getTransactions <em>Transactions</em>}</li>
  * </ul>
  * </p>
  *
@@ -165,49 +164,29 @@ public interface Product extends EObject {
 	void setProductCategory(ProductCategory value);
 
 	/**
-	 * Returns the value of the '<em><b>Price Category</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link ch.allon.redskin.core.model.shop.PriceCategory#getProducts <em>Products</em>}'.
+	 * Returns the value of the '<em><b>Price Category</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Price Category</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Price Category</em>' container reference.
+	 * @return the value of the '<em>Price Category</em>' reference.
 	 * @see #setPriceCategory(PriceCategory)
 	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getProduct_PriceCategory()
-	 * @see ch.allon.redskin.core.model.shop.PriceCategory#getProducts
-	 * @model opposite="products" transient="false"
+	 * @model
 	 * @generated
 	 */
 	PriceCategory getPriceCategory();
 
 	/**
-	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}' container reference.
+	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Price Category</em>' container reference.
+	 * @param value the new value of the '<em>Price Category</em>' reference.
 	 * @see #getPriceCategory()
 	 * @generated
 	 */
 	void setPriceCategory(PriceCategory value);
-
-	/**
-	 * Returns the value of the '<em><b>Transactions</b></em>' containment reference list.
-	 * The list contents are of type {@link ch.allon.redskin.core.model.shop.Transaction}.
-	 * It is bidirectional and its opposite is '{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Transactions</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Transactions</em>' containment reference list.
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getProduct_Transactions()
-	 * @see ch.allon.redskin.core.model.shop.Transaction#getProduct
-	 * @model opposite="product" containment="true"
-	 * @generated
-	 */
-	EList<Transaction> getTransactions();
 
 } // Product
