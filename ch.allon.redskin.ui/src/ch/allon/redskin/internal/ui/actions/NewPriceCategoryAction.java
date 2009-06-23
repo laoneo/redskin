@@ -21,6 +21,10 @@ package ch.allon.redskin.internal.ui.actions;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.dialogs.Dialog;
+
+import ch.allon.redskin.core.DBFactory;
+import ch.allon.redskin.core.model.shop.ShopFactory;
 
 /**
  * @author Allon Moritz
@@ -30,11 +34,13 @@ public class NewPriceCategoryAction extends EObjectAction {
 
 	@Override
 	protected void run(List<EObject> selectedObjects) {
-		if (selectedObjects.isEmpty())
-			return;
 		PriceCategoryDialog dialog = new PriceCategoryDialog(getShell(), null);
-		dialog.setNewObject(selectedObjects.get(0));
+		dialog.setNewObject(ShopFactory.eINSTANCE.createPriceCategory());
 		dialog.open();
+		if (dialog.getReturnCode() == Dialog.CANCEL)
+			return;
+		DBFactory.getPriceCategoryResource().getContents().add(
+				dialog.getNewObject());
 	}
 
 }
