@@ -90,28 +90,26 @@ public interface Transaction extends EObject {
 	void setOrder(Order value);
 
 	/**
-	 * Returns the value of the '<em><b>Product</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link ch.allon.redskin.core.model.shop.Product#getTransactions <em>Transactions</em>}'.
+	 * Returns the value of the '<em><b>Product</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Product</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Product</em>' container reference.
+	 * @return the value of the '<em>Product</em>' reference.
 	 * @see #setProduct(Product)
 	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getTransaction_Product()
-	 * @see ch.allon.redskin.core.model.shop.Product#getTransactions
-	 * @model opposite="transactions" transient="false"
+	 * @model
 	 * @generated
 	 */
 	Product getProduct();
 
 	/**
-	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}' container reference.
+	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Product</em>' container reference.
+	 * @param value the new value of the '<em>Product</em>' reference.
 	 * @see #getProduct()
 	 * @generated
 	 */

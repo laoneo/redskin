@@ -38,7 +38,6 @@ import ch.allon.redskin.core.model.shop.Transaction;
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getRentedDays <em>Rented Days</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getProductCategory <em>Product Category</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getPriceCategory <em>Price Category</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getTransactions <em>Transactions</em>}</li>
  * </ul>
  * </p>
  *
@@ -126,14 +125,14 @@ public class ProductImpl extends EObjectImpl implements Product {
 	protected Integer rentedDays = RENTED_DAYS_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getTransactions() <em>Transactions</em>}' containment reference list.
+	 * The cached value of the '{@link #getPriceCategory() <em>Price Category</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTransactions()
+	 * @see #getPriceCategory()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Transaction> transactions;
+	protected PriceCategory priceCategory;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -285,8 +284,15 @@ public class ProductImpl extends EObjectImpl implements Product {
 	 * @generated
 	 */
 	public PriceCategory getPriceCategory() {
-		if (eContainerFeatureID() != ShopPackage.PRODUCT__PRICE_CATEGORY) return null;
-		return (PriceCategory)eContainer();
+		if (priceCategory != null && priceCategory.eIsProxy()) {
+			InternalEObject oldPriceCategory = (InternalEObject)priceCategory;
+			priceCategory = (PriceCategory)eResolveProxy(oldPriceCategory);
+			if (priceCategory != oldPriceCategory) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ShopPackage.PRODUCT__PRICE_CATEGORY, oldPriceCategory, priceCategory));
+			}
+		}
+		return priceCategory;
 	}
 
 	/**
@@ -294,9 +300,8 @@ public class ProductImpl extends EObjectImpl implements Product {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetPriceCategory(PriceCategory newPriceCategory, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newPriceCategory, ShopPackage.PRODUCT__PRICE_CATEGORY, msgs);
-		return msgs;
+	public PriceCategory basicGetPriceCategory() {
+		return priceCategory;
 	}
 
 	/**
@@ -305,31 +310,10 @@ public class ProductImpl extends EObjectImpl implements Product {
 	 * @generated
 	 */
 	public void setPriceCategory(PriceCategory newPriceCategory) {
-		if (newPriceCategory != eInternalContainer() || (eContainerFeatureID() != ShopPackage.PRODUCT__PRICE_CATEGORY && newPriceCategory != null)) {
-			if (EcoreUtil.isAncestor(this, newPriceCategory))
-				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			if (newPriceCategory != null)
-				msgs = ((InternalEObject)newPriceCategory).eInverseAdd(this, ShopPackage.PRICE_CATEGORY__PRODUCTS, PriceCategory.class, msgs);
-			msgs = basicSetPriceCategory(newPriceCategory, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.PRODUCT__PRICE_CATEGORY, newPriceCategory, newPriceCategory));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Transaction> getTransactions() {
-		if (transactions == null) {
-			transactions = new EObjectContainmentWithInverseEList<Transaction>(Transaction.class, this, ShopPackage.PRODUCT__TRANSACTIONS, ShopPackage.TRANSACTION__PRODUCT);
-		}
-		return transactions;
+		PriceCategory oldPriceCategory = priceCategory;
+		priceCategory = newPriceCategory;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.PRODUCT__PRICE_CATEGORY, oldPriceCategory, priceCategory));
 	}
 
 	/**
@@ -345,12 +329,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetProductCategory((ProductCategory)otherEnd, msgs);
-			case ShopPackage.PRODUCT__PRICE_CATEGORY:
-				if (eInternalContainer() != null)
-					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetPriceCategory((PriceCategory)otherEnd, msgs);
-			case ShopPackage.PRODUCT__TRANSACTIONS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTransactions()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -365,10 +343,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 		switch (featureID) {
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				return basicSetProductCategory(null, msgs);
-			case ShopPackage.PRODUCT__PRICE_CATEGORY:
-				return basicSetPriceCategory(null, msgs);
-			case ShopPackage.PRODUCT__TRANSACTIONS:
-				return ((InternalEList<?>)getTransactions()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -383,8 +357,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 		switch (eContainerFeatureID()) {
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				return eInternalContainer().eInverseRemove(this, ShopPackage.PRODUCT_CATEGORY__PRODUCTS, ProductCategory.class, msgs);
-			case ShopPackage.PRODUCT__PRICE_CATEGORY:
-				return eInternalContainer().eInverseRemove(this, ShopPackage.PRICE_CATEGORY__PRODUCTS, PriceCategory.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -408,9 +380,8 @@ public class ProductImpl extends EObjectImpl implements Product {
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				return getProductCategory();
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
-				return getPriceCategory();
-			case ShopPackage.PRODUCT__TRANSACTIONS:
-				return getTransactions();
+				if (resolve) return getPriceCategory();
+				return basicGetPriceCategory();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -442,10 +413,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
 				setPriceCategory((PriceCategory)newValue);
 				return;
-			case ShopPackage.PRODUCT__TRANSACTIONS:
-				getTransactions().clear();
-				getTransactions().addAll((Collection<? extends Transaction>)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -476,9 +443,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
 				setPriceCategory((PriceCategory)null);
 				return;
-			case ShopPackage.PRODUCT__TRANSACTIONS:
-				getTransactions().clear();
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -502,9 +466,7 @@ public class ProductImpl extends EObjectImpl implements Product {
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				return getProductCategory() != null;
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
-				return getPriceCategory() != null;
-			case ShopPackage.PRODUCT__TRANSACTIONS:
-				return transactions != null && !transactions.isEmpty();
+				return priceCategory != null;
 		}
 		return super.eIsSet(featureID);
 	}

@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link ch.allon.redskin.core.model.shop.PriceCategory#getName <em>Name</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.PriceCategory#getProducts <em>Products</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.PriceCategory#getPrices <em>Prices</em>}</li>
  * </ul>
  * </p>
@@ -40,7 +39,7 @@ public interface PriceCategory extends EObject {
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getPriceCategory_Name()
-	 * @model
+	 * @model id="true"
 	 * @generated
 	 */
 	String getName();
@@ -56,24 +55,6 @@ public interface PriceCategory extends EObject {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Products</b></em>' containment reference list.
-	 * The list contents are of type {@link ch.allon.redskin.core.model.shop.Product}.
-	 * It is bidirectional and its opposite is '{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Products</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Products</em>' containment reference list.
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getPriceCategory_Products()
-	 * @see ch.allon.redskin.core.model.shop.Product#getPriceCategory
-	 * @model opposite="priceCategory" containment="true"
-	 * @generated
-	 */
-	EList<Product> getProducts();
-
-	/**
 	 * Returns the value of the '<em><b>Prices</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Double}.
 	 * <!-- begin-user-doc -->
@@ -84,7 +65,7 @@ public interface PriceCategory extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Prices</em>' attribute list.
 	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getPriceCategory_Prices()
-	 * @model
+	 * @model unique="false"
 	 * @generated
 	 */
 	EList<Double> getPrices();

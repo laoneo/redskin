@@ -115,7 +115,7 @@ public interface ShopPackage extends EPackage {
 	int PRODUCT__PRODUCT_CATEGORY = 4;
 
 	/**
-	 * The feature id for the '<em><b>Price Category</b></em>' container reference.
+	 * The feature id for the '<em><b>Price Category</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -124,22 +124,13 @@ public interface ShopPackage extends EPackage {
 	int PRODUCT__PRICE_CATEGORY = 5;
 
 	/**
-	 * The feature id for the '<em><b>Transactions</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PRODUCT__TRANSACTIONS = 6;
-
-	/**
 	 * The number of structural features of the '<em>Product</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT_FEATURE_COUNT = 7;
+	int PRODUCT_FEATURE_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl <em>Customer</em>}' class.
@@ -298,22 +289,13 @@ public interface ShopPackage extends EPackage {
 	int PRICE_CATEGORY__NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Products</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PRICE_CATEGORY__PRODUCTS = 1;
-
-	/**
 	 * The feature id for the '<em><b>Prices</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PRICE_CATEGORY__PRICES = 2;
+	int PRICE_CATEGORY__PRICES = 1;
 
 	/**
 	 * The number of structural features of the '<em>Price Category</em>' class.
@@ -322,7 +304,7 @@ public interface ShopPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PRICE_CATEGORY_FEATURE_COUNT = 3;
+	int PRICE_CATEGORY_FEATURE_COUNT = 2;
 
 	/**
 	 * The meta object id for the '{@link ch.allon.redskin.core.model.shop.impl.OrderImpl <em>Order</em>}' class.
@@ -408,7 +390,7 @@ public interface ShopPackage extends EPackage {
 	int TRANSACTION__ORDER = 1;
 
 	/**
-	 * The feature id for the '<em><b>Product</b></em>' container reference.
+	 * The feature id for the '<em><b>Product</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -528,26 +510,15 @@ public interface ShopPackage extends EPackage {
 	EReference getProduct_ProductCategory();
 
 	/**
-	 * Returns the meta object for the container reference '{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}'.
+	 * Returns the meta object for the reference '{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Price Category</em>'.
+	 * @return the meta object for the reference '<em>Price Category</em>'.
 	 * @see ch.allon.redskin.core.model.shop.Product#getPriceCategory()
 	 * @see #getProduct()
 	 * @generated
 	 */
 	EReference getProduct_PriceCategory();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link ch.allon.redskin.core.model.shop.Product#getTransactions <em>Transactions</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Transactions</em>'.
-	 * @see ch.allon.redskin.core.model.shop.Product#getTransactions()
-	 * @see #getProduct()
-	 * @generated
-	 */
-	EReference getProduct_Transactions();
 
 	/**
 	 * Returns the meta object for class '{@link ch.allon.redskin.core.model.shop.Customer <em>Customer</em>}'.
@@ -712,17 +683,6 @@ public interface ShopPackage extends EPackage {
 	EAttribute getPriceCategory_Name();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link ch.allon.redskin.core.model.shop.PriceCategory#getProducts <em>Products</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Products</em>'.
-	 * @see ch.allon.redskin.core.model.shop.PriceCategory#getProducts()
-	 * @see #getPriceCategory()
-	 * @generated
-	 */
-	EReference getPriceCategory_Products();
-
-	/**
 	 * Returns the meta object for the attribute list '{@link ch.allon.redskin.core.model.shop.PriceCategory#getPrices <em>Prices</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -820,10 +780,10 @@ public interface ShopPackage extends EPackage {
 	EReference getTransaction_Order();
 
 	/**
-	 * Returns the meta object for the container reference '{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}'.
+	 * Returns the meta object for the reference '{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Product</em>'.
+	 * @return the meta object for the reference '<em>Product</em>'.
 	 * @see ch.allon.redskin.core.model.shop.Transaction#getProduct()
 	 * @see #getTransaction()
 	 * @generated
@@ -947,20 +907,12 @@ public interface ShopPackage extends EPackage {
 		EReference PRODUCT__PRODUCT_CATEGORY = eINSTANCE.getProduct_ProductCategory();
 
 		/**
-		 * The meta object literal for the '<em><b>Price Category</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Price Category</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference PRODUCT__PRICE_CATEGORY = eINSTANCE.getProduct_PriceCategory();
-
-		/**
-		 * The meta object literal for the '<em><b>Transactions</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PRODUCT__TRANSACTIONS = eINSTANCE.getProduct_Transactions();
 
 		/**
 		 * The meta object literal for the '{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl <em>Customer</em>}' class.
@@ -1089,14 +1041,6 @@ public interface ShopPackage extends EPackage {
 		EAttribute PRICE_CATEGORY__NAME = eINSTANCE.getPriceCategory_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Products</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PRICE_CATEGORY__PRODUCTS = eINSTANCE.getPriceCategory_Products();
-
-		/**
 		 * The meta object literal for the '<em><b>Prices</b></em>' attribute list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1173,7 +1117,7 @@ public interface ShopPackage extends EPackage {
 		EReference TRANSACTION__ORDER = eINSTANCE.getTransaction_Order();
 
 		/**
-		 * The meta object literal for the '<em><b>Product</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Product</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

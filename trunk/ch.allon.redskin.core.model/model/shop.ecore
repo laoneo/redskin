@@ -10,10 +10,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="rentedDays" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="productCategory" eType="#//ProductCategory"
         eOpposite="#//ProductCategory/products"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="priceCategory" eType="#//PriceCategory"
-        eOpposite="#//PriceCategory/products"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="transactions" upperBound="-1"
-        eType="#//Transaction" containment="true" eOpposite="#//Transaction/product"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="priceCategory" eType="#//PriceCategory"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Customer">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="surname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -36,11 +33,10 @@
         eOpposite="#//ProductCategory/subCategorys"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PriceCategory">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1"
-        eType="#//Product" containment="true" eOpposite="#//Product/priceCategory"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prices" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prices" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Order">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="orderNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -56,8 +52,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="transactionNr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="order" eType="#//Order"
         eOpposite="#//Order/transactions"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="product" eType="#//Product"
-        eOpposite="#//Product/transactions"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="product" eType="#//Product"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="startDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="endDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="comments" upperBound="-1"

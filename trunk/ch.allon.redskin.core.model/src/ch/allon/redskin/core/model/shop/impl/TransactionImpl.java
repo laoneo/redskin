@@ -69,6 +69,16 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	protected String transactionNr = TRANSACTION_NR_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getProduct() <em>Product</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProduct()
+	 * @generated
+	 * @ordered
+	 */
+	protected Product product;
+
+	/**
 	 * The default value of the '{@link #getStartDate() <em>Start Date</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -225,8 +235,15 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * @generated
 	 */
 	public Product getProduct() {
-		if (eContainerFeatureID() != ShopPackage.TRANSACTION__PRODUCT) return null;
-		return (Product)eContainer();
+		if (product != null && product.eIsProxy()) {
+			InternalEObject oldProduct = (InternalEObject)product;
+			product = (Product)eResolveProxy(oldProduct);
+			if (product != oldProduct) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ShopPackage.TRANSACTION__PRODUCT, oldProduct, product));
+			}
+		}
+		return product;
 	}
 
 	/**
@@ -234,9 +251,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetProduct(Product newProduct, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newProduct, ShopPackage.TRANSACTION__PRODUCT, msgs);
-		return msgs;
+	public Product basicGetProduct() {
+		return product;
 	}
 
 	/**
@@ -245,19 +261,10 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * @generated
 	 */
 	public void setProduct(Product newProduct) {
-		if (newProduct != eInternalContainer() || (eContainerFeatureID() != ShopPackage.TRANSACTION__PRODUCT && newProduct != null)) {
-			if (EcoreUtil.isAncestor(this, newProduct))
-				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			if (newProduct != null)
-				msgs = ((InternalEObject)newProduct).eInverseAdd(this, ShopPackage.PRODUCT__TRANSACTIONS, Product.class, msgs);
-			msgs = basicSetProduct(newProduct, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.TRANSACTION__PRODUCT, newProduct, newProduct));
+		Product oldProduct = product;
+		product = newProduct;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.TRANSACTION__PRODUCT, oldProduct, product));
 	}
 
 	/**
@@ -347,10 +354,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetOrder((Order)otherEnd, msgs);
-			case ShopPackage.TRANSACTION__PRODUCT:
-				if (eInternalContainer() != null)
-					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetProduct((Product)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -365,8 +368,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 		switch (featureID) {
 			case ShopPackage.TRANSACTION__ORDER:
 				return basicSetOrder(null, msgs);
-			case ShopPackage.TRANSACTION__PRODUCT:
-				return basicSetProduct(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -381,8 +382,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 		switch (eContainerFeatureID()) {
 			case ShopPackage.TRANSACTION__ORDER:
 				return eInternalContainer().eInverseRemove(this, ShopPackage.ORDER__TRANSACTIONS, Order.class, msgs);
-			case ShopPackage.TRANSACTION__PRODUCT:
-				return eInternalContainer().eInverseRemove(this, ShopPackage.PRODUCT__TRANSACTIONS, Product.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -400,7 +399,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 			case ShopPackage.TRANSACTION__ORDER:
 				return getOrder();
 			case ShopPackage.TRANSACTION__PRODUCT:
-				return getProduct();
+				if (resolve) return getProduct();
+				return basicGetProduct();
 			case ShopPackage.TRANSACTION__START_DATE:
 				return getStartDate();
 			case ShopPackage.TRANSACTION__END_DATE:
@@ -494,7 +494,7 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 			case ShopPackage.TRANSACTION__ORDER:
 				return getOrder() != null;
 			case ShopPackage.TRANSACTION__PRODUCT:
-				return getProduct() != null;
+				return product != null;
 			case ShopPackage.TRANSACTION__START_DATE:
 				return START_DATE_EDEFAULT == null ? startDate != null : !START_DATE_EDEFAULT.equals(startDate);
 			case ShopPackage.TRANSACTION__END_DATE:
