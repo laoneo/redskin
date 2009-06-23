@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -33,6 +34,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 import org.eclipse.ui.part.ViewPart;
 
@@ -45,10 +47,10 @@ import ch.allon.redskin.core.model.shop.Transaction;
 import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.internal.ui.Messages;
-import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.UIUtil;
 
-public class WorkView extends ViewPart implements IEditingDomainProvider {
+public class WorkView extends ViewPart implements IEditingDomainProvider,
+		ISaveablePart2 {
 
 	private TableViewer viewer;
 	private Order order;
@@ -56,12 +58,13 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 	private Text rentField;
 	private Button tomorrowButton;
 	private AdapterFactoryEditingDomain ed;
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+	private boolean dirty;
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
+			"yyyyMMddHHmmss");
 
 	public void createPartControl(Composite parent) {
 		Composite container = UIUtil.createStandardComposite(parent, 1);
 
-		createToolBar(container);
 		createRegisterBar(container);
 
 		viewer = new TableViewer(container, SWT.MULTI | SWT.H_SCROLL
@@ -110,29 +113,6 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 		createBottomBar(container);
 	}
 
-	private void createToolBar(Composite parent) {
-		Composite c = UIUtil.createStandardComposite(parent, 1);
-
-		Button newOrderButton = new Button(c, SWT.PUSH);
-		newOrderButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-				false, false));
-		newOrderButton.setToolTipText(Messages.NewOrderAction_Title);
-		newOrderButton.setImage(RedskinUIActivator
-				.getImage("actions/new_order.gif")); //$NON-NLS-1$
-		newOrderButton.setText(Messages.WorkView_New_Order);
-		newOrderButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				order = ShopFactory.eINSTANCE.createOrder();
-				viewer.setInput(order);
-			}
-		});
-
-		Label separator = new Label(c, SWT.SEPARATOR | SWT.HORIZONTAL);
-		separator
-				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-	}
-
 	private void createBottomBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
 		buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
@@ -145,12 +125,12 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				handleSaveOrder();
+				doSave(null);
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				handleSaveOrder();
+				doSave(null);
 			}
 		});
 	}
@@ -205,14 +185,19 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 		});
 	}
 
-	private void handleSaveOrder() {
-		order.setOrderNr(FORMAT.format(new Date()));
-		DBFactory.saveOrder(order);
-	}
-
 	private void handleCreateTransaction() {
-		Product product = ProductIndexer.getProduct(Integer
-				.parseInt(numberField.getText()));
+		int number = -1;
+		try {
+			number = Integer.parseInt(numberField.getText());
+		} catch (NumberFormatException e1) {
+			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
+					.getShell(), Messages.WorkView_Error_Title,
+					Messages.WorkView_Correct_Number_1 + numberField.getText()
+							+ Messages.WorkView_Correct_Number_2, SWT.NONE);
+			numberField.setFocus();
+			return;
+		}
+		Product product = ProductIndexer.getProduct(number);
 		if (product == null) {
 			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
 					.getShell(), Messages.WorkView_Error_Title,
@@ -222,23 +207,34 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 			return;
 		}
 		Transaction transaction = ShopFactory.eINSTANCE.createTransaction();
+		try {
+			GregorianCalendar c = new GregorianCalendar();
+			transaction.setTransactionNr(FORMAT.format(c.getTime()));
+			if (tomorrowButton.getSelection()) {
+				c.add(GregorianCalendar.DAY_OF_MONTH, 1);
+			}
+			transaction.setStartDate(c.getTime());
+			int days = Integer.parseInt(rentField.getText());
+			c.add(GregorianCalendar.DAY_OF_MONTH, days);
+			transaction.setEndDate(c.getTime());
+			EList<Double> prices = product.getPriceCategory().getPrices();
+			double price = 0.0;
+			if (prices.size() > days)
+				price = prices.get(days);
+			transaction.setPrice(price);
+		} catch (Exception e) {
+			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
+					.getShell(), Messages.WorkView_Error_Title,
+					"Ein Fehler ist aufgetreten:\n" + e.getLocalizedMessage(),
+					SWT.NONE);
+			numberField.setFocus();
+			return;
+		}
+
 		transaction.setProduct(product);
 		transaction.setOrder(order);
-		GregorianCalendar c = new GregorianCalendar();
-		transaction.setTransactionNr(FORMAT.format(c.getTime()));
-		if (tomorrowButton.getSelection()) {
-			c.add(GregorianCalendar.DAY_OF_MONTH, 1);
-		}
-		transaction.setStartDate(c.getTime());
-		int days = Integer.parseInt(rentField.getText());
-		c.add(GregorianCalendar.DAY_OF_MONTH, days);
-		transaction.setEndDate(c.getTime());
-		EList<Double> prices = transaction.getProduct().getPriceCategory()
-				.getPrices();
-		double price = 0.0;
-		if (prices.size() > days)
-			price = prices.get(days);
-		transaction.setPrice(price);
+		dirty = true;
+		firePropertyChange(PROP_DIRTY);
 	}
 
 	@Override
@@ -310,5 +306,42 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 				return super.getColumnText(object, columnIndex);
 			}
 		}
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		order.setOrderNr(FORMAT.format(new Date()));
+		DBFactory.saveOrder(order);
+		dirty = false;
+		firePropertyChange(PROP_DIRTY);
+	}
+
+	@Override
+	public void doSaveAs() {
+	}
+
+	@Override
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
+
+	@Override
+	public boolean isSaveOnCloseNeeded() {
+		return true;
+	}
+
+	@Override
+	public int promptToSaveOnClose() {
+		boolean save = MessageDialog
+				.openQuestion(
+						getViewSite().getShell(),
+						"Speichern",
+						"Der Auftrag wurde noch nicht gespeichert, soll gespeichert werden vor dem schliessen?");
+		return save ? YES : NO;
 	}
 }

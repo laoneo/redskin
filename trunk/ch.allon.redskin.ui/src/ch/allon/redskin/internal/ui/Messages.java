@@ -40,7 +40,6 @@ public class Messages extends NLS {
 	public static String WorkView_Description_Col;
 	public static String WorkView_Error_Title;
 	public static String WorkView_From_Tomorrow;
-	public static String WorkView_New_Order;
 	public static String WorkView_Number;
 	public static String WorkView_Number_Col;
 	public static String WorkView_Price_Col;

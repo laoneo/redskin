@@ -22,9 +22,11 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Work View"
+            allowMultiple="true"
             class="ch.allon.redskin.internal.ui.views.WorkView"
-            id="ch.allon.redskin.ui.views.WorkView">
+            icon="icons/obj/Order.gif"
+            id="ch.allon.redskin.ui.views.WorkView"
+            name="Auftrag">
       </view>
       <view
             class="ch.allon.redskin.internal.ui.views.ProductView"
@@ -98,6 +100,22 @@
                menubarPath="additions">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="ch.allon.redskin.ui.application"
+            name="Redskin Shop Product">
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="appName"
+               value="Redskin Shop Product">
+         </property>
+      </product>
    </extension>
 
 </plugin>
