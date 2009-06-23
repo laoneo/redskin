@@ -23,9 +23,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import ch.allon.redskin.core.model.shop.Product;
+import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 
 /**
@@ -39,14 +44,15 @@ public class ProductIndexer {
 	public static Product getProduct(Integer number) {
 		return getIndex().get(number);
 	}
-	
+
 	public static void visit(IProductVisitor visitor) {
 		Collection<Product> products = getIndex().values();
 
 		for (Iterator<Product> iterator = products.iterator(); iterator
 				.hasNext();) {
 			Product p = iterator.next();
-			if(!visitor.visit(p))return;
+			if (!visitor.visit(p))
+				return;
 		}
 	}
 
@@ -56,11 +62,25 @@ public class ProductIndexer {
 	private static Map<Integer, Product> getIndex() {
 		if (productIndex == null) {
 			productIndex = new HashMap<Integer, Product>();
-			for (Iterator<EObject> iterator = DBFactory.getProductsRootNode()
-					.eAllContents(); iterator.hasNext();) {
+			ProductCategory root = DBFactory.getProductsRootNode();
+			for (Iterator<EObject> iterator = root.eAllContents(); iterator
+					.hasNext();) {
 				EObject eObject = iterator.next();
 				if (eObject.eClass().getClassifierID() == ShopPackage.PRODUCT) {
-					Product p = (Product) eObject;
+					final Product p = (Product) eObject;
+					p.eAdapters().add(new EContentAdapter() {
+						@Override
+						public void notifyChanged(Notification notification) {
+							if (notification.getFeature() != null
+									&& ((EStructuralFeature) notification
+											.getFeature()).getFeatureID() == ShopPackage.PRODUCT__NUMBER) {
+								productIndex.remove(notification.getOldValue());
+								productIndex.put((Integer) notification
+										.getNewValue(), p);
+							}
+							super.notifyChanged(notification);
+						}
+					});
 					productIndex.put(p.getNumber(), p);
 				}
 			}

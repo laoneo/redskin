@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
 
+import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.internal.core.RedskinCoreActivator;
@@ -54,17 +55,20 @@ public class DBFactory {
 					true);
 			// res.load(Collections.EMPTY_MAP);
 			PRICE_CATEGORIES_RESOURCE.eAdapters().add(new EContentAdapter() {
-				private boolean innerCall=false;
+				private boolean innerCall = false;
+
 				@Override
 				public void notifyChanged(Notification notification) {
-					if(innerCall)return;
-					innerCall=true;
+					if (innerCall)
+						return;
+					innerCall = true;
 					try {
 						PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
 					} catch (IOException e) {
 						e.printStackTrace();
+					} finally {
+						innerCall = false;
 					}
-					innerCall=false;
 				}
 			});
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
@@ -101,21 +105,49 @@ public class DBFactory {
 				}
 			} else
 				loadedRoot = (ProductCategory) contents.get(0);
-			loadedRoot.eAdapters().add(new EContentAdapter() {
+			res.eAdapters().add(new EContentAdapter() {
+				private boolean innerCall = false;
+
 				@Override
 				public void notifyChanged(Notification notification) {
+					if (innerCall)
+						return;
+					innerCall = true;
 					try {
+						RedskinCoreActivator.getSessionController()
+								.getSessionWrapper().beginTransaction();
 						res.save(Collections.EMPTY_MAP);
+						RedskinCoreActivator.getSessionController()
+								.getSessionWrapper().commitTransaction();
 					} catch (IOException e) {
 						e.printStackTrace();
+					} finally {
+						innerCall = false;
 					}
 					super.notifyChanged(notification);
 				}
 			});
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.commitTransaction();
 			ROOT = loadedRoot;
 		}
 		return ROOT;
+	}
+
+	public static void saveOrder(Order order) {
+		RedskinCoreActivator.getSessionController().getSessionWrapper()
+				.beginTransaction();
+		String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
+				+ "=ShopDB";
+		URI uri = URI.createURI(uriStr);
+		Resource res = new ResourceSetImpl().getResource(uri, true);
+		res.getContents().add(order);
+		RedskinCoreActivator.getSessionController().getSessionWrapper()
+				.beginTransaction();
+		try {
+			res.save(Collections.EMPTY_MAP);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		RedskinCoreActivator.getSessionController().getSessionWrapper()
+				.commitTransaction();
 	}
 }
