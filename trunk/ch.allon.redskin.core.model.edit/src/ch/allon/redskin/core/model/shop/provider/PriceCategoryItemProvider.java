@@ -7,22 +7,12 @@
 package ch.allon.redskin.core.model.shop.provider;
 
 
-import ch.allon.redskin.core.model.shop.PriceCategory;
-import ch.allon.redskin.core.model.shop.ShopFactory;
-import ch.allon.redskin.core.model.shop.ShopPackage;
-
-import ch.allon.redskin.internal.core.model.edit.RedskinEditActivator;
-
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
-import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -34,6 +24,10 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
+
+import ch.allon.redskin.core.model.shop.PriceCategory;
+import ch.allon.redskin.core.model.shop.ShopPackage;
+import ch.allon.redskin.internal.core.model.edit.RedskinEditActivator;
 
 /**
  * This is the item provider adapter for a {@link ch.allon.redskin.core.model.shop.PriceCategory} object.
@@ -72,7 +66,6 @@ public class PriceCategoryItemProvider
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
-			addProductsPropertyDescriptor(object);
 			addPricesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -101,28 +94,6 @@ public class PriceCategoryItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Products feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addProductsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PriceCategory_products_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PriceCategory_products_feature", "_UI_PriceCategory_type"),
-				 ShopPackage.Literals.PRICE_CATEGORY__PRODUCTS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This adds a property descriptor for the Prices feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -145,36 +116,6 @@ public class PriceCategoryItemProvider
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
-		if (childrenFeatures == null) {
-			super.getChildrenFeatures(object);
-			childrenFeatures.add(ShopPackage.Literals.PRICE_CATEGORY__PRODUCTS);
-		}
-		return childrenFeatures;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
-		// adding (see {@link AddCommand}) it as a child.
-
-		return super.getChildFeature(object, child);
-	}
-
-	/**
 	 * This returns PriceCategory.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -189,14 +130,13 @@ public class PriceCategoryItemProvider
 	 * This returns the label text for the adapted class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public String getText(Object object) {
 		String label = ((PriceCategory)object).getName();
 		return label == null || label.length() == 0 ?
-			getString("_UI_PriceCategory_type") :
-			getString("_UI_PriceCategory_type") + " " + label;
+			getString("_UI_PriceCategory_type") :label;
 	}
 
 	/**
@@ -215,9 +155,6 @@ public class PriceCategoryItemProvider
 			case ShopPackage.PRICE_CATEGORY__PRICES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
-			case ShopPackage.PRICE_CATEGORY__PRODUCTS:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-				return;
 		}
 		super.notifyChanged(notification);
 	}
@@ -232,11 +169,6 @@ public class PriceCategoryItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-
-		newChildDescriptors.add
-			(createChildParameter
-				(ShopPackage.Literals.PRICE_CATEGORY__PRODUCTS,
-				 ShopFactory.eINSTANCE.createProduct()));
 	}
 
 	/**
