@@ -1,10 +1,14 @@
 package ch.allon.redskin.internal.ui.views;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.eclipse.emf.common.command.BasicCommandStack;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
@@ -32,11 +36,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 import org.eclipse.ui.part.ViewPart;
 
+import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.ProductIndexer;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.Transaction;
+import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
@@ -50,6 +56,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 	private Text rentField;
 	private Button tomorrowButton;
 	private AdapterFactoryEditingDomain ed;
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
 	public void createPartControl(Composite parent) {
 		Composite container = UIUtil.createStandardComposite(parent, 1);
@@ -199,17 +206,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 	}
 
 	private void handleSaveOrder() {
-		// EditingDomain ed = DBFactory.getProductEditingDomain();
-		// Command command = CreateChildCommand.create(ed, order,
-		// new CommandParameter(order,
-		// ShopPackage.Literals.ORDER__TRANSACTIONS,
-		// transaction), Collections.EMPTY_LIST);
-		// ed.getCommandStack().execute(command);
-		// command = CreateChildCommand.create(ed, product,
-		// new CommandParameter(product,
-		// ShopPackage.Literals.PRODUCT__TRANSACTIONS,
-		// transaction), Collections.EMPTY_LIST);
-		// ed.getCommandStack().execute(command);
+		order.setOrderNr(FORMAT.format(new Date()));
+		DBFactory.saveOrder(order);
 	}
 
 	private void handleCreateTransaction() {
@@ -218,26 +216,29 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 		if (product == null) {
 			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
 					.getShell(), Messages.WorkView_Error_Title,
-					Messages.WorkView_Correct_Number_1
-							+ numberField.getText()
-							+ Messages.WorkView_Correct_Number_2,
-					SWT.NONE);
+					Messages.WorkView_Correct_Number_1 + numberField.getText()
+							+ Messages.WorkView_Correct_Number_2, SWT.NONE);
 			numberField.setFocus();
 			return;
 		}
 		Transaction transaction = ShopFactory.eINSTANCE.createTransaction();
+		transaction.setProduct(product);
+		transaction.setOrder(order);
 		GregorianCalendar c = new GregorianCalendar();
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss"); //$NON-NLS-1$
-		transaction.setTransactionNr(format.format(c.getTime()));
+		transaction.setTransactionNr(FORMAT.format(c.getTime()));
 		if (tomorrowButton.getSelection()) {
 			c.add(GregorianCalendar.DAY_OF_MONTH, 1);
 		}
 		transaction.setStartDate(c.getTime());
-		c.add(GregorianCalendar.DAY_OF_MONTH, Integer.parseInt(rentField
-				.getText()));
+		int days = Integer.parseInt(rentField.getText());
+		c.add(GregorianCalendar.DAY_OF_MONTH, days);
 		transaction.setEndDate(c.getTime());
-		transaction.getProduct().getPriceCategory().getPrices().get(
-				Integer.parseInt(rentField.getText()));
+		EList<Double> prices = transaction.getProduct().getPriceCategory()
+				.getPrices();
+		double price = 0.0;
+		if (prices.size() > days)
+			price = prices.get(days);
+		transaction.setPrice(price);
 	}
 
 	@Override
@@ -253,7 +254,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 			adapterFactory
 					.addAdapterFactory(new ResourceItemProviderAdapterFactory());
 			adapterFactory
-					.addAdapterFactory(new ShopItemProviderAdapterFactory());
+					.addAdapterFactory(new WorkViewShopItemProviderAdapterFactory());
 			adapterFactory
 					.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
 
@@ -262,5 +263,52 @@ public class WorkView extends ViewPart implements IEditingDomainProvider {
 					new HashMap<Resource, Boolean>());
 		}
 		return ed;
+	}
+
+	private class WorkViewShopItemProviderAdapterFactory extends
+			ShopItemProviderAdapterFactory {
+		private WorkViewTransactionItemProvider workViewTransactionItemProvider;
+
+		@Override
+		public Adapter createTransactionAdapter() {
+			if (workViewTransactionItemProvider == null)
+				workViewTransactionItemProvider = new WorkViewTransactionItemProvider(
+						this);
+			return workViewTransactionItemProvider;
+		}
+
+		private class WorkViewTransactionItemProvider extends OrderItemProvider {
+
+			private final SimpleDateFormat FORMAT = new SimpleDateFormat(
+					"dd.MM.yyyyy");
+
+			public WorkViewTransactionItemProvider(AdapterFactory adapterFactory) {
+				super(adapterFactory);
+			}
+
+			@Override
+			public String getColumnText(Object object, int columnIndex) {
+				if (!(object instanceof Transaction))
+					return super.getColumnText(object, columnIndex);
+				Transaction tr = (Transaction) object;
+				switch (columnIndex) {
+				case 0:
+					return "" + tr.getProduct().getNumber();
+				case 1:
+					return tr.getProduct().getDescription();
+				case 2:
+					long diff = tr.getEndDate().getTime()
+							- tr.getStartDate().getTime();
+					return "" + (diff / 86400000);
+				case 3:
+					return FORMAT.format(tr.getEndDate());
+				case 4:
+					return "" + tr.getPrice();
+				default:
+					break;
+				}
+				return super.getColumnText(object, columnIndex);
+			}
+		}
 	}
 }

@@ -82,6 +82,7 @@ public class EObjectDialog extends Dialog {
 							false, false));
 					label.setText(getFieldText(reference) + ":"); //$NON-NLS-1$
 					EObjectCombo combo = new EObjectCombo(c, childs);
+					combo.select((EObject) newObject.eGet(reference));
 					fields.put(reference, combo);
 				}
 			}
@@ -153,7 +154,11 @@ public class EObjectDialog extends Dialog {
 				if (instanceClass.equals(String.class))
 					value = ((Text) control).getText();
 				if (instanceClass.equals(Integer.class))
-					value = new Integer(((Text) control).getText());
+					try {
+						value = new Integer(((Text) control).getText());
+					} catch (NumberFormatException e) {
+						value = 0;
+					}
 				if (value != null)
 					newObject.eSet(attribute, value);
 				else

@@ -71,4 +71,10 @@ public class EObjectCombo {
 		return references.get(combo.getSelectionIndex());
 	}
 
+	public void select(EObject object) {
+		for (EObject obj : references.values()) {
+			if (obj.equals(object))
+				combo.setText(obj.toString());
+		}
+	}
 }
