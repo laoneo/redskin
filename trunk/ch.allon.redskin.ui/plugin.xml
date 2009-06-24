@@ -14,9 +14,16 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Perspective"
-            class="ch.allon.redskin.internal.ui.Perspective"
-            id="ch.allon.shop.ui.perspective">
+            class="ch.allon.redskin.internal.ui.WorkPerspective"
+            icon="icons/views/work_view.gif"
+            id="ch.allon.redskin.ui.WorkPerspective"
+            name="Arbeitssicht">
+      </perspective>
+      <perspective
+            class="ch.allon.redskin.internal.ui.OrderPerspective"
+            icon="icons/views/order_view.gif"
+            id="ch.allon.redskin.ui.OrderPerspective"
+            name="Auftragssicht">
       </perspective>
    </extension>
    <extension
@@ -40,6 +47,12 @@
             icon="icons/obj/PriceCategory.gif"
             id="ch.allon.redskin.ui.views.PriceCategoryView"
             name="Price Category View"
+            restorable="true">
+      </view>
+      <view
+            class="ch.allon.redskin.internal.ui.views.OrderListView"
+            id="ch.allon.redskin.ui.views.OrderListView"
+            name="Order List"
             restorable="true">
       </view>
    </extension>

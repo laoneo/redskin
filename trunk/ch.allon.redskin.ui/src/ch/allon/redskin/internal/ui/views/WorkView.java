@@ -44,8 +44,8 @@ import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.Transaction;
-import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
+import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
 
@@ -238,6 +238,43 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 	}
 
 	@Override
+	public void doSave(IProgressMonitor monitor) {
+		order.setOrderNr(FORMAT.format(new Date()));
+		DBFactory.getOrdersResource().getContents().add(order);
+		dirty = false;
+		firePropertyChange(PROP_DIRTY);
+	}
+
+	@Override
+	public void doSaveAs() {
+	}
+
+	@Override
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
+
+	@Override
+	public boolean isSaveOnCloseNeeded() {
+		return true;
+	}
+
+	@Override
+	public int promptToSaveOnClose() {
+		boolean save = MessageDialog
+				.openQuestion(
+						getViewSite().getShell(),
+						"Speichern",
+						"Der Auftrag wurde noch nicht gespeichert, soll gespeichert werden vor dem schliessen?");
+		return save ? YES : NO;
+	}
+
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
@@ -273,7 +310,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			return workViewTransactionItemProvider;
 		}
 
-		private class WorkViewTransactionItemProvider extends OrderItemProvider {
+		private class WorkViewTransactionItemProvider extends
+				TransactionItemProvider {
 
 			private final SimpleDateFormat FORMAT = new SimpleDateFormat(
 					"dd.MM.yyyyy");
@@ -306,42 +344,5 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				return super.getColumnText(object, columnIndex);
 			}
 		}
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		order.setOrderNr(FORMAT.format(new Date()));
-		DBFactory.saveOrder(order);
-		dirty = false;
-		firePropertyChange(PROP_DIRTY);
-	}
-
-	@Override
-	public void doSaveAs() {
-	}
-
-	@Override
-	public boolean isDirty() {
-		return dirty;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean isSaveOnCloseNeeded() {
-		return true;
-	}
-
-	@Override
-	public int promptToSaveOnClose() {
-		boolean save = MessageDialog
-				.openQuestion(
-						getViewSite().getShell(),
-						"Speichern",
-						"Der Auftrag wurde noch nicht gespeichert, soll gespeichert werden vor dem schliessen?");
-		return save ? YES : NO;
 	}
 }

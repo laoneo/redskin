@@ -22,6 +22,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setInitialSize(new Point(800, 680));
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
+		configurer.setShowPerspectiveBar(true);
 		configurer.setTitle(Messages.Application_Title);
 	}
 }
