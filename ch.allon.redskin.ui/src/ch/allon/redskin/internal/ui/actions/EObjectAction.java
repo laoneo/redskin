@@ -34,6 +34,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 
+import ch.allon.redskin.internal.ui.RedskinUIActivator;
+
 /**
  * @author Allon Moritz
  * 
@@ -44,6 +46,24 @@ public abstract class EObjectAction extends Action implements
 
 	private List<EObject> selectedObjects = Collections.EMPTY_LIST;
 	private IViewPart view;
+
+	public EObjectAction() {
+		super();
+		String t = getActionText();
+		if (t != null)
+			setText(t);
+		t = getActionImagePath();
+		if (t != null)
+			setImageDescriptor(RedskinUIActivator.getImageDescriptor(t));
+	}
+
+	public String getActionImagePath() {
+		return null;
+	}
+
+	public String getActionText() {
+		return null;
+	}
 
 	/**
 	 * @param selectedObject

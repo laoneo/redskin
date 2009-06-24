@@ -13,16 +13,18 @@ import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.Messages;
-import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
 public class NewProductCategoryAction extends EObjectAction {
 
-	public NewProductCategoryAction() {
-		super();
-		setText(Messages.NewCategoryAction_Titel);
-		setImageDescriptor(RedskinUIActivator
-				.getImageDescriptor("icons/actions/new_product_category.gif")); //$NON-NLS-1$
+	@Override
+	public String getActionText() {
+		return Messages.NewCategoryAction_Titel;
+	}
+
+	@Override
+	public String getActionImagePath() {
+		return "icons/actions/new_product_category.gif";
 	}
 
 	@Override

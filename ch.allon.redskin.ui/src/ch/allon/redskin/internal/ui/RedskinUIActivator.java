@@ -12,11 +12,14 @@ import org.osgi.framework.BundleContext;
  */
 public class RedskinUIActivator extends AbstractUIPlugin {
 
-	// The plug-in ID
+	// plugin wide id's
 	public static final String PLUGIN_ID = "ch.allon.redskin.ui"; //$NON-NLS-1$
 	public static final String ID_WORK_VIEW = "ch.allon.redskin.ui.views.WorkView"; //$NON-NLS-1$
 	public static final String ID_PRODUCT_VIEW = "ch.allon.redskin.ui.views.ProductView"; //$NON-NLS-1$
 	public static final String ID_PRICE_CATEGORY_VIEW = "ch.allon.redskin.ui.views.PriceCategoryView"; //$NON-NLS-1$
+	public static final String ID_ORDER_LIST_VIEW = "ch.allon.redskin.ui.views.OrderListView"; //$NON-NLS-1$
+	public static final String ID_WORK_PERSPECTIVE = "ch.allon.redskin.ui.WorkPerspective"; //$NON-NLS-1$
+	public static final String ID_ORDE_LIST_PERSPECTIVE = "ch.allon.redskin.ui.OrderPerspective"; //$NON-NLS-1$
 
 	// The shared instance
 	private static RedskinUIActivator plugin;
@@ -78,7 +81,7 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 			imageRegistry = getDefault().createImageRegistry();
 		Image image = imageRegistry.get(path);
 		if (image == null) {
-			ImageDescriptor desc = getImageDescriptor("icons/" + path); //$NON-NLS-1$
+			ImageDescriptor desc = getImageDescriptor(path.startsWith("icons/") ? path : "icons/" + path); //$NON-NLS-1$
 			image = desc.createImage();
 			imageRegistry.put(path, image);
 		}

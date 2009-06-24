@@ -51,9 +51,11 @@ public class UIUtil {
 				return runnable.run(monitor);
 			}
 		};
-		IWorkbenchPart activePart = RedskinUIActivator.getWindow()
-				.getActivePage().getActivePart();
-		if (activePart != null) {
+		if (RedskinUIActivator.getWindow().getActivePage() != null
+				&& RedskinUIActivator.getWindow().getActivePage()
+						.getActivePart() != null) {
+			IWorkbenchPart activePart = RedskinUIActivator.getWindow()
+					.getActivePage().getActivePart();
 			IWorkbenchSiteProgressService siteService = (IWorkbenchSiteProgressService) activePart
 					.getSite().getAdapter(IWorkbenchSiteProgressService.class);
 			siteService.schedule(job, 0, true);
@@ -63,8 +65,9 @@ public class UIUtil {
 
 	public static Composite createStandardComposite(Composite parent, int cols) {
 		Composite container = new Composite(parent, SWT.NULL);
-		if(parent.getLayout() instanceof GridLayout)
-			container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		if (parent.getLayout() instanceof GridLayout)
+			container
+					.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		GridLayout layout = new GridLayout(cols, false);
 		layout.horizontalSpacing = 0;
 		layout.marginHeight = 0;

@@ -33,6 +33,16 @@ import ch.allon.redskin.core.model.shop.ShopFactory;
 public class NewPriceCategoryAction extends EObjectAction {
 
 	@Override
+	public String getActionText() {
+		return "Neue Preis Kategorie";
+	}
+
+	@Override
+	public String getActionImagePath() {
+		return "icons/actions/new_price_category.gif";
+	}
+
+	@Override
 	protected void run(List<EObject> selectedObjects) {
 		PriceCategoryDialog dialog = new PriceCategoryDialog(getShell(), null);
 		dialog.setNewObject(ShopFactory.eINSTANCE.createPriceCategory());
