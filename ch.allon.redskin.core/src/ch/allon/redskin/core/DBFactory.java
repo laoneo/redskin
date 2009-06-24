@@ -43,6 +43,7 @@ public class DBFactory {
 
 	private static ProductCategory ROOT;
 	private static Resource PRICE_CATEGORIES_RESOURCE;
+	private static Resource ORDERS_RESOURCE;
 
 	public static synchronized Resource getPriceCategoryResource() {
 		if (PRICE_CATEGORIES_RESOURCE == null) {
@@ -149,5 +150,37 @@ public class DBFactory {
 		}
 		RedskinCoreActivator.getSessionController().getSessionWrapper()
 				.commitTransaction();
+	}
+
+	public static Resource getOrdersResource() {
+		if (ORDERS_RESOURCE == null) {
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.beginTransaction();
+			String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
+					+ "=ShopDB&query1=FROM Order";
+			URI uri = URI.createURI(uriStr);
+			ORDERS_RESOURCE = new ResourceSetImpl().getResource(uri, true);
+			// res.load(Collections.EMPTY_MAP);
+			ORDERS_RESOURCE.eAdapters().add(new EContentAdapter() {
+				private boolean innerCall = false;
+
+				@Override
+				public void notifyChanged(Notification notification) {
+					if (innerCall)
+						return;
+					innerCall = true;
+					try {
+						ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						innerCall = false;
+					}
+				}
+			});
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.commitTransaction();
+		}
+		return ORDERS_RESOURCE;
 	}
 }
