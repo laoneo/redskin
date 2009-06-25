@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
+import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
+import ch.allon.redskin.internal.ui.views.WorkView;
 
 public class NewOrderAction extends EObjectAction {
 
@@ -42,9 +45,11 @@ public class NewOrderAction extends EObjectAction {
 					secondId = RedskinUIActivator.ID_WORK_VIEW
 							+ System.currentTimeMillis();
 			}
-			RedskinUIActivator.getWindow().getActivePage().showView(
-					RedskinUIActivator.ID_WORK_VIEW, secondId,
-					IWorkbenchPage.VIEW_ACTIVATE);
+			IViewPart part = RedskinUIActivator.getWindow().getActivePage()
+					.showView(RedskinUIActivator.ID_WORK_VIEW, secondId,
+							IWorkbenchPage.VIEW_ACTIVATE);
+			if (part instanceof WorkView && selectedObjects.size() > 0)
+				((WorkView) part).setOrder((Order) selectedObjects.get(0));
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}

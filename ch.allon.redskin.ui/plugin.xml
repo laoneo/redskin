@@ -15,13 +15,13 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="ch.allon.redskin.internal.ui.WorkPerspective"
-            icon="icons/views/work_view.gif"
+            icon="icons/perspectives/work.gif"
             id="ch.allon.redskin.ui.WorkPerspective"
             name="Arbeitssicht">
       </perspective>
       <perspective
             class="ch.allon.redskin.internal.ui.OrderPerspective"
-            icon="icons/views/order_view.gif"
+            icon="icons/perspectives/order_list.gif"
             id="ch.allon.redskin.ui.OrderPerspective"
             name="Auftragssicht">
       </perspective>
@@ -83,7 +83,15 @@
                enablesFor="1"
                icon="icons/actions/edit_product_category.gif"
                id="ch.allon.redskin.ui.actions.EditProductCategoryAction.Edit"
-               label="Kategorie bearbeiten"
+               label="Bearbeiten"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.DeleteProductCategoryAction"
+               enablesFor="+"
+               icon="icons/actions/delete_product_category.gif"
+               id="ch.allon.redskin.ui.action5"
+               label="Löschen"
                menubarPath="additions">
          </action>
       </objectContribution>
@@ -96,7 +104,15 @@
                enablesFor="1"
                icon="icons/actions/edit_product.gif"
                id="ch.allon.redskin.ui.actions.EditProductAction"
-               label="Product bearbeiten"
+               label="Bearbeiten"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.DeleteProductAction"
+               enablesFor="+"
+               icon="icons/actions/delete_product.gif"
+               id="ch.allon.redskin.ui.actions.DeleteProductAction"
+               label="Löschen"
                menubarPath="additions">
          </action>
       </objectContribution>
@@ -109,7 +125,36 @@
                enablesFor="1"
                icon="icons/actions/edit_price_category.gif"
                id="ch.allon.redskin.ui.actions.EditPriceCategoryAction"
-               label="Kategorie bearbeiten"
+               label="Bearbeiten"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.DeletePriceCategoryAction"
+               enablesFor="+"
+               icon="icons/actions/delete_price_category.gif"
+               id="ch.allon.redskin.ui.actions.DeletePriceCategoryAction"
+               label="Löschen"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="ch.allon.redskin.core.model.shop.Order"
+            objectClass="ch.allon.redskin.core.model.shop.Order">
+         <action
+               class="ch.allon.redskin.internal.ui.actions.EditOrderAction"
+               enablesFor="1"
+               icon="icons/actions/edit_order.gif"
+               id="ch.allon.redskin.ui.actions.EditOrderAction"
+               label="Bearbeiten"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.DeleteOrderAction"
+               enablesFor="+"
+               icon="icons/actions/delete_order.gif"
+               id="ch.allon.redskin.ui.actions.DeleteOrderAction"
+               label="Löschen"
                menubarPath="additions">
          </action>
       </objectContribution>

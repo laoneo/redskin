@@ -18,11 +18,8 @@
  */
 package ch.allon.redskin.internal.ui.actions;
 
-import java.util.List;
-
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -51,6 +48,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import ch.allon.redskin.core.model.shop.PriceCategory;
+import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
@@ -158,6 +156,13 @@ class PriceCategoryDialog extends EObjectDialog {
 	}
 
 	@Override
+	protected boolean include(EAttribute attribute) {
+		if (attribute.getFeatureID() == ShopPackage.PRICE_CATEGORY__PRICES)
+			return false;
+		return super.include(attribute);
+	}
+
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		Button newPriceButton = createButton(parent,
 				IDialogConstants.CLIENT_ID,
@@ -239,11 +244,6 @@ class PriceCategoryDialog extends EObjectDialog {
 			this.pos = pos;
 			this.price = price;
 		}
-	}
-
-	@Override
-	protected List<EObject> getChilds(EObject object, EReference reference) {
-		return null;
 	}
 
 }

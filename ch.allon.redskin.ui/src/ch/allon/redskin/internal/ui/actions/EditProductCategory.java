@@ -3,7 +3,6 @@ package ch.allon.redskin.internal.ui.actions;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
@@ -15,14 +14,7 @@ public class EditProductCategory extends EObjectAction {
 			return;
 
 		EObjectDialog dialog = new EObjectDialog(getShell(),
-				"Produkt bearbeiten") {
-
-			@Override
-			protected List<EObject> getChilds(EObject object,
-					EReference reference) {
-				return null;
-			}
-		};
+				"Produkt bearbeiten");
 		dialog.setNewObject(selectedObjects.get(0));
 		dialog.open();
 	}
