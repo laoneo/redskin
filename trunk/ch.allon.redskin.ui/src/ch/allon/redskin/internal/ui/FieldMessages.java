@@ -41,6 +41,10 @@ public class FieldMessages extends NLS {
 	
 	public static String PRODUCT_CATEGORY__NAME;
 	
+	public static String ORDER__NUMBER;
+	public static String ORDER__COMMENTS;
+	
+	public static String PRICE_CATEGORY__NAME;
 
 	static {
 		// initialize resource bundle

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -16,7 +15,6 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
@@ -27,6 +25,7 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -91,7 +90,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		createRegisterBar(container);
 
 		viewer = new TableViewer(container, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER);
+				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
@@ -139,7 +138,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 	private void createBottomBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
 		buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		buttonBar.setLayout(new GridLayout(1, false));
+		buttonBar.setLayout(new GridLayout(3, false));
 		Button button = new Button(buttonBar, SWT.PUSH);
 		button
 				.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
@@ -154,6 +153,45 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				doSave(null);
+			}
+		});
+
+		Button customerButton = new Button(buttonBar, SWT.PUSH);
+		customerButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		customerButton.setText("Kunde suchen");
+		customerButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				handleAddCustomer();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				handleAddCustomer();
+			}
+		});
+
+		Button commentButton = new Button(buttonBar, SWT.PUSH);
+		commentButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		commentButton.setText("Kommentar eingeben");
+		commentButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				InputDialog dialog = new InputDialog(getSite().getShell(),
+						"Kommentar", "Bitte einen Kommentar eingeben.", "",
+						null);
+				if (dialog.open() == Dialog.CANCEL)
+					return;
+				order.getComments().add(dialog.getValue());
+				dirty = true;
+				firePropertyChange(PROP_DIRTY);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				handleAddCustomer();
 			}
 		});
 	}
@@ -207,25 +245,6 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				handleCreateTransaction();
 			}
 		});
-
-		Button customerButton = new Button(buttonBar, SWT.PUSH);
-		customerButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-				false, false));
-		customerButton.setText("Kunde suchen");
-		customerButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				handleAddCustomer();
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				handleAddCustomer();
-			}
-		});
-
-		buttonBar.setTabList(new Control[] { numberField, rentField,
-				tomorrowButton, registerButton });
 	}
 
 	private void handleAddCustomer() {
@@ -235,7 +254,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			return;
 		order.setCustomer(dialog.getCustomer());
 		setPartName(dialog.getCustomer().toString());
-		dirty = true;
+		dirty = order.eResource() == null ? true : order.eResource()
+				.isModified();
 		firePropertyChange(PROP_DIRTY);
 	}
 
@@ -286,7 +306,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		}
 
 		transaction.setProduct(product);
-		transaction.setOrder(order);
+		order.getTransactions().add(transaction);
 		numberField.setText("");
 		numberField.setFocus();
 		dirty = true;
@@ -295,8 +315,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		if (order.getOrderNr() == null || order.getOrderNr().length() == 0)
-			order.setOrderNr(FORMAT.format(new Date()));
+		if (order.getNumber() == null || order.getNumber().length() == 0)
+			order.setNumber(FORMAT.format(new Date()));
 		EList<EObject> contents = DBFactory.getOrdersResource().getContents();
 		if (contents.contains(order)) {
 			try {
@@ -306,7 +326,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			}
 		} else
 			contents.add(order);
-		dirty = false;
+		dirty = DBFactory.getOrdersResource().isModified();
 		firePropertyChange(PROP_DIRTY);
 	}
 
@@ -342,6 +362,13 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 	@Override
 	public void setFocus() {
 		numberField.setFocus();
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+		viewer.setInput(order);
+		if (order.getCustomer() != null)
+			setPartName(order.getCustomer().toString());
 	}
 
 	@Override
@@ -427,13 +454,6 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			if (buttonId == IDialogConstants.CLIENT_ID) {
 				EObjectDialog dialog = new EObjectDialog(getShell(),
 						"Neuer Kunde") {
-
-					@Override
-					protected List<EObject> getChilds(EObject object,
-							EReference reference) {
-						return null;
-					}
-
 					@Override
 					protected Point getInitialSize() {
 						return new Point(400, 230);

@@ -7,6 +7,8 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -23,6 +25,7 @@ import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
+import ch.allon.redskin.internal.ui.actions.NewOrderAction;
 
 public class OrderListView extends EObjectView {
 
@@ -41,6 +44,17 @@ public class OrderListView extends EObjectView {
 				getEditingDomain().getAdapterFactory()));
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				NewOrderAction action = new NewOrderAction();
+				action.setActivePart(null, OrderListView.this);
+				action.selectionChanged(null, event.getSelection());
+				action.run();
+			}
+		});
 
 		Tree tree = viewer.getTree();
 		TableLayout layout = new TableLayout();

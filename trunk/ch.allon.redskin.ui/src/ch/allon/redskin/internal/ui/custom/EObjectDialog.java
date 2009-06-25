@@ -47,7 +47,7 @@ import ch.allon.redskin.internal.ui.FieldMessages;
  * @author Allon Moritz
  * 
  */
-public abstract class EObjectDialog extends CustomDialog {
+public class EObjectDialog extends CustomDialog {
 
 	private EObject newObject;
 	private Map<EStructuralFeature, Object> fields = new HashMap<EStructuralFeature, Object>();
@@ -66,8 +66,12 @@ public abstract class EObjectDialog extends CustomDialog {
 		((GridLayout) c.getLayout()).numColumns = 2;
 		EList<EAttribute> attributes = newObject.eClass().getEAttributes();
 		for (EAttribute attribute : attributes) {
-			if (attribute.getUpperBound() == 1)
+			if (!include(attribute))
+				continue;
+			if (!attribute.isMany())
 				createTextField(c, getFieldText(attribute) + ":", attribute); //$NON-NLS-1$
+			else
+				createList(c, getFieldText(attribute) + ":", attribute);
 		}
 
 		EList<EReference> references = newObject.eClass().getEReferences();
@@ -86,8 +90,25 @@ public abstract class EObjectDialog extends CustomDialog {
 		return c;
 	}
 
-	protected abstract List<EObject> getChilds(EObject object,
-			EReference reference);
+	protected boolean include(EAttribute attribute) {
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void createList(Composite c, String text, EAttribute attribute) {
+		Label label = new Label(c, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+				false));
+		label.setText(text);
+
+		org.eclipse.swt.widgets.List list = new org.eclipse.swt.widgets.List(c,
+				SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+		list.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		EList<Object> data = (EList<Object>) newObject.eGet(attribute);
+		for (Object obj : data) {
+			list.add(obj.toString());
+		}
+	}
 
 	private String getFieldText(EStructuralFeature feature) {
 		Field[] fieldMessages = FieldMessages.class.getFields();
@@ -142,7 +163,17 @@ public abstract class EObjectDialog extends CustomDialog {
 				}
 			});
 		}
+
+		textField.setEnabled(isFieldEditable(attribute));
 		fields.put(attribute, textField);
+	}
+
+	protected boolean isFieldEditable(EAttribute attribute) {
+		return true;
+	}
+
+	protected List<EObject> getChilds(EObject object, EReference reference) {
+		return null;
 	}
 
 	@Override
