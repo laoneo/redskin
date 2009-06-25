@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EContentAdapter;
@@ -40,6 +39,16 @@ import ch.allon.redskin.core.model.shop.ShopPackage;
 public class ProductIndexer {
 
 	private static Map<Integer, Product> productIndex;
+
+	static {
+		DBFactory.getProductsRootNode().eAdapters().add(new EContentAdapter() {
+			@Override
+			public void notifyChanged(Notification notification) {
+				productIndex = null;
+				super.notifyChanged(notification);
+			}
+		});
+	}
 
 	public static Product getProduct(Integer number) {
 		return getIndex().get(number);
@@ -63,6 +72,13 @@ public class ProductIndexer {
 		if (productIndex == null) {
 			productIndex = new HashMap<Integer, Product>();
 			ProductCategory root = DBFactory.getProductsRootNode();
+			root.eAdapters().add(new EContentAdapter() {
+				@Override
+				public void notifyChanged(Notification notification) {
+					productIndex = null;
+					super.notifyChanged(notification);
+				}
+			});
 			for (Iterator<EObject> iterator = root.eAllContents(); iterator
 					.hasNext();) {
 				EObject eObject = iterator.next();

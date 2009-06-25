@@ -30,7 +30,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
 
-import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.internal.core.RedskinCoreActivator;
@@ -44,6 +43,7 @@ public class DBFactory {
 	private static ProductCategory ROOT;
 	private static Resource PRICE_CATEGORIES_RESOURCE;
 	private static Resource ORDERS_RESOURCE;
+	private static Resource CUSTOMERS_RESOURCE;
 
 	public static synchronized Resource getPriceCategoryResource() {
 		if (PRICE_CATEGORIES_RESOURCE == null) {
@@ -133,25 +133,6 @@ public class DBFactory {
 		return ROOT;
 	}
 
-	public static void saveOrder(Order order) {
-		RedskinCoreActivator.getSessionController().getSessionWrapper()
-				.beginTransaction();
-		String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
-				+ "=ShopDB";
-		URI uri = URI.createURI(uriStr);
-		Resource res = new ResourceSetImpl().getResource(uri, true);
-		res.getContents().add(order);
-		RedskinCoreActivator.getSessionController().getSessionWrapper()
-				.beginTransaction();
-		try {
-			res.save(Collections.EMPTY_MAP);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		RedskinCoreActivator.getSessionController().getSessionWrapper()
-				.commitTransaction();
-	}
-
 	public static Resource getOrdersResource() {
 		if (ORDERS_RESOURCE == null) {
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
@@ -182,5 +163,37 @@ public class DBFactory {
 					.commitTransaction();
 		}
 		return ORDERS_RESOURCE;
+	}
+
+	public synchronized static Resource getCustomerResource() {
+		if (CUSTOMERS_RESOURCE == null) {
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.beginTransaction();
+			String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
+					+ "=ShopDB&query1=FROM Customer";
+			URI uri = URI.createURI(uriStr);
+			CUSTOMERS_RESOURCE = new ResourceSetImpl().getResource(uri, true);
+			// res.load(Collections.EMPTY_MAP);
+			CUSTOMERS_RESOURCE.eAdapters().add(new EContentAdapter() {
+				private boolean innerCall = false;
+
+				@Override
+				public void notifyChanged(Notification notification) {
+					if (innerCall)
+						return;
+					innerCall = true;
+					try {
+						CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						innerCall = false;
+					}
+				}
+			});
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.commitTransaction();
+		}
+		return CUSTOMERS_RESOURCE;
 	}
 }
