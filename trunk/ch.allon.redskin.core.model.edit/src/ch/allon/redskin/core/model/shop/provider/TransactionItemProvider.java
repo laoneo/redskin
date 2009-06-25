@@ -77,15 +77,19 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addTransactionNrPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory) adapterFactory)
-						.getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Transaction_transactionNr_feature"), getString(
-						"_UI_PropertyDescriptor_description",
-						"_UI_Transaction_transactionNr_feature",
-						"_UI_Transaction_type"),
-				ShopPackage.Literals.TRANSACTION__TRANSACTION_NR, true, false,
-				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transaction_transactionNr_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_transactionNr_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__TRANSACTION_NR,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -95,15 +99,19 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addStartDatePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory) adapterFactory)
-						.getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Transaction_startDate_feature"), getString(
-						"_UI_PropertyDescriptor_description",
-						"_UI_Transaction_startDate_feature",
-						"_UI_Transaction_type"),
-				ShopPackage.Literals.TRANSACTION__START_DATE, true, false,
-				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transaction_startDate_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_startDate_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__START_DATE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -113,15 +121,19 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addEndDatePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory) adapterFactory)
-						.getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Transaction_endDate_feature"), getString(
-						"_UI_PropertyDescriptor_description",
-						"_UI_Transaction_endDate_feature",
-						"_UI_Transaction_type"),
-				ShopPackage.Literals.TRANSACTION__END_DATE, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transaction_endDate_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_endDate_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__END_DATE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -131,15 +143,19 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addCommentsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory) adapterFactory)
-						.getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_Transaction_comments_feature"), getString(
-						"_UI_PropertyDescriptor_description",
-						"_UI_Transaction_comments_feature",
-						"_UI_Transaction_type"),
-				ShopPackage.Literals.TRANSACTION__COMMENTS, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transaction_comments_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_comments_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__COMMENTS,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -149,17 +165,19 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addPricePropertyDescriptor(Object object) {
-		itemPropertyDescriptors
-				.add(createItemPropertyDescriptor(
-						((ComposeableAdapterFactory) adapterFactory)
-								.getRootAdapterFactory(), getResourceLocator(),
-						getString("_UI_Transaction_price_feature"), getString(
-								"_UI_PropertyDescriptor_description",
-								"_UI_Transaction_price_feature",
-								"_UI_Transaction_type"),
-						ShopPackage.Literals.TRANSACTION__PRICE, true, false,
-						false, ItemPropertyDescriptor.REAL_VALUE_IMAGE, null,
-						null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transaction_price_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_price_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__PRICE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.REAL_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -170,29 +188,28 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage(
-				"full/obj16/Transaction"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Transaction"));
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Transaction) object).getTransactionNr();
-		return label == null || label.length() == 0 ? getString("_UI_Transaction_type")
-				: getString("_UI_Transaction_type") + " " + label;
+		String label = ((Transaction)object).getTransactionNr();
+		return label == null || label.length() == 0 ?
+			getString("_UI_Transaction_type") :
+			getString("_UI_Transaction_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to
-	 * update any cached children and by creating a viewer notification, which
-	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached
+	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
@@ -200,14 +217,13 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Transaction.class)) {
-		case ShopPackage.TRANSACTION__TRANSACTION_NR:
-		case ShopPackage.TRANSACTION__START_DATE:
-		case ShopPackage.TRANSACTION__END_DATE:
-		case ShopPackage.TRANSACTION__COMMENTS:
-		case ShopPackage.TRANSACTION__PRICE:
-			fireNotifyChanged(new ViewerNotification(notification, notification
-					.getNotifier(), false, true));
-			return;
+			case ShopPackage.TRANSACTION__TRANSACTION_NR:
+			case ShopPackage.TRANSACTION__START_DATE:
+			case ShopPackage.TRANSACTION__END_DATE:
+			case ShopPackage.TRANSACTION__COMMENTS:
+			case ShopPackage.TRANSACTION__PRICE:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
 		}
 		super.notifyChanged(notification);
 	}
