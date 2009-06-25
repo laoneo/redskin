@@ -14,7 +14,6 @@ import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
-import ch.allon.redskin.internal.ui.custom.IDialogConfig;
 
 public class NewProductAction extends EObjectAction {
 
@@ -23,20 +22,18 @@ public class NewProductAction extends EObjectAction {
 		ProductCategory parent = DBFactory.getProductsRootNode();
 		if (!selectedObjects.isEmpty())
 			parent = (ProductCategory) selectedObjects.get(0);
-		EObjectDialog dialog = new EObjectDialog(getShell(),
-				new IDialogConfig() {
+		EObjectDialog dialog = new EObjectDialog(getShell(), "Neues Produkt") {
 
-					@Override
-					public List<EObject> getChilds(EObject object,
-							EReference reference) {
-						if (object.eClass().getClassifierID() == ShopPackage.PRODUCT
-								&& reference.getFeatureID() == ShopPackage.PRODUCT__PRICE_CATEGORY) {
-							return DBFactory.getPriceCategoryResource()
-									.getContents();
-						}
-						return null;
-					}
-				});
+			@Override
+			protected List<EObject> getChilds(EObject object,
+					EReference reference) {
+				if (object.eClass().getClassifierID() == ShopPackage.PRODUCT
+						&& reference.getFeatureID() == ShopPackage.PRODUCT__PRICE_CATEGORY) {
+					return DBFactory.getPriceCategoryResource().getContents();
+				}
+				return null;
+			}
+		};
 		dialog.setNewObject(ShopFactory.eINSTANCE.createProduct());
 		dialog.open();
 		if (dialog.getReturnCode() == Dialog.CANCEL)

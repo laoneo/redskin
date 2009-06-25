@@ -44,10 +44,9 @@ public class NewPriceCategoryAction extends EObjectAction {
 
 	@Override
 	protected void run(List<EObject> selectedObjects) {
-		PriceCategoryDialog dialog = new PriceCategoryDialog(getShell(), null);
+		PriceCategoryDialog dialog = new PriceCategoryDialog(getShell());
 		dialog.setNewObject(ShopFactory.eINSTANCE.createPriceCategory());
-		dialog.open();
-		if (dialog.getReturnCode() == Dialog.CANCEL)
+		if (dialog.open() == Dialog.CANCEL)
 			return;
 		DBFactory.getPriceCategoryResource().getContents().add(
 				dialog.getNewObject());

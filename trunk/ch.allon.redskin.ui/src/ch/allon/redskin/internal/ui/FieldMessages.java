@@ -32,6 +32,13 @@ public class FieldMessages extends NLS {
 	public static String PRODUCT__RENTED_DAYS;
 	public static String PRODUCT__PRICE_CATEGORY;
 	
+	public static String CUSTOMER__SURNAME;
+	public static String CUSTOMER__FAMILY_NAME;
+	public static String CUSTOMER__TELEPHONE_NR;
+	public static String CUSTOMER__ADDRESS;
+	public static String CUSTOMER__HOTEL;
+	public static String CUSTOMER__COMMENTS;
+	
 	public static String PRODUCT_CATEGORY__NAME;
 	
 
