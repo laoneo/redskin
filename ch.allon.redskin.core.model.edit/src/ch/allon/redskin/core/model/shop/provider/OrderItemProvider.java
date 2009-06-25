@@ -70,26 +70,26 @@ public class OrderItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addOrderNrPropertyDescriptor(object);
+			addNumberPropertyDescriptor(object);
 			addCommentsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Order Nr feature.
+	 * This adds a property descriptor for the Number feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addOrderNrPropertyDescriptor(Object object) {
+	protected void addNumberPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_Order_orderNr_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Order_orderNr_feature", "_UI_Order_type"),
-				 ShopPackage.Literals.ORDER__ORDER_NR,
+				 getString("_UI_Order_number_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Order_number_feature", "_UI_Order_type"),
+				 ShopPackage.Literals.ORDER__NUMBER,
 				 true,
 				 false,
 				 false,
@@ -169,7 +169,7 @@ public class OrderItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Order)object).getOrderNr();
+		String label = ((Order)object).getNumber();
 		return label == null || label.length() == 0 ?
 			getString("_UI_Order_type") :
 			getString("_UI_Order_type") + " " + label;
@@ -187,7 +187,7 @@ public class OrderItemProvider
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Order.class)) {
-			case ShopPackage.ORDER__ORDER_NR:
+			case ShopPackage.ORDER__NUMBER:
 			case ShopPackage.ORDER__CUSTOMER:
 			case ShopPackage.ORDER__COMMENTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
