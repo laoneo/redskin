@@ -31,7 +31,7 @@ import ch.allon.redskin.core.model.shop.Transaction;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link ch.allon.redskin.core.model.shop.impl.OrderImpl#getOrderNr <em>Order Nr</em>}</li>
+ *   <li>{@link ch.allon.redskin.core.model.shop.impl.OrderImpl#getNumber <em>Number</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.OrderImpl#getTransactions <em>Transactions</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.OrderImpl#getCustomer <em>Customer</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.OrderImpl#getComments <em>Comments</em>}</li>
@@ -42,24 +42,24 @@ import ch.allon.redskin.core.model.shop.Transaction;
  */
 public class OrderImpl extends EObjectImpl implements Order {
 	/**
-	 * The default value of the '{@link #getOrderNr() <em>Order Nr</em>}' attribute.
+	 * The default value of the '{@link #getNumber() <em>Number</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getOrderNr()
+	 * @see #getNumber()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String ORDER_NR_EDEFAULT = "";
+	protected static final String NUMBER_EDEFAULT = "";
 
 	/**
-	 * The cached value of the '{@link #getOrderNr() <em>Order Nr</em>}' attribute.
+	 * The cached value of the '{@link #getNumber() <em>Number</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getOrderNr()
+	 * @see #getNumber()
 	 * @generated
 	 * @ordered
 	 */
-	protected String orderNr = ORDER_NR_EDEFAULT;
+	protected String number = NUMBER_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getTransactions() <em>Transactions</em>}' containment reference list.
@@ -115,8 +115,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getOrderNr() {
-		return orderNr;
+	public String getNumber() {
+		return number;
 	}
 
 	/**
@@ -124,11 +124,11 @@ public class OrderImpl extends EObjectImpl implements Order {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setOrderNr(String newOrderNr) {
-		String oldOrderNr = orderNr;
-		orderNr = newOrderNr;
+	public void setNumber(String newNumber) {
+		String oldNumber = number;
+		number = newNumber;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.ORDER__ORDER_NR, oldOrderNr, orderNr));
+			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.ORDER__NUMBER, oldNumber, number));
 	}
 
 	/**
@@ -213,8 +213,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ShopPackage.ORDER__ORDER_NR:
-				return getOrderNr();
+			case ShopPackage.ORDER__NUMBER:
+				return getNumber();
 			case ShopPackage.ORDER__TRANSACTIONS:
 				return getTransactions();
 			case ShopPackage.ORDER__CUSTOMER:
@@ -234,8 +234,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ShopPackage.ORDER__ORDER_NR:
-				setOrderNr((String)newValue);
+			case ShopPackage.ORDER__NUMBER:
+				setNumber((String)newValue);
 				return;
 			case ShopPackage.ORDER__TRANSACTIONS:
 				getTransactions().clear();
@@ -260,8 +260,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ShopPackage.ORDER__ORDER_NR:
-				setOrderNr(ORDER_NR_EDEFAULT);
+			case ShopPackage.ORDER__NUMBER:
+				setNumber(NUMBER_EDEFAULT);
 				return;
 			case ShopPackage.ORDER__TRANSACTIONS:
 				getTransactions().clear();
@@ -284,8 +284,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ShopPackage.ORDER__ORDER_NR:
-				return ORDER_NR_EDEFAULT == null ? orderNr != null : !ORDER_NR_EDEFAULT.equals(orderNr);
+			case ShopPackage.ORDER__NUMBER:
+				return NUMBER_EDEFAULT == null ? number != null : !NUMBER_EDEFAULT.equals(number);
 			case ShopPackage.ORDER__TRANSACTIONS:
 				return transactions != null && !transactions.isEmpty();
 			case ShopPackage.ORDER__CUSTOMER:
@@ -306,8 +306,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (orderNr: ");
-		result.append(orderNr);
+		result.append(" (number: ");
+		result.append(number);
 		result.append(", comments: ");
 		result.append(comments);
 		result.append(')');
