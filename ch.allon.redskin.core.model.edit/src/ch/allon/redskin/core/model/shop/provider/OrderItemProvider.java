@@ -188,6 +188,7 @@ public class OrderItemProvider
 
 		switch (notification.getFeatureID(Order.class)) {
 			case ShopPackage.ORDER__ORDER_NR:
+			case ShopPackage.ORDER__CUSTOMER:
 			case ShopPackage.ORDER__COMMENTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
