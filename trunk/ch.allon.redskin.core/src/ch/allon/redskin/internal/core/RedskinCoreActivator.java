@@ -67,7 +67,7 @@ public class RedskinCoreActivator extends Plugin {
 	/**
 	 * @return the sessionController
 	 */
-	public static SessionController getSessionController() {
+	public static synchronized SessionController getSessionController() {
 		if (sessionController == null) {
 			Properties props = new Properties();
 			props.setProperty(Environment.DRIVER,
