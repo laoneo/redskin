@@ -9,18 +9,13 @@ package ch.allon.redskin.core.model.shop.impl;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 import ch.allon.redskin.core.model.shop.Customer;
-import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 
 /**
@@ -36,7 +31,6 @@ import ch.allon.redskin.core.model.shop.ShopPackage;
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl#getAddress <em>Address</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl#getHotel <em>Hotel</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl#getComments <em>Comments</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl#getOrders <em>Orders</em>}</li>
  * </ul>
  * </p>
  *
@@ -152,16 +146,6 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 	 * @ordered
 	 */
 	protected EList<String> comments;
-
-	/**
-	 * The cached value of the '{@link #getOrders() <em>Orders</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getOrders()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Order> orders;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -304,47 +288,6 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Order> getOrders() {
-		if (orders == null) {
-			orders = new EObjectContainmentWithInverseEList<Order>(Order.class, this, ShopPackage.CUSTOMER__ORDERS, ShopPackage.ORDER__CUSTOMER);
-		}
-		return orders;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case ShopPackage.CUSTOMER__ORDERS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getOrders()).basicAdd(otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case ShopPackage.CUSTOMER__ORDERS:
-				return ((InternalEList<?>)getOrders()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -360,8 +303,6 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 				return getHotel();
 			case ShopPackage.CUSTOMER__COMMENTS:
 				return getComments();
-			case ShopPackage.CUSTOMER__ORDERS:
-				return getOrders();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -394,10 +335,6 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 				getComments().clear();
 				getComments().addAll((Collection<? extends String>)newValue);
 				return;
-			case ShopPackage.CUSTOMER__ORDERS:
-				getOrders().clear();
-				getOrders().addAll((Collection<? extends Order>)newValue);
-				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -428,9 +365,6 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 			case ShopPackage.CUSTOMER__COMMENTS:
 				getComments().clear();
 				return;
-			case ShopPackage.CUSTOMER__ORDERS:
-				getOrders().clear();
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -455,8 +389,6 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 				return HOTEL_EDEFAULT == null ? hotel != null : !HOTEL_EDEFAULT.equals(hotel);
 			case ShopPackage.CUSTOMER__COMMENTS:
 				return comments != null && !comments.isEmpty();
-			case ShopPackage.CUSTOMER__ORDERS:
-				return orders != null && !orders.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -464,26 +396,16 @@ public class CustomerImpl extends EObjectImpl implements Customer {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	@Override
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (surname: ");
-		result.append(surname);
-		result.append(", familyName: ");
+		StringBuffer result = new StringBuffer();
 		result.append(familyName);
-		result.append(", telephoneNr: ");
-		result.append(telephoneNr);
-		result.append(", address: ");
-		result.append(address);
-		result.append(", hotel: ");
-		result.append(hotel);
-		result.append(", comments: ");
-		result.append(comments);
-		result.append(')');
+		result.append(" ");
+		result.append(surname);
 		return result.toString();
 	}
 

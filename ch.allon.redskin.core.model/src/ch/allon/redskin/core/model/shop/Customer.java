@@ -24,7 +24,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link ch.allon.redskin.core.model.shop.Customer#getAddress <em>Address</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Customer#getHotel <em>Hotel</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Customer#getComments <em>Comments</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.Customer#getOrders <em>Orders</em>}</li>
  * </ul>
  * </p>
  *
@@ -178,23 +177,5 @@ public interface Customer extends EObject {
 	 * @generated
 	 */
 	EList<String> getComments();
-
-	/**
-	 * Returns the value of the '<em><b>Orders</b></em>' containment reference list.
-	 * The list contents are of type {@link ch.allon.redskin.core.model.shop.Order}.
-	 * It is bidirectional and its opposite is '{@link ch.allon.redskin.core.model.shop.Order#getCustomer <em>Customer</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Orders</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Orders</em>' containment reference list.
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getCustomer_Orders()
-	 * @see ch.allon.redskin.core.model.shop.Order#getCustomer
-	 * @model opposite="customer" containment="true"
-	 * @generated
-	 */
-	EList<Order> getOrders();
 
 } // Customer

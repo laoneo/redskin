@@ -263,15 +263,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getCustomer_Orders() {
-		return (EReference)customerEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getProductCategory() {
 		return productCategoryEClass;
 	}
@@ -499,7 +490,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		createEAttribute(customerEClass, CUSTOMER__ADDRESS);
 		createEAttribute(customerEClass, CUSTOMER__HOTEL);
 		createEAttribute(customerEClass, CUSTOMER__COMMENTS);
-		createEReference(customerEClass, CUSTOMER__ORDERS);
 
 		productCategoryEClass = createEClass(PRODUCT_CATEGORY);
 		createEAttribute(productCategoryEClass, PRODUCT_CATEGORY__NAME);
@@ -572,7 +562,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEAttribute(getCustomer_Address(), ecorePackage.getEString(), "address", null, 0, 1, Customer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCustomer_Hotel(), ecorePackage.getEString(), "hotel", null, 0, 1, Customer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCustomer_Comments(), ecorePackage.getEString(), "comments", null, 0, -1, Customer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCustomer_Orders(), this.getOrder(), this.getOrder_Customer(), "orders", null, 0, -1, Customer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(productCategoryEClass, ProductCategory.class, "ProductCategory", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getProductCategory_Name(), ecorePackage.getEString(), "name", null, 0, 1, ProductCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -587,7 +576,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEClass(orderEClass, Order.class, "Order", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getOrder_OrderNr(), ecorePackage.getEString(), "orderNr", "", 0, 1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getOrder_Transactions(), this.getTransaction(), this.getTransaction_Order(), "transactions", null, 0, -1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getOrder_Customer(), this.getCustomer(), this.getCustomer_Orders(), "customer", null, 0, 1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getOrder_Customer(), this.getCustomer(), null, "customer", null, 0, 1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getOrder_Comments(), ecorePackage.getEString(), "comments", null, 0, -1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(transactionEClass, Transaction.class, "Transaction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
