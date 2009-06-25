@@ -33,7 +33,7 @@ public class EditPriceCategoryAction extends EObjectAction {
 		if (selectedObjects.isEmpty())
 			return;
 
-		PriceCategoryDialog dialog = new PriceCategoryDialog(getShell(), null);
+		PriceCategoryDialog dialog = new PriceCategoryDialog(getShell());
 		dialog.setNewObject(selectedObjects.get(0));
 		dialog.open();
 	}

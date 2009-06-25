@@ -18,7 +18,11 @@
  */
 package ch.allon.redskin.internal.ui.actions;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -49,7 +53,6 @@ import org.eclipse.swt.widgets.Text;
 import ch.allon.redskin.core.model.shop.PriceCategory;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
-import ch.allon.redskin.internal.ui.custom.IDialogConfig;
 
 class PriceCategoryDialog extends EObjectDialog {
 
@@ -59,8 +62,8 @@ class PriceCategoryDialog extends EObjectDialog {
 	 * @param parentShell
 	 * @param config
 	 */
-	public PriceCategoryDialog(Shell parentShell, IDialogConfig config) {
-		super(parentShell, config);
+	public PriceCategoryDialog(Shell shell) {
+		super(shell, "Preis Kategorie");
 	}
 
 	@Override
@@ -120,8 +123,7 @@ class PriceCategoryDialog extends EObjectDialog {
 
 			@Override
 			public Object getValue(Object element, String property) {
-				if (property
-						.equals(Messages.NewPriceCategoryAction_Column_Day))
+				if (property.equals(Messages.NewPriceCategoryAction_Column_Day))
 					return "" + ((Row) element).pos;
 				else if (property
 						.equals(Messages.NewPriceCategoryAction_Column_Price))
@@ -184,8 +186,8 @@ class PriceCategoryDialog extends EObjectDialog {
 				PriceCategory cat = (PriceCategory) inputElement;
 				EList<Double> existingPrices = cat.getPrices();
 
-				data = new Row[existingPrices.size() < 6 ? 6
-						: existingPrices.size()];
+				data = new Row[existingPrices.size() < 6 ? 6 : existingPrices
+						.size()];
 				for (int i = 0; i < data.length; i++) {
 					if (i < existingPrices.size()) {
 						data[i] = new Row(i, existingPrices.get(i));
@@ -208,8 +210,7 @@ class PriceCategoryDialog extends EObjectDialog {
 		}
 
 		@Override
-		public void inputChanged(Viewer viewer, Object oldInput,
-				Object newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 
 		@Override
@@ -238,6 +239,11 @@ class PriceCategoryDialog extends EObjectDialog {
 			this.pos = pos;
 			this.price = price;
 		}
+	}
+
+	@Override
+	protected List<EObject> getChilds(EObject object, EReference reference) {
+		return null;
 	}
 
 }

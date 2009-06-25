@@ -1,15 +1,22 @@
 package ch.allon.redskin.internal.ui.views;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
@@ -18,28 +25,42 @@ import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISaveablePart2;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import ch.allon.redskin.core.DBFactory;
+import ch.allon.redskin.core.IJobRunnable;
 import ch.allon.redskin.core.ProductIndexer;
+import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ShopFactory;
@@ -48,6 +69,8 @@ import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
+import ch.allon.redskin.internal.ui.custom.CustomDialog;
+import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
 public class WorkView extends ViewPart implements IEditingDomainProvider,
 		ISaveablePart2 {
@@ -137,10 +160,11 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 
 	/**
 	 * @param container
+	 * @return
 	 */
 	private void createRegisterBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
-		buttonBar.setLayout(new GridLayout(6, false));
+		buttonBar.setLayout(new GridLayout(7, false));
 
 		Label label = new Label(buttonBar, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
@@ -183,6 +207,36 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				handleCreateTransaction();
 			}
 		});
+
+		Button customerButton = new Button(buttonBar, SWT.PUSH);
+		customerButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		customerButton.setText("Kunde suchen");
+		customerButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				handleAddCustomer();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				handleAddCustomer();
+			}
+		});
+
+		buttonBar.setTabList(new Control[] { numberField, rentField,
+				tomorrowButton, registerButton });
+	}
+
+	private void handleAddCustomer() {
+		CustomerListDialog dialog = new CustomerListDialog(getViewSite()
+				.getShell());
+		if (dialog.open() == Dialog.CANCEL || dialog.getCustomer() == null)
+			return;
+		order.setCustomer(dialog.getCustomer());
+		setPartName(dialog.getCustomer().toString());
+		dirty = true;
+		firePropertyChange(PROP_DIRTY);
 	}
 
 	private void handleCreateTransaction() {
@@ -233,14 +287,25 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 
 		transaction.setProduct(product);
 		transaction.setOrder(order);
+		numberField.setText("");
+		numberField.setFocus();
 		dirty = true;
 		firePropertyChange(PROP_DIRTY);
 	}
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		order.setOrderNr(FORMAT.format(new Date()));
-		DBFactory.getOrdersResource().getContents().add(order);
+		if (order.getOrderNr() == null || order.getOrderNr().length() == 0)
+			order.setOrderNr(FORMAT.format(new Date()));
+		EList<EObject> contents = DBFactory.getOrdersResource().getContents();
+		if (contents.contains(order)) {
+			try {
+				DBFactory.getOrdersResource().save(Collections.EMPTY_MAP);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else
+			contents.add(order);
 		dirty = false;
 		firePropertyChange(PROP_DIRTY);
 	}
@@ -276,7 +341,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 
 	@Override
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		numberField.setFocus();
 	}
 
 	@Override
@@ -296,6 +361,103 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 					new HashMap<Resource, Boolean>());
 		}
 		return ed;
+	}
+
+	private class CustomerListDialog extends CustomDialog {
+
+		private Customer customer;
+		private TreeViewer treeViewer;
+
+		protected CustomerListDialog(Shell parentShell) {
+			super(parentShell, "Kunden Liste");
+		}
+
+		public Customer getCustomer() {
+			return customer;
+		}
+
+		@Override
+		protected Control createDialogArea(Composite parent) {
+			Composite c = (Composite) super.createDialogArea(parent);
+			FilteredTree tree = new FilteredTree(c, SWT.SINGLE | SWT.H_SCROLL
+					| SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), true);
+			tree.setLayoutData(new GridData(GridData.FILL_BOTH));
+			treeViewer = tree.getViewer();
+
+			treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+				@Override
+				public void doubleClick(DoubleClickEvent event) {
+					buttonPressed(IDialogConstants.OK_ID);
+				}
+			});
+
+			treeViewer.setContentProvider(new AdapterFactoryContentProvider(
+					getEditingDomain().getAdapterFactory()));
+			treeViewer.setLabelProvider(new AdapterFactoryLabelProvider(
+					getEditingDomain().getAdapterFactory()));
+
+			UIUtil.runUIJob(new IJobRunnable() {
+
+				@Override
+				public IStatus run(IProgressMonitor monitor) {
+					final Resource resource = DBFactory.getCustomerResource();
+					UIUtil.getDisplay().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							treeViewer.setInput(resource);
+						}
+					});
+					return Status.OK_STATUS;
+				}
+			});
+			return c;
+		}
+
+		@Override
+		protected void createButtonsForButtonBar(Composite parent) {
+			createButton(parent, IDialogConstants.CLIENT_ID, "Neuer Kunde",
+					true);
+			super.createButtonsForButtonBar(parent);
+		}
+
+		@Override
+		protected void buttonPressed(int buttonId) {
+			if (buttonId == IDialogConstants.CLIENT_ID) {
+				EObjectDialog dialog = new EObjectDialog(getShell(),
+						"Neuer Kunde") {
+
+					@Override
+					protected List<EObject> getChilds(EObject object,
+							EReference reference) {
+						return null;
+					}
+
+					@Override
+					protected Point getInitialSize() {
+						return new Point(400, 230);
+					}
+				};
+				dialog.setNewObject(ShopFactory.eINSTANCE.createCustomer());
+				if (dialog.open() == Dialog.CANCEL)
+					return;
+				DBFactory.getCustomerResource().getContents().add(
+						dialog.getNewObject());
+			} else if (buttonId == IDialogConstants.OK_ID) {
+				ISelection selection = treeViewer.getSelection();
+				if (!selection.isEmpty()
+						&& selection instanceof IStructuredSelection)
+					customer = (Customer) ((IStructuredSelection) selection)
+							.getFirstElement();
+			}
+			super.buttonPressed(buttonId);
+		}
+
+		@Override
+		protected Point getInitialSize() {
+			return new Point(400, 300);
+		}
 	}
 
 	private class WorkViewShopItemProviderAdapterFactory extends

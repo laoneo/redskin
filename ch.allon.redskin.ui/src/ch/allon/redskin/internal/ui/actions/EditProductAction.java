@@ -8,7 +8,6 @@ import org.eclipse.emf.ecore.EReference;
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
-import ch.allon.redskin.internal.ui.custom.IDialogConfig;
 
 public class EditProductAction extends EObjectAction {
 
@@ -18,18 +17,18 @@ public class EditProductAction extends EObjectAction {
 			return;
 
 		EObjectDialog dialog = new EObjectDialog(getShell(),
-				new IDialogConfig() {
+				"Produkt bearbeiten") {
 
-					@Override
-					public List<EObject> getChilds(EObject object,
-							EReference reference) {
-						if (object.eClass().getClassifierID() == ShopPackage.PRODUCT
-								&& reference.getFeatureID() == ShopPackage.PRODUCT__PRICE_CATEGORY) {
-							return DBFactory.getPriceCategoryResource().getContents();
-						}
-						return null;
-					}
-				});
+			@Override
+			protected List<EObject> getChilds(EObject object,
+					EReference reference) {
+				if (object.eClass().getClassifierID() == ShopPackage.PRODUCT
+						&& reference.getFeatureID() == ShopPackage.PRODUCT__PRICE_CATEGORY) {
+					return DBFactory.getPriceCategoryResource().getContents();
+				}
+				return null;
+			}
+		};
 		dialog.setNewObject(selectedObjects.get(0));
 		dialog.open();
 	}

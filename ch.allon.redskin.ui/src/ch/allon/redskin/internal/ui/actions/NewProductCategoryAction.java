@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.command.CreateChildCommand;
 import org.eclipse.jface.dialogs.Dialog;
@@ -33,7 +34,14 @@ public class NewProductCategoryAction extends EObjectAction {
 		if (!selectedObjects.isEmpty())
 			parent = (ProductCategory) selectedObjects.get(0);
 
-		EObjectDialog dialog = new EObjectDialog(getShell(), null);
+		EObjectDialog dialog = new EObjectDialog(getShell(), getActionText()) {
+
+			@Override
+			protected List<EObject> getChilds(EObject object,
+					EReference reference) {
+				return null;
+			}
+		};
 		dialog.setNewObject(ShopFactory.eINSTANCE.createProductCategory());
 		dialog.open();
 		if (dialog.getReturnCode() == Dialog.CANCEL)

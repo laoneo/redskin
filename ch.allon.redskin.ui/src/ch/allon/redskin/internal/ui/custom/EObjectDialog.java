@@ -29,7 +29,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
@@ -48,18 +47,17 @@ import ch.allon.redskin.internal.ui.FieldMessages;
  * @author Allon Moritz
  * 
  */
-public class EObjectDialog extends Dialog {
+public abstract class EObjectDialog extends CustomDialog {
 
 	private EObject newObject;
 	private Map<EStructuralFeature, Object> fields = new HashMap<EStructuralFeature, Object>();
-	private IDialogConfig config;
 
 	/**
 	 * @param parentShell
+	 * @param title
 	 */
-	public EObjectDialog(Shell parentShell, IDialogConfig config) {
-		super(parentShell);
-		this.config = config;
+	public EObjectDialog(Shell parentShell, String title) {
+		super(parentShell, title);
 	}
 
 	@Override
@@ -72,23 +70,24 @@ public class EObjectDialog extends Dialog {
 				createTextField(c, getFieldText(attribute) + ":", attribute); //$NON-NLS-1$
 		}
 
-		if (config != null) {
-			EList<EReference> references = newObject.eClass().getEReferences();
-			for (EReference reference : references) {
-				List<EObject> childs = config.getChilds(newObject, reference);
-				if (childs != null) {
-					Label label = new Label(c, SWT.NONE);
-					label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-							false, false));
-					label.setText(getFieldText(reference) + ":"); //$NON-NLS-1$
-					EObjectCombo combo = new EObjectCombo(c, childs);
-					combo.select((EObject) newObject.eGet(reference));
-					fields.put(reference, combo);
-				}
+		EList<EReference> references = newObject.eClass().getEReferences();
+		for (EReference reference : references) {
+			List<EObject> childs = getChilds(newObject, reference);
+			if (childs != null) {
+				Label label = new Label(c, SWT.NONE);
+				label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+						false, false));
+				label.setText(getFieldText(reference) + ":"); //$NON-NLS-1$
+				EObjectCombo combo = new EObjectCombo(c, childs);
+				combo.select((EObject) newObject.eGet(reference));
+				fields.put(reference, combo);
 			}
 		}
 		return c;
 	}
+
+	protected abstract List<EObject> getChilds(EObject object,
+			EReference reference);
 
 	private String getFieldText(EStructuralFeature feature) {
 		Field[] fieldMessages = FieldMessages.class.getFields();
@@ -98,10 +97,13 @@ public class EObjectDialog extends Dialog {
 				Field literal = ShopPackage.Literals.class.getField(field
 						.getName());
 				Object literalAttribute = literal.get(null);
-				if (literal != null
-						&& ((EStructuralFeature) literalAttribute)
-								.getFeatureID() == feature.getFeatureID())
-					return (String) field.get(null);
+				if (literalAttribute != null) {
+					EStructuralFeature f = (EStructuralFeature) literalAttribute;
+					if (f.getFeatureID() == feature.getFeatureID()
+							&& f.getContainerClass().equals(
+									feature.getContainerClass()))
+						return (String) field.get(null);
+				}
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
@@ -166,14 +168,12 @@ public class EObjectDialog extends Dialog {
 			}
 		}
 
-		if (config != null) {
-			EList<EReference> references = newObject.eClass().getEReferences();
-			for (EReference reference : references) {
-				Object control = fields.get(reference);
-				if (control instanceof EObjectCombo) {
-					newObject.eSet(reference, ((EObjectCombo) control)
-							.getSelectedChild());
-				}
+		EList<EReference> references = newObject.eClass().getEReferences();
+		for (EReference reference : references) {
+			Object control = fields.get(reference);
+			if (control instanceof EObjectCombo) {
+				newObject.eSet(reference, ((EObjectCombo) control)
+						.getSelectedChild());
 			}
 		}
 		super.okPressed();
