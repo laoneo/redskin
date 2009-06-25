@@ -6,28 +6,23 @@
  */
 package ch.allon.redskin.core.model.shop.impl;
 
-import ch.allon.redskin.core.model.shop.Customer;
-import ch.allon.redskin.core.model.shop.Order;
-import ch.allon.redskin.core.model.shop.ShopPackage;
-import ch.allon.redskin.core.model.shop.Transaction;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
+
+import ch.allon.redskin.core.model.shop.Customer;
+import ch.allon.redskin.core.model.shop.Order;
+import ch.allon.redskin.core.model.shop.ShopPackage;
+import ch.allon.redskin.core.model.shop.Transaction;
 
 /**
  * <!-- begin-user-doc -->
@@ -75,6 +70,16 @@ public class OrderImpl extends EObjectImpl implements Order {
 	 * @ordered
 	 */
 	protected EList<Transaction> transactions;
+
+	/**
+	 * The cached value of the '{@link #getCustomer() <em>Customer</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCustomer()
+	 * @generated
+	 * @ordered
+	 */
+	protected Customer customer;
 
 	/**
 	 * The cached value of the '{@link #getComments() <em>Comments</em>}' attribute list.
@@ -144,18 +149,7 @@ public class OrderImpl extends EObjectImpl implements Order {
 	 * @generated
 	 */
 	public Customer getCustomer() {
-		if (eContainerFeatureID() != ShopPackage.ORDER__CUSTOMER) return null;
-		return (Customer)eContainer();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetCustomer(Customer newCustomer, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newCustomer, ShopPackage.ORDER__CUSTOMER, msgs);
-		return msgs;
+		return customer;
 	}
 
 	/**
@@ -164,19 +158,10 @@ public class OrderImpl extends EObjectImpl implements Order {
 	 * @generated
 	 */
 	public void setCustomer(Customer newCustomer) {
-		if (newCustomer != eInternalContainer() || (eContainerFeatureID() != ShopPackage.ORDER__CUSTOMER && newCustomer != null)) {
-			if (EcoreUtil.isAncestor(this, newCustomer))
-				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			if (newCustomer != null)
-				msgs = ((InternalEObject)newCustomer).eInverseAdd(this, ShopPackage.CUSTOMER__ORDERS, Customer.class, msgs);
-			msgs = basicSetCustomer(newCustomer, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.ORDER__CUSTOMER, newCustomer, newCustomer));
+		Customer oldCustomer = customer;
+		customer = newCustomer;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.ORDER__CUSTOMER, oldCustomer, customer));
 	}
 
 	/**
@@ -202,10 +187,6 @@ public class OrderImpl extends EObjectImpl implements Order {
 		switch (featureID) {
 			case ShopPackage.ORDER__TRANSACTIONS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getTransactions()).basicAdd(otherEnd, msgs);
-			case ShopPackage.ORDER__CUSTOMER:
-				if (eInternalContainer() != null)
-					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetCustomer((Customer)otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -220,24 +201,8 @@ public class OrderImpl extends EObjectImpl implements Order {
 		switch (featureID) {
 			case ShopPackage.ORDER__TRANSACTIONS:
 				return ((InternalEList<?>)getTransactions()).basicRemove(otherEnd, msgs);
-			case ShopPackage.ORDER__CUSTOMER:
-				return basicSetCustomer(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID()) {
-			case ShopPackage.ORDER__CUSTOMER:
-				return eInternalContainer().eInverseRemove(this, ShopPackage.CUSTOMER__ORDERS, Customer.class, msgs);
-		}
-		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
 
 	/**
@@ -324,7 +289,7 @@ public class OrderImpl extends EObjectImpl implements Order {
 			case ShopPackage.ORDER__TRANSACTIONS:
 				return transactions != null && !transactions.isEmpty();
 			case ShopPackage.ORDER__CUSTOMER:
-				return getCustomer() != null;
+				return customer != null;
 			case ShopPackage.ORDER__COMMENTS:
 				return comments != null && !comments.isEmpty();
 		}

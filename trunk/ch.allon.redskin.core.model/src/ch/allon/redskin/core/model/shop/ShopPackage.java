@@ -197,22 +197,13 @@ public interface ShopPackage extends EPackage {
 	int CUSTOMER__COMMENTS = 5;
 
 	/**
-	 * The feature id for the '<em><b>Orders</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CUSTOMER__ORDERS = 6;
-
-	/**
 	 * The number of structural features of the '<em>Customer</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CUSTOMER_FEATURE_COUNT = 7;
+	int CUSTOMER_FEATURE_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link ch.allon.redskin.core.model.shop.impl.ProductCategoryImpl <em>Product Category</em>}' class.
@@ -335,7 +326,7 @@ public interface ShopPackage extends EPackage {
 	int ORDER__TRANSACTIONS = 1;
 
 	/**
-	 * The feature id for the '<em><b>Customer</b></em>' container reference.
+	 * The feature id for the '<em><b>Customer</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -597,17 +588,6 @@ public interface ShopPackage extends EPackage {
 	EAttribute getCustomer_Comments();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link ch.allon.redskin.core.model.shop.Customer#getOrders <em>Orders</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Orders</em>'.
-	 * @see ch.allon.redskin.core.model.shop.Customer#getOrders()
-	 * @see #getCustomer()
-	 * @generated
-	 */
-	EReference getCustomer_Orders();
-
-	/**
 	 * Returns the meta object for class '{@link ch.allon.redskin.core.model.shop.ProductCategory <em>Product Category</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -726,10 +706,10 @@ public interface ShopPackage extends EPackage {
 	EReference getOrder_Transactions();
 
 	/**
-	 * Returns the meta object for the container reference '{@link ch.allon.redskin.core.model.shop.Order#getCustomer <em>Customer</em>}'.
+	 * Returns the meta object for the reference '{@link ch.allon.redskin.core.model.shop.Order#getCustomer <em>Customer</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Customer</em>'.
+	 * @return the meta object for the reference '<em>Customer</em>'.
 	 * @see ch.allon.redskin.core.model.shop.Order#getCustomer()
 	 * @see #getOrder()
 	 * @generated
@@ -973,14 +953,6 @@ public interface ShopPackage extends EPackage {
 		EAttribute CUSTOMER__COMMENTS = eINSTANCE.getCustomer_Comments();
 
 		/**
-		 * The meta object literal for the '<em><b>Orders</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CUSTOMER__ORDERS = eINSTANCE.getCustomer_Orders();
-
-		/**
 		 * The meta object literal for the '{@link ch.allon.redskin.core.model.shop.impl.ProductCategoryImpl <em>Product Category</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1075,7 +1047,7 @@ public interface ShopPackage extends EPackage {
 		EReference ORDER__TRANSACTIONS = eINSTANCE.getOrder_Transactions();
 
 		/**
-		 * The meta object literal for the '<em><b>Customer</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Customer</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

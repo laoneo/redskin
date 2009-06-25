@@ -20,7 +20,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Product/rentedDays"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference shop.ecore#//Product/productCategory"/>
       <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference shop.ecore#//Product/priceCategory"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference shop.ecore#//Product/transactions"/>
     </genClasses>
     <genClasses ecoreClass="shop.ecore#//Customer">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Customer/surname"/>
@@ -29,7 +28,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Customer/address"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Customer/hotel"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Customer/comments"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference shop.ecore#//Customer/orders"/>
     </genClasses>
     <genClasses ecoreClass="shop.ecore#//ProductCategory">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//ProductCategory/name"/>
@@ -41,13 +39,12 @@
     </genClasses>
     <genClasses ecoreClass="shop.ecore#//PriceCategory">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//PriceCategory/name"/>
-      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference shop.ecore#//PriceCategory/products"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//PriceCategory/prices"/>
     </genClasses>
     <genClasses ecoreClass="shop.ecore#//Order">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Order/orderNr"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference shop.ecore#//Order/transactions"/>
-      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference shop.ecore#//Order/customer"/>
+      <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference shop.ecore#//Order/customer"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute shop.ecore#//Order/comments"/>
     </genClasses>
     <genClasses ecoreClass="shop.ecore#//Transaction">
