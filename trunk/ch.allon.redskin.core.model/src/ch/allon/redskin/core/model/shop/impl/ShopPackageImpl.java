@@ -344,7 +344,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getOrder_OrderNr() {
+	public EAttribute getOrder_Number() {
 		return (EAttribute)orderEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -502,7 +502,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		createEAttribute(priceCategoryEClass, PRICE_CATEGORY__PRICES);
 
 		orderEClass = createEClass(ORDER);
-		createEAttribute(orderEClass, ORDER__ORDER_NR);
+		createEAttribute(orderEClass, ORDER__NUMBER);
 		createEReference(orderEClass, ORDER__TRANSACTIONS);
 		createEReference(orderEClass, ORDER__CUSTOMER);
 		createEAttribute(orderEClass, ORDER__COMMENTS);
@@ -574,7 +574,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEAttribute(getPriceCategory_Prices(), ecorePackage.getEDouble(), "prices", null, 0, -1, PriceCategory.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(orderEClass, Order.class, "Order", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getOrder_OrderNr(), ecorePackage.getEString(), "orderNr", "", 0, 1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getOrder_Number(), ecorePackage.getEString(), "number", "", 0, 1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getOrder_Transactions(), this.getTransaction(), this.getTransaction_Order(), "transactions", null, 0, -1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getOrder_Customer(), this.getCustomer(), null, "customer", null, 0, 1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getOrder_Comments(), ecorePackage.getEString(), "comments", null, 0, -1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

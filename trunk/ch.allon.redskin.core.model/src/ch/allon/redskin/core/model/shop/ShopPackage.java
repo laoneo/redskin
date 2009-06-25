@@ -308,13 +308,13 @@ public interface ShopPackage extends EPackage {
 	int ORDER = 4;
 
 	/**
-	 * The feature id for the '<em><b>Order Nr</b></em>' attribute.
+	 * The feature id for the '<em><b>Number</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ORDER__ORDER_NR = 0;
+	int ORDER__NUMBER = 0;
 
 	/**
 	 * The feature id for the '<em><b>Transactions</b></em>' containment reference list.
@@ -684,15 +684,15 @@ public interface ShopPackage extends EPackage {
 	EClass getOrder();
 
 	/**
-	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Order#getOrderNr <em>Order Nr</em>}'.
+	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Order#getNumber <em>Number</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Order Nr</em>'.
-	 * @see ch.allon.redskin.core.model.shop.Order#getOrderNr()
+	 * @return the meta object for the attribute '<em>Number</em>'.
+	 * @see ch.allon.redskin.core.model.shop.Order#getNumber()
 	 * @see #getOrder()
 	 * @generated
 	 */
-	EAttribute getOrder_OrderNr();
+	EAttribute getOrder_Number();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link ch.allon.redskin.core.model.shop.Order#getTransactions <em>Transactions</em>}'.
@@ -1031,12 +1031,12 @@ public interface ShopPackage extends EPackage {
 		EClass ORDER = eINSTANCE.getOrder();
 
 		/**
-		 * The meta object literal for the '<em><b>Order Nr</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Number</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute ORDER__ORDER_NR = eINSTANCE.getOrder_OrderNr();
+		EAttribute ORDER__NUMBER = eINSTANCE.getOrder_Number();
 
 		/**
 		 * The meta object literal for the '<em><b>Transactions</b></em>' containment reference list feature.

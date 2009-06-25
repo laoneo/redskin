@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link ch.allon.redskin.core.model.shop.Order#getOrderNr <em>Order Nr</em>}</li>
+ *   <li>{@link ch.allon.redskin.core.model.shop.Order#getNumber <em>Number</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Order#getTransactions <em>Transactions</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Order#getCustomer <em>Customer</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Order#getComments <em>Comments</em>}</li>
@@ -31,31 +31,31 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Order extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Order Nr</b></em>' attribute.
+	 * Returns the value of the '<em><b>Number</b></em>' attribute.
 	 * The default value is <code>""</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Order Nr</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Number</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Order Nr</em>' attribute.
-	 * @see #setOrderNr(String)
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getOrder_OrderNr()
+	 * @return the value of the '<em>Number</em>' attribute.
+	 * @see #setNumber(String)
+	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getOrder_Number()
 	 * @model default=""
 	 * @generated
 	 */
-	String getOrderNr();
+	String getNumber();
 
 	/**
-	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Order#getOrderNr <em>Order Nr</em>}' attribute.
+	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Order#getNumber <em>Number</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Order Nr</em>' attribute.
-	 * @see #getOrderNr()
+	 * @param value the new value of the '<em>Number</em>' attribute.
+	 * @see #getNumber()
 	 * @generated
 	 */
-	void setOrderNr(String value);
+	void setNumber(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Transactions</b></em>' containment reference list.

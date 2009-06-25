@@ -174,7 +174,7 @@ public class PriceCategoryImpl extends EObjectImpl implements PriceCategory {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(getName()==null || obj==null)return super.equals(obj);
+		if(getName()==null || obj==null||! (obj instanceof PriceCategory))return super.equals(obj);
 		return getName().equals(((PriceCategory)obj).getName());
 	}
 	
