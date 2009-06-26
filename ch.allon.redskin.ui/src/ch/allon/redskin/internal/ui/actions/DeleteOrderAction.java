@@ -12,7 +12,6 @@ public class DeleteOrderAction extends EObjectAction {
 	protected void run(List<EObject> selectedObjects) {
 		if (selectedObjects.size() < 1)
 			return;
-
 		DBFactory.getOrdersResource().getContents().removeAll(selectedObjects);
 	}
 

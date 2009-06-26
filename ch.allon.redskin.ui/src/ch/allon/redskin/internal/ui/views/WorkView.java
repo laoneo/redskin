@@ -2,6 +2,7 @@ package ch.allon.redskin.internal.ui.views;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -64,6 +65,7 @@ import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.Transaction;
+import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
@@ -138,7 +140,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 	private void createBottomBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
 		buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		buttonBar.setLayout(new GridLayout(3, false));
+		buttonBar.setLayout(new GridLayout(4, false));
+
 		Button button = new Button(buttonBar, SWT.PUSH);
 		button
 				.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
@@ -187,6 +190,22 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				order.getComments().add(dialog.getValue());
 				dirty = true;
 				firePropertyChange(PROP_DIRTY);
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				handleAddCustomer();
+			}
+		});
+		
+		Button printButton = new Button(buttonBar, SWT.PUSH);
+		printButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		printButton.setText("Auftrag drucken");
+		printButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
 			}
 
 			@Override
@@ -483,6 +502,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 	private class WorkViewShopItemProviderAdapterFactory extends
 			ShopItemProviderAdapterFactory {
 		private WorkViewTransactionItemProvider workViewTransactionItemProvider;
+		private WorkViewOrderItemProvider workViewOrderItemProvider;
 
 		@Override
 		public Adapter createTransactionAdapter() {
@@ -490,6 +510,34 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				workViewTransactionItemProvider = new WorkViewTransactionItemProvider(
 						this);
 			return workViewTransactionItemProvider;
+		}
+
+		@Override
+		public Adapter createOrderAdapter() {
+			if (workViewOrderItemProvider == null)
+				workViewOrderItemProvider = new WorkViewOrderItemProvider(this);
+			return workViewOrderItemProvider;
+		}
+
+		private class WorkViewOrderItemProvider extends OrderItemProvider {
+
+			private Transaction TOTAL_ROW;
+
+			public WorkViewOrderItemProvider(AdapterFactory adapterFactory) {
+				super(adapterFactory);
+				TOTAL_ROW = ShopFactory.eINSTANCE.createTransaction();
+				TOTAL_ROW.setTransactionNr("-1");
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Collection<?> getChildren(Object object) {
+				Collection<Object> children = (Collection<Object>) super
+						.getChildren(object);
+				if (!children.contains(TOTAL_ROW))
+					children.add(TOTAL_ROW);
+				return children;
+			}
 		}
 
 		private class WorkViewTransactionItemProvider extends
@@ -507,6 +555,24 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				if (!(object instanceof Transaction))
 					return super.getColumnText(object, columnIndex);
 				Transaction tr = (Transaction) object;
+
+				if (tr.getTransactionNr().equals("-1")) {
+					switch (columnIndex) {
+					case 3:
+						return "Total:";
+					case 4:
+						EList<Transaction> transactions = order
+								.getTransactions();
+						double price = 0;
+						for (Transaction t : transactions) {
+							price += t.getPrice();
+						}
+						return new Double(price).toString();
+					default:
+						return "";
+					}
+				}
+
 				switch (columnIndex) {
 				case 0:
 					return "" + tr.getProduct().getNumber();
