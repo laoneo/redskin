@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 
+import ch.allon.redskin.internal.ui.custom.PriceCategoryDialog;
+
 /**
  * @author Allon Moritz
  * 

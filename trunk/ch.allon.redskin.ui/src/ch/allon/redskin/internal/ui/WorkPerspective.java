@@ -12,7 +12,9 @@ public class WorkPerspective implements IPerspectiveFactory {
 		layout.setFixed(false);
 
 		layout
-				.addPerspectiveShortcut(RedskinUIActivator.ID_ORDE_LIST_PERSPECTIVE);
+				.addPerspectiveShortcut(RedskinUIActivator.ID_ORDER_PERSPECTIVE);
+		layout
+		.addPerspectiveShortcut(RedskinUIActivator.ID_CUSTOMER_PERSPECTIVE);
 
 		layout.addView(RedskinUIActivator.ID_WORK_VIEW, IPageLayout.RIGHT,
 				0.7f, editorArea);

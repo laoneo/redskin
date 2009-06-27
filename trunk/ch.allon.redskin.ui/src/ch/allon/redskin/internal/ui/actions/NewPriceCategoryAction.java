@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.Dialog;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
+import ch.allon.redskin.internal.ui.custom.PriceCategoryDialog;
 
 /**
  * @author Allon Moritz

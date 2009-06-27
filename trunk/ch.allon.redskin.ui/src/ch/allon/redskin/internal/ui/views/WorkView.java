@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -70,8 +71,10 @@ import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
+import ch.allon.redskin.internal.ui.actions.ShowOrderReportAction;
 import ch.allon.redskin.internal.ui.custom.CustomDialog;
-import ch.allon.redskin.internal.ui.custom.EObjectDialog;
+import ch.allon.redskin.internal.ui.custom.CustomerDialog;
+import ch.allon.redskin.internal.ui.custom.ProductProposalProvider;
 
 public class WorkView extends ViewPart implements IEditingDomainProvider,
 		ISaveablePart2 {
@@ -197,15 +200,18 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				handleAddCustomer();
 			}
 		});
-		
+
 		Button printButton = new Button(buttonBar, SWT.PUSH);
 		printButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		printButton.setText("Auftrag drucken");
+		printButton.setText("Auftrag zeigen");
 		printButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
+				ShowOrderReportAction action = new ShowOrderReportAction();
+				action.selectionChanged(null, new StructuredSelection(order));
+				action.setActivePart(null, WorkView.this);
+				action.run();
 			}
 
 			@Override
@@ -471,13 +477,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		@Override
 		protected void buttonPressed(int buttonId) {
 			if (buttonId == IDialogConstants.CLIENT_ID) {
-				EObjectDialog dialog = new EObjectDialog(getShell(),
-						"Neuer Kunde") {
-					@Override
-					protected Point getInitialSize() {
-						return new Point(400, 230);
-					}
-				};
+				CustomerDialog dialog = new CustomerDialog(getShell(),
+						"Neuer Kunde");
 				dialog.setNewObject(ShopFactory.eINSTANCE.createCustomer());
 				if (dialog.open() == Dialog.CANCEL)
 					return;

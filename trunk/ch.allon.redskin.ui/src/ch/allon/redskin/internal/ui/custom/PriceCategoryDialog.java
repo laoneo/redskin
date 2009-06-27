@@ -16,7 +16,7 @@
  * @copyright 2007-2009 Allon Moritz
  * @version 0.1.0
  */
-package ch.allon.redskin.internal.ui.actions;
+package ch.allon.redskin.internal.ui.custom;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
@@ -50,9 +50,8 @@ import org.eclipse.swt.widgets.Text;
 import ch.allon.redskin.core.model.shop.PriceCategory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.Messages;
-import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
-class PriceCategoryDialog extends EObjectDialog {
+public class PriceCategoryDialog extends EObjectDialog {
 
 	private TableViewer viewer;
 

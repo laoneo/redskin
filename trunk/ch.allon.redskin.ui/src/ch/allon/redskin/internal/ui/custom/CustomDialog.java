@@ -1,6 +1,7 @@
 package ch.allon.redskin.internal.ui.custom;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 public class CustomDialog extends Dialog {
@@ -10,6 +11,7 @@ public class CustomDialog extends Dialog {
 	protected CustomDialog(Shell shell, String title) {
 		super(shell);
 		this.title = title;
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
 	@Override

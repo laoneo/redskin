@@ -17,10 +17,12 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 	public static final String ID_WORK_VIEW = "ch.allon.redskin.ui.views.WorkView"; //$NON-NLS-1$
 	public static final String ID_PRODUCT_VIEW = "ch.allon.redskin.ui.views.ProductView"; //$NON-NLS-1$
 	public static final String ID_PRICE_CATEGORY_VIEW = "ch.allon.redskin.ui.views.PriceCategoryView"; //$NON-NLS-1$
+	public static final String ID_CUSTOMER_VIEW = "ch.allon.redskin.ui.views.CustomerView"; //$NON-NLS-1$
 	public static final String ID_ORDER_LIST_VIEW = "ch.allon.redskin.ui.views.OrderListView"; //$NON-NLS-1$
 	public static final String ID_WORK_PERSPECTIVE = "ch.allon.redskin.ui.WorkPerspective"; //$NON-NLS-1$
-	public static final String ID_ORDE_LIST_PERSPECTIVE = "ch.allon.redskin.ui.OrderPerspective"; //$NON-NLS-1$
-
+	public static final String ID_ORDER_PERSPECTIVE = "ch.allon.redskin.ui.OrderPerspective"; //$NON-NLS-1$
+	public static final String ID_CUSTOMER_PERSPECTIVE = "ch.allon.redskin.ui.CustomerPerspective"; //$NON-NLS-1$
+	
 	// The shared instance
 	private static RedskinUIActivator plugin;
 	private static ImageRegistry imageRegistry;
