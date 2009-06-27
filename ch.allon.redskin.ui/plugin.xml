@@ -21,9 +21,15 @@
       </perspective>
       <perspective
             class="ch.allon.redskin.internal.ui.OrderPerspective"
-            icon="icons/perspectives/order_list.gif"
+            icon="icons/perspectives/order_pers.gif"
             id="ch.allon.redskin.ui.OrderPerspective"
             name="Auftragssicht">
+      </perspective>
+      <perspective
+            class="ch.allon.redskin.internal.ui.CustomerPerspective"
+            icon="icons/perspectives/customer_pers.gif"
+            id="ch.allon.redskin.ui.CustomerPerspective"
+            name="Kundensicht">
       </perspective>
    </extension>
    <extension
@@ -51,8 +57,16 @@
       </view>
       <view
             class="ch.allon.redskin.internal.ui.views.OrderListView"
+            icon="icons/obj/Order.gif"
             id="ch.allon.redskin.ui.views.OrderListView"
             name="Order List"
+            restorable="true">
+      </view>
+      <view
+            class="ch.allon.redskin.internal.ui.views.CustomerView"
+            icon="icons/obj/Customer.gif"
+            id="ch.allon.redskin.ui.views.CustomerView"
+            name="Kunden"
             restorable="true">
       </view>
    </extension>
@@ -79,7 +93,7 @@
                menubarPath="additions">
          </action>
          <action
-               class="ch.allon.redskin.internal.ui.actions.EditProductCategory"
+               class="ch.allon.redskin.internal.ui.actions.EditProductCategoryAction"
                enablesFor="1"
                icon="icons/actions/edit_product_category.gif"
                id="ch.allon.redskin.ui.actions.EditProductCategoryAction.Edit"
@@ -158,6 +172,27 @@
                menubarPath="additions">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="ch.allon.redskin.core.model.shop.Customer"
+            objectClass="ch.allon.redskin.core.model.shop.Customer">
+         <action
+               class="ch.allon.redskin.internal.ui.actions.EditCustomerAction"
+               enablesFor="+"
+               icon="icons/actions/edit_customer.gif"
+               id="ch.allon.redskin.ui.actions.EditCustomerAction"
+               label="Bearbeiten"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.DeleteCustomerAction"
+               enablesFor="1"
+               icon="icons/actions/delete_customer.gif"
+               id="ch.allon.redskin.ui.actions.DeleteCustomerAction"
+               label="Löschen"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          id="product"
@@ -172,6 +207,10 @@
          <property
                name="appName"
                value="Redskin Shop Product">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/redskin.gif">
          </property>
       </product>
    </extension>

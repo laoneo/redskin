@@ -1,4 +1,4 @@
-package ch.allon.redskin.internal.ui.views;
+package ch.allon.redskin.internal.ui.custom;
 
 import java.util.ArrayList;
 

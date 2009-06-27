@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
-public class EditProductCategory extends EObjectAction {
+public class EditProductCategoryAction extends EObjectAction {
 
 	@Override
 	protected void run(List<EObject> selectedObjects) {
