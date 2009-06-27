@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/derbyclient.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/derbynet.jar" sourcepath="C:/Dokumente und Einstellungen/allon/Eigene Dateien/Downloads/java/db-derby-10.5.1.1-bin/java"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/derby.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple-1.5.8.jar"/>

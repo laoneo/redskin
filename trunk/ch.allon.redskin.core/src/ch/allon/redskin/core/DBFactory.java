@@ -133,7 +133,7 @@ public class DBFactory {
 		return ROOT;
 	}
 
-	public static Resource getOrdersResource() {
+	public synchronized static Resource getOrdersResource() {
 		if (ORDERS_RESOURCE == null) {
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
 					.beginTransaction();
@@ -141,7 +141,6 @@ public class DBFactory {
 					+ "=ShopDB&query1=FROM Order";
 			URI uri = URI.createURI(uriStr);
 			ORDERS_RESOURCE = new ResourceSetImpl().getResource(uri, true);
-			// res.load(Collections.EMPTY_MAP);
 			ORDERS_RESOURCE.eAdapters().add(new EContentAdapter() {
 				private boolean innerCall = false;
 

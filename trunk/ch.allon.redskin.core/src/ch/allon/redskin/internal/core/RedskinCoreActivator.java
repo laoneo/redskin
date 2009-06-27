@@ -2,6 +2,7 @@ package ch.allon.redskin.internal.core;
 
 import java.util.Properties;
 
+import org.apache.derby.drda.NetworkServerControl;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.teneo.hibernate.HbDataStore;
@@ -69,10 +70,19 @@ public class RedskinCoreActivator extends Plugin {
 	 */
 	public static synchronized SessionController getSessionController() {
 		if (sessionController == null) {
+			try {
+				NetworkServerControl server = new NetworkServerControl();
+				server.start(null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			Properties props = new Properties();
 			props.setProperty(Environment.DRIVER,
-					"org.apache.derby.jdbc.EmbeddedDriver");
-			props.setProperty(Environment.URL, "jdbc:derby:ShopDB;create=true");
+					"org.apache.derby.jdbc.ClientDriver");
+			props.setProperty(Environment.URL,
+					"jdbc:derby://localhost:1527/ShopDB;create=true");
 			props.setProperty(Environment.DIALECT,
 					org.hibernate.dialect.DerbyDialect.class.getName());
 			props.setProperty(Environment.SHOW_SQL, "true");
