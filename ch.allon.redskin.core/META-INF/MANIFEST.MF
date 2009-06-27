@@ -20,5 +20,7 @@ Bundle-ClassPath: lib/commons-collections-3.1.jar,
  lib/slf4j-api-1.5.8.jar,
  lib/slf4j-simple-1.5.8.jar,
  lib/derby.jar,
- lib/antlr-2.7.6.jar
+ lib/antlr-2.7.6.jar,
+ lib/derbynet.jar,
+ lib/derbyclient.jar
 Export-Package: ch.allon.redskin.core
