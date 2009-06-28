@@ -68,7 +68,6 @@ public class ProductItemProvider
 			addNamePropertyDescriptor(object);
 			addNumberPropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
-			addRentedDaysPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -140,28 +139,6 @@ public class ProductItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Rented Days feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addRentedDaysPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Product_rentedDays_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Product_rentedDays_feature", "_UI_Product_type"),
-				 ShopPackage.Literals.PRODUCT__RENTED_DAYS,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This returns Product.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -202,7 +179,6 @@ public class ProductItemProvider
 			case ShopPackage.PRODUCT__NAME:
 			case ShopPackage.PRODUCT__NUMBER:
 			case ShopPackage.PRODUCT__DESCRIPTION:
-			case ShopPackage.PRODUCT__RENTED_DAYS:
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;

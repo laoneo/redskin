@@ -61,7 +61,7 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addTransactionNrPropertyDescriptor(object);
+			addNumberPropertyDescriptor(object);
 			addStartDatePropertyDescriptor(object);
 			addEndDatePropertyDescriptor(object);
 			addCommentsPropertyDescriptor(object);
@@ -71,19 +71,19 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Transaction Nr feature. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This adds a property descriptor for the Number feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void addTransactionNrPropertyDescriptor(Object object) {
+	protected void addNumberPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add
 			(createItemPropertyDescriptor
 				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
 				 getResourceLocator(),
-				 getString("_UI_Transaction_transactionNr_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_transactionNr_feature", "_UI_Transaction_type"),
-				 ShopPackage.Literals.TRANSACTION__TRANSACTION_NR,
+				 getString("_UI_Transaction_number_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_number_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__NUMBER,
 				 true,
 				 false,
 				 false,
@@ -199,7 +199,7 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((Transaction)object).getTransactionNr();
+		String label = ((Transaction)object).getNumber();
 		return label == null || label.length() == 0 ?
 			getString("_UI_Transaction_type") :
 			getString("_UI_Transaction_type") + " " + label;
@@ -217,7 +217,7 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Transaction.class)) {
-			case ShopPackage.TRANSACTION__TRANSACTION_NR:
+			case ShopPackage.TRANSACTION__NUMBER:
 			case ShopPackage.TRANSACTION__START_DATE:
 			case ShopPackage.TRANSACTION__END_DATE:
 			case ShopPackage.TRANSACTION__COMMENTS:
