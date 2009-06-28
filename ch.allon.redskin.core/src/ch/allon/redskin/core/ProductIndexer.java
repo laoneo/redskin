@@ -26,10 +26,10 @@ import java.util.Map;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 
 import ch.allon.redskin.core.model.shop.Product;
-import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 
 /**
@@ -41,7 +41,7 @@ public class ProductIndexer {
 	private static Map<Integer, Product> productIndex;
 
 	static {
-		DBFactory.getProductsRootNode().eAdapters().add(new EContentAdapter() {
+		DBFactory.getProductsResource().eAdapters().add(new EContentAdapter() {
 			@Override
 			public void notifyChanged(Notification notification) {
 				productIndex = null;
@@ -71,7 +71,7 @@ public class ProductIndexer {
 	private static Map<Integer, Product> getIndex() {
 		if (productIndex == null) {
 			productIndex = new HashMap<Integer, Product>();
-			ProductCategory root = DBFactory.getProductsRootNode();
+			Resource root = DBFactory.getProductsResource();
 			root.eAdapters().add(new EContentAdapter() {
 				@Override
 				public void notifyChanged(Notification notification) {
@@ -79,7 +79,7 @@ public class ProductIndexer {
 					super.notifyChanged(notification);
 				}
 			});
-			for (Iterator<EObject> iterator = root.eAllContents(); iterator
+			for (Iterator<EObject> iterator = root.getAllContents(); iterator
 					.hasNext();) {
 				EObject eObject = iterator.next();
 				if (eObject.eClass().getClassifierID() == ShopPackage.PRODUCT) {
