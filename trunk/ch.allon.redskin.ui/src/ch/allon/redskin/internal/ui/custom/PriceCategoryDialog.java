@@ -18,6 +18,9 @@
  */
 package ch.allon.redskin.internal.ui.custom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -144,7 +147,7 @@ public class PriceCategoryDialog extends EObjectDialog {
 	protected void okPressed() {
 		PricesTableProvider provider = (PricesTableProvider) viewer
 				.getContentProvider();
-		Row[] data = provider.getData();
+		List<Row> data = provider.getData();
 		PriceCategory cat = (PriceCategory) getNewObject();
 		cat.getPrices().clear();
 		for (Row row : data) {
@@ -170,19 +173,30 @@ public class PriceCategoryDialog extends EObjectDialog {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				handleAddRow();
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
+				handleAddRow();
 			}
 		});
 		super.createButtonsForButtonBar(parent);
 	}
 
+	protected void handleAddRow() {
+		PricesTableProvider provider = (PricesTableProvider) viewer
+				.getContentProvider();
+		List<Row> data = provider.getData();
+		data.add(new Row(data.size(), 0.0));
+		viewer.refresh();
+		getShell().pack();
+	}
+
 	private class PricesTableProvider extends LabelProvider implements
 			IStructuredContentProvider, ITableLabelProvider {
 
-		private Row[] data;
+		private List<Row> data;
 
 		@Override
 		public Object[] getElements(Object inputElement) {
@@ -190,22 +204,23 @@ public class PriceCategoryDialog extends EObjectDialog {
 				PriceCategory cat = (PriceCategory) inputElement;
 				EList<Double> existingPrices = cat.getPrices();
 
-				data = new Row[existingPrices.size() < 6 ? 6 : existingPrices
-						.size()];
-				for (int i = 0; i < data.length; i++) {
+				int size = existingPrices.size() < 6 ? 6 : existingPrices
+						.size();
+				data = new ArrayList<Row>(size);
+				for (int i = 0; i < size; i++) {
 					if (i < existingPrices.size()) {
-						data[i] = new Row(i, existingPrices.get(i));
+						data.add(new Row(i, existingPrices.get(i)));
 					} else
-						data[i] = new Row(i, 0.0);
+						data.add(new Row(i, 0.0));
 				}
 			}
-			return data;
+			return data.toArray();
 		}
 
 		/**
 		 * @return the data
 		 */
-		public Row[] getData() {
+		public List<Row> getData() {
 			return data;
 		}
 
@@ -226,7 +241,7 @@ public class PriceCategoryDialog extends EObjectDialog {
 		public String getColumnText(Object element, int columnIndex) {
 			Row row = (Row) element;
 			if (columnIndex == 0) {
-				if (row.pos == data.length - 1)
+				if (row.pos == data.size() - 1)
 					return Messages.NewPriceCategoryAction_Price_For_More_Days;
 				return "" + (row.pos + 1); //$NON-NLS-1$
 			} else

@@ -22,19 +22,25 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -109,14 +115,17 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 	@Override
 	protected Viewer createViewer(Composite parent) {
-		TableViewer viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		final TableViewer viewer = new TableViewer(parent, SWT.MULTI
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		viewer.setColumnProperties(new String[] { Messages.WorkView_Number_Col,
+				Messages.WorkView_Description_Col, Messages.WorkView_Days_Col,
+				Messages.WorkView_Return_Col, Messages.WorkView_Price_Col });
 
 		Table table = viewer.getTable();
 		TableLayout layout = new TableLayout();
@@ -148,6 +157,60 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
 		c.setText(Messages.WorkView_Price_Col);
 		c.setResizable(true);
+
+		// Column 4 : Percent complete (Text with digits only)
+		TextCellEditor textEditor = new TextCellEditor(table);
+		((Text) textEditor.getControl()).addVerifyListener(
+
+		new VerifyListener() {
+			public void verifyText(VerifyEvent e) {
+				e.doit = "0123456789.".indexOf(e.text) >= 0; //$NON-NLS-1$
+			}
+		});
+		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(table),
+				new TextCellEditor(table), new TextCellEditor(table),
+				new TextCellEditor(table), textEditor });
+		viewer.setCellModifier(new ICellModifier() {
+
+			@Override
+			public void modify(Object element, String property, Object value) {
+				final IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				final Transaction row = (Transaction) selection
+						.getFirstElement();
+				if (row == null)
+					return;
+				String v = (String) value;
+				if (v.length() < 1)
+					return;
+				row.setPrice(Double.parseDouble(v));
+				viewer.refresh();
+			}
+
+			@Override
+			public Object getValue(Object element, String property) {
+				ITableLabelProvider labelProvider = (ITableLabelProvider) viewer
+						.getLabelProvider();
+				int column = 0;
+				if (property.equals(Messages.WorkView_Number_Col))
+					column = 0;
+				else if (property.equals(Messages.WorkView_Description_Col))
+					column = 1;
+				else if (property.equals(Messages.WorkView_Days_Col))
+					column = 2;
+				else if (property.equals(Messages.WorkView_Return_Col))
+					column = 3;
+				else if (property.equals(Messages.WorkView_Price_Col))
+					column = 4;
+				return labelProvider.getColumnText(element, column);
+			}
+
+			@Override
+			public boolean canModify(Object element, String property) {
+				return property.equals(Messages.WorkView_Price_Col);
+			}
+		});
+
 		return viewer;
 	}
 

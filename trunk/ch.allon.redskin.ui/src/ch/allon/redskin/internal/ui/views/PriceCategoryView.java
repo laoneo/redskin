@@ -18,6 +18,8 @@
  */
 package ch.allon.redskin.internal.ui.views;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -28,6 +30,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.internal.ui.actions.EObjectAction;
+import ch.allon.redskin.internal.ui.actions.EditPriceCategoryAction;
 import ch.allon.redskin.internal.ui.actions.NewPriceCategoryAction;
 
 /**
@@ -58,6 +61,16 @@ public class PriceCategoryView extends EObjectView {
 	protected Viewer createViewer(Composite parent) {
 		FilteredTree tree = new FilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), true);
+		tree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				EditPriceCategoryAction action = new EditPriceCategoryAction();
+				action.selectionChanged(null, event.getSelection());
+				action.setActivePart(null, PriceCategoryView.this);
+				action.run();
+			}
+		});
 		return tree.getViewer();
 	}
 
