@@ -50,7 +50,7 @@ public class DBFactory {
 
 	public synchronized static Resource getProductsResource() {
 		if (PRODUCTS_RESOURCE == null) {
-			PRODUCTS_RESOURCE = createResource("ProductCategory");
+			PRODUCTS_RESOURCE = createResource("ProductCategory where parent=null");
 		}
 		return PRODUCTS_RESOURCE;
 	}
