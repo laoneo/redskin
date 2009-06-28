@@ -75,8 +75,7 @@ public class ShowOrderReportAction extends EObjectAction {
 
 			// Set rendering options - such as file or stream output,
 			// output format, whether it is embeddable, etc
-			IRenderOption options;
-			options = new HTMLRenderOption();
+			IRenderOption options = new HTMLRenderOption();
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			options.setOutputStream(bos);
 			options.setOutputFormat("html");
@@ -88,7 +87,7 @@ public class ShowOrderReportAction extends EObjectAction {
 			task.close();
 
 			// set Browser text accordingly
-			return bos.toString();
+			return bos.toString("utf-8");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

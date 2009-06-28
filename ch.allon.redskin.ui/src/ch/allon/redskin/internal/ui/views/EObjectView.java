@@ -35,7 +35,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import ch.allon.redskin.core.IJobRunnable;
@@ -49,12 +52,14 @@ public abstract class EObjectView extends ViewPart implements
 
 	private AdapterFactoryEditingDomain ed;
 	private Viewer viewer;
+	private IMemento memento;
 
 	@Override
-	public final void createPartControl(Composite parent) {
+	final public void createPartControl(Composite parent) {
 		Composite container = UIUtil.createStandardComposite(parent, 1);
 		createToolBar(container);
 		viewer = createViewer(container);
+		createBottomBar(container);
 
 		if (viewer instanceof StructuredViewer) {
 			StructuredViewer structuredViewer = (StructuredViewer) viewer;
@@ -63,6 +68,7 @@ public abstract class EObjectView extends ViewPart implements
 							getEditingDomain().getAdapterFactory()));
 			structuredViewer.setLabelProvider(new AdapterFactoryLabelProvider(
 					getEditingDomain().getAdapterFactory()));
+			structuredViewer.setUseHashlookup(true);
 		}
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -96,7 +102,7 @@ public abstract class EObjectView extends ViewPart implements
 		UIUtil.runUIJob(new IJobRunnable() {
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
-				final Object input = createInput();
+				final Object input = createInput(memento);
 				UIUtil.getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
@@ -108,13 +114,18 @@ public abstract class EObjectView extends ViewPart implements
 			}
 		});
 		createContextMenu();
+
+		initialize(memento);
 	}
 
-	protected abstract Object createInput();
+	protected void createBottomBar(Composite container) {
+	}
+
+	protected abstract Object createInput(IMemento memento);
 
 	protected abstract Viewer createViewer(Composite parent);
 
-	private void createToolBar(Composite parent) {
+	protected void createToolBar(Composite parent) {
 		EObjectAction[] actions = createToolBarActions();
 		if (actions == null || actions.length < 1)
 			return;
@@ -180,6 +191,24 @@ public abstract class EObjectView extends ViewPart implements
 	}
 
 	@Override
+	final public void init(IViewSite site, IMemento memento)
+			throws PartInitException {
+		this.memento = memento;
+		super.init(site, memento);
+	}
+
+	/**
+	 * This method is used instead of init(..., IMemento memento) because it
+	 * gets called when the viewer is initialized. Please be aware that the
+	 * memento can be null.
+	 * 
+	 * @param memento
+	 */
+	protected void initialize(IMemento memento) {
+		memento = null;
+	}
+
+	@Override
 	public void setFocus() {
 		if (viewer != null)
 			viewer.getControl().setFocus();
@@ -208,4 +237,7 @@ public abstract class EObjectView extends ViewPart implements
 		return new ShopItemProviderAdapterFactory();
 	}
 
+	public Viewer getViewer() {
+		return viewer;
+	}
 }

@@ -29,19 +29,25 @@ public class NewProductCategoryAction extends EObjectAction {
 
 	@Override
 	protected void run(List<EObject> selectedObjects) {
-		ProductCategory parent = DBFactory.getProductsRootNode();
-		if (!selectedObjects.isEmpty())
-			parent = (ProductCategory) selectedObjects.get(0);
-
 		EObjectDialog dialog = new EObjectDialog(getShell(), getActionText());
 		dialog.setNewObject(ShopFactory.eINSTANCE.createProductCategory());
 		dialog.open();
 		if (dialog.getReturnCode() == Dialog.CANCEL)
 			return;
-		Command command = CreateChildCommand.create(getEditingDomain(), parent,
-				new CommandParameter(parent,
-						ShopPackage.Literals.PRODUCT_CATEGORY__SUB_CATEGORYS,
-						dialog.getNewObject()), selectedObjects);
-		getEditingDomain().getCommandStack().execute(command);
+		if (!selectedObjects.isEmpty()) {
+			ProductCategory parent = (ProductCategory) selectedObjects.get(0);
+			Command command = CreateChildCommand
+					.create(
+							getEditingDomain(),
+							parent,
+							new CommandParameter(
+									parent,
+									ShopPackage.Literals.PRODUCT_CATEGORY__SUB_CATEGORYS,
+									dialog.getNewObject()), selectedObjects);
+			getEditingDomain().getCommandStack().execute(command);
+		} else {
+			DBFactory.getProductsResource().getContents().add(
+					dialog.getNewObject());
+		}
 	}
 }

@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IMemento;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.Customer;
@@ -27,7 +28,7 @@ import ch.allon.redskin.internal.ui.actions.NewCustomerAction;
 public class CustomerView extends EObjectView {
 
 	@Override
-	protected Object createInput() {
+	protected Object createInput(IMemento memento) {
 		return DBFactory.getCustomerResource();
 	}
 

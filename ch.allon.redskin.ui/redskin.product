@@ -3,7 +3,6 @@
 
 <product name="Redskin Shop Product" uid="ch.allon.redskin.ui" id="ch.allon.redskin.ui.product" application="ch.allon.redskin.ui.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -23,7 +22,6 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -32,7 +30,6 @@
       <plugin id="ch.allon.redskin.core.model"/>
       <plugin id="ch.allon.redskin.core.model.edit"/>
       <plugin id="ch.allon.redskin.ui"/>
-      <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.batik.bridge"/>
