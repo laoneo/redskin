@@ -19,9 +19,8 @@ public class NewProductAction extends EObjectAction {
 
 	@Override
 	protected void run(List<EObject> selectedObjects) {
-		ProductCategory parent = DBFactory.getProductsRootNode();
-		if (!selectedObjects.isEmpty())
-			parent = (ProductCategory) selectedObjects.get(0);
+		if (selectedObjects.isEmpty())
+			return;
 		EObjectDialog dialog = new EObjectDialog(getShell(), "Neues Produkt") {
 
 			@Override
@@ -35,9 +34,9 @@ public class NewProductAction extends EObjectAction {
 			}
 		};
 		dialog.setNewObject(ShopFactory.eINSTANCE.createProduct());
-		dialog.open();
-		if (dialog.getReturnCode() == Dialog.CANCEL)
+		if (dialog.open() == Dialog.CANCEL)
 			return;
+		ProductCategory parent = (ProductCategory) selectedObjects.get(0);
 		Command command = CreateChildCommand.create(getEditingDomain(), parent,
 				new CommandParameter(parent,
 						ShopPackage.Literals.PRODUCT_CATEGORY__PRODUCTS, dialog

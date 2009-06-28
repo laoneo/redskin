@@ -4,6 +4,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -14,8 +15,8 @@ import ch.allon.redskin.internal.ui.actions.NewProductCategoryAction;
 public class ProductView extends EObjectView {
 
 	@Override
-	protected Object createInput() {
-		return DBFactory.getProductsRootNode();
+	protected Object createInput(IMemento memento) {
+		return DBFactory.getProductsResource();
 	}
 
 	@Override

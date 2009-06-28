@@ -4,24 +4,17 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.Iterator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
-import org.eclipse.emf.edit.domain.IEditingDomainProvider;
-import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
-import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
-import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.dialogs.Dialog;
@@ -38,6 +31,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -52,11 +46,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
-import org.eclipse.ui.part.ViewPart;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.IJobRunnable;
@@ -76,25 +70,46 @@ import ch.allon.redskin.internal.ui.custom.CustomDialog;
 import ch.allon.redskin.internal.ui.custom.CustomerDialog;
 import ch.allon.redskin.internal.ui.custom.ProductProposalProvider;
 
-public class WorkView extends ViewPart implements IEditingDomainProvider,
-		ISaveablePart2 {
+public class WorkView extends EObjectView implements ISaveablePart2 {
 
-	private TableViewer viewer;
-	private Order order;
 	private Text numberField;
 	private Text rentField;
 	private Button tomorrowButton;
-	private AdapterFactoryEditingDomain ed;
 	private boolean dirty;
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
-			"yyyyMMddHHmmss");
 
-	public void createPartControl(Composite parent) {
-		Composite container = UIUtil.createStandardComposite(parent, 1);
+	@Override
+	protected Object createInput(IMemento memento) {
+		if (memento != null) {
+			String number = memento.getString("ordernumber");
+			if (number != null) {
+				for (Iterator<EObject> j = DBFactory.getOrdersResource()
+						.getAllContents(); j.hasNext();) {
+					EObject obj = j.next();
+					if (obj instanceof Order) {
+						final Order order = (Order) obj;
+						if (order.getNumber().equals(number)) {
+							if (order.getCustomer() != null) {
+								UIUtil.getDisplay().asyncExec(new Runnable() {
 
-		createRegisterBar(container);
+									@Override
+									public void run() {
+										setPartName(order.getCustomer()
+												.toString());
+									}
+								});
+							}
+							return order;
+						}
+					}
+				}
+			}
+		}
+		return ShopFactory.eINSTANCE.createOrder();
+	}
 
-		viewer = new TableViewer(container, SWT.MULTI | SWT.H_SCROLL
+	@Override
+	protected Viewer createViewer(Composite parent) {
+		TableViewer viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
@@ -133,14 +148,11 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
 		c.setText(Messages.WorkView_Price_Col);
 		c.setResizable(true);
-
-		order = ShopFactory.eINSTANCE.createOrder();
-		viewer.setInput(order);
-
-		createBottomBar(container);
+		return viewer;
 	}
 
-	private void createBottomBar(Composite container) {
+	@Override
+	protected void createBottomBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
 		buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		buttonBar.setLayout(new GridLayout(4, false));
@@ -190,7 +202,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 						null);
 				if (dialog.open() == Dialog.CANCEL)
 					return;
-				order.getComments().add(dialog.getValue());
+				getOrder().getComments().add(dialog.getValue());
 				dirty = true;
 				firePropertyChange(PROP_DIRTY);
 			}
@@ -209,7 +221,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ShowOrderReportAction action = new ShowOrderReportAction();
-				action.selectionChanged(null, new StructuredSelection(order));
+				action.selectionChanged(null, new StructuredSelection(
+						getOrder()));
 				action.setActivePart(null, WorkView.this);
 				action.run();
 			}
@@ -221,11 +234,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		});
 	}
 
-	/**
-	 * @param container
-	 * @return
-	 */
-	private void createRegisterBar(Composite container) {
+	@Override
+	protected void createToolBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
 		buttonBar.setLayout(new GridLayout(7, false));
 
@@ -277,9 +287,9 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				.getShell());
 		if (dialog.open() == Dialog.CANCEL || dialog.getCustomer() == null)
 			return;
-		order.setCustomer(dialog.getCustomer());
+		getOrder().setCustomer(dialog.getCustomer());
 		setPartName(dialog.getCustomer().toString());
-		dirty = order.eResource() == null ? true : order.eResource()
+		dirty = getOrder().eResource() == null ? true : getOrder().eResource()
 				.isModified();
 		firePropertyChange(PROP_DIRTY);
 	}
@@ -289,8 +299,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		try {
 			number = Integer.parseInt(numberField.getText());
 		} catch (NumberFormatException e1) {
-			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
-					.getShell(), Messages.WorkView_Error_Title,
+			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
+					Messages.WorkView_Error_Title,
 					Messages.WorkView_Correct_Number_1 + numberField.getText()
 							+ Messages.WorkView_Correct_Number_2, SWT.NONE);
 			numberField.setFocus();
@@ -298,8 +308,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		}
 		Product product = ProductIndexer.getProduct(number);
 		if (product == null) {
-			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
-					.getShell(), Messages.WorkView_Error_Title,
+			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
+					Messages.WorkView_Error_Title,
 					Messages.WorkView_Correct_Number_1 + numberField.getText()
 							+ Messages.WorkView_Correct_Number_2, SWT.NONE);
 			numberField.setFocus();
@@ -308,7 +318,6 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		Transaction transaction = ShopFactory.eINSTANCE.createTransaction();
 		try {
 			GregorianCalendar c = new GregorianCalendar();
-			transaction.setTransactionNr(FORMAT.format(c.getTime()));
 			if (tomorrowButton.getSelection()) {
 				c.add(GregorianCalendar.DAY_OF_MONTH, 1);
 			}
@@ -322,8 +331,8 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 				price = prices.get(days);
 			transaction.setPrice(price);
 		} catch (Exception e) {
-			MessageDialog.open(MessageDialog.ERROR, viewer.getControl()
-					.getShell(), Messages.WorkView_Error_Title,
+			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
+					Messages.WorkView_Error_Title,
 					"Ein Fehler ist aufgetreten:\n" + e.getLocalizedMessage(),
 					SWT.NONE);
 			numberField.setFocus();
@@ -331,7 +340,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 		}
 
 		transaction.setProduct(product);
-		order.getTransactions().add(transaction);
+		getOrder().getTransactions().add(transaction);
 		numberField.setText("");
 		numberField.setFocus();
 		dirty = true;
@@ -340,17 +349,15 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		if (order.getNumber() == null || order.getNumber().length() == 0)
-			order.setNumber(FORMAT.format(new Date()));
 		EList<EObject> contents = DBFactory.getOrdersResource().getContents();
-		if (contents.contains(order)) {
+		if (contents.contains(getOrder())) {
 			try {
 				DBFactory.getOrdersResource().save(Collections.EMPTY_MAP);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else
-			contents.add(order);
+			contents.add(getOrder());
 		dirty = DBFactory.getOrdersResource().isModified();
 		firePropertyChange(PROP_DIRTY);
 	}
@@ -390,29 +397,24 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 	}
 
 	public void setOrder(Order order) {
-		this.order = order;
-		viewer.setInput(order);
+		getViewer().setInput(order);
 		if (order.getCustomer() != null)
 			setPartName(order.getCustomer().toString());
 	}
 
-	@Override
-	public AdapterFactoryEditingDomain getEditingDomain() {
-		if (ed == null) {
-			ComposedAdapterFactory adapterFactory = new ComposedAdapterFactory(
-					ComposedAdapterFactory.Descriptor.Registry.INSTANCE);
-			adapterFactory
-					.addAdapterFactory(new ResourceItemProviderAdapterFactory());
-			adapterFactory
-					.addAdapterFactory(new WorkViewShopItemProviderAdapterFactory());
-			adapterFactory
-					.addAdapterFactory(new ReflectiveItemProviderAdapterFactory());
+	public Order getOrder() {
+		return (Order) getViewer().getInput();
+	}
 
-			BasicCommandStack commandStack = new BasicCommandStack();
-			ed = new AdapterFactoryEditingDomain(adapterFactory, commandStack,
-					new HashMap<Resource, Boolean>());
-		}
-		return ed;
+	@Override
+	public void saveState(IMemento memento) {
+		memento.putString("ordernumber", getOrder().getNumber());
+		super.saveState(memento);
+	}
+
+	@Override
+	protected ShopItemProviderAdapterFactory getShopItemProviderAdapterFactory() {
+		return new WorkViewShopItemProviderAdapterFactory();
 	}
 
 	private class CustomerListDialog extends CustomDialog {
@@ -527,7 +529,7 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 			public WorkViewOrderItemProvider(AdapterFactory adapterFactory) {
 				super(adapterFactory);
 				TOTAL_ROW = ShopFactory.eINSTANCE.createTransaction();
-				TOTAL_ROW.setTransactionNr("-1");
+				TOTAL_ROW.setNumber("-1");
 			}
 
 			@SuppressWarnings("unchecked")
@@ -557,12 +559,12 @@ public class WorkView extends ViewPart implements IEditingDomainProvider,
 					return super.getColumnText(object, columnIndex);
 				Transaction tr = (Transaction) object;
 
-				if (tr.getTransactionNr().equals("-1")) {
+				if (tr.getNumber().equals("-1")) {
 					switch (columnIndex) {
 					case 3:
 						return "Total:";
 					case 4:
-						EList<Transaction> transactions = order
+						EList<Transaction> transactions = getOrder()
 								.getTransactions();
 						double price = 0;
 						for (Transaction t : transactions) {

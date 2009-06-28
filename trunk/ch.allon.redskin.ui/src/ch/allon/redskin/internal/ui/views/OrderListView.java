@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.IMemento;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.Order;
@@ -30,7 +31,7 @@ import ch.allon.redskin.internal.ui.actions.NewOrderAction;
 public class OrderListView extends EObjectView {
 
 	@Override
-	protected Object createInput() {
+	protected Object createInput(IMemento memento) {
 		return DBFactory.getOrdersResource();
 	}
 
