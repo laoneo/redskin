@@ -212,6 +212,10 @@
                name="windowImages"
                value="icons/redskin.gif">
          </property>
+         <property
+               name="startupProgressRect"
+               value="0,299,448,15">
+         </property>
       </product>
    </extension>
 

@@ -14,10 +14,12 @@
 
    <windowImages i16="/ch.allon.redskin.ui/icons/redskin.gif"/>
 
+   <splash
+      location="ch.allon.redskin.ui"
+      startupProgressRect="0,299,448,15" />
    <launcher name="redskin">
       <solaris/>
       <win useIco="true">
-         <ico path="/ch.allon.redskin.ui/icons/favicon.ico"/>
          <bmp/>
       </win>
    </launcher>
@@ -30,6 +32,7 @@
       <plugin id="ch.allon.redskin.core.model"/>
       <plugin id="ch.allon.redskin.core.model.edit"/>
       <plugin id="ch.allon.redskin.ui"/>
+      <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.batik.bridge"/>
@@ -118,9 +121,7 @@
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.forms"/>
-      <plugin id="org.eclipse.ui.ide"/>
       <plugin id="org.eclipse.ui.views"/>
-      <plugin id="org.eclipse.ui.win32" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.mozilla.rhino"/>
       <plugin id="org.w3c.css.sac"/>
