@@ -6,6 +6,8 @@
  */
 package ch.allon.redskin.core.model.shop;
 
+import java.text.SimpleDateFormat;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
@@ -30,6 +32,9 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface Order extends EObject {
+	
+	public static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+	
 	/**
 	 * Returns the value of the '<em><b>Number</b></em>' attribute.
 	 * The default value is <code>""</code>.
