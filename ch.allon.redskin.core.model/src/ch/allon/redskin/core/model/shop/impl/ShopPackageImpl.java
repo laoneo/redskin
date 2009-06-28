@@ -173,17 +173,8 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getProduct_RentedDays() {
-		return (EAttribute)productEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getProduct_ProductCategory() {
-		return (EReference)productEClass.getEStructuralFeatures().get(4);
+		return (EReference)productEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -192,7 +183,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * @generated
 	 */
 	public EReference getProduct_PriceCategory() {
-		return (EReference)productEClass.getEStructuralFeatures().get(5);
+		return (EReference)productEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -389,7 +380,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTransaction_TransactionNr() {
+	public EAttribute getTransaction_Number() {
 		return (EAttribute)transactionEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -479,7 +470,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		createEAttribute(productEClass, PRODUCT__NAME);
 		createEAttribute(productEClass, PRODUCT__NUMBER);
 		createEAttribute(productEClass, PRODUCT__DESCRIPTION);
-		createEAttribute(productEClass, PRODUCT__RENTED_DAYS);
 		createEReference(productEClass, PRODUCT__PRODUCT_CATEGORY);
 		createEReference(productEClass, PRODUCT__PRICE_CATEGORY);
 
@@ -508,7 +498,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		createEAttribute(orderEClass, ORDER__COMMENTS);
 
 		transactionEClass = createEClass(TRANSACTION);
-		createEAttribute(transactionEClass, TRANSACTION__TRANSACTION_NR);
+		createEAttribute(transactionEClass, TRANSACTION__NUMBER);
 		createEReference(transactionEClass, TRANSACTION__ORDER);
 		createEReference(transactionEClass, TRANSACTION__PRODUCT);
 		createEAttribute(transactionEClass, TRANSACTION__START_DATE);
@@ -551,7 +541,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEAttribute(getProduct_Name(), ecorePackage.getEString(), "name", null, 0, 1, Product.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProduct_Number(), ecorePackage.getEIntegerObject(), "number", null, 0, 1, Product.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProduct_Description(), ecorePackage.getEString(), "description", null, 0, 1, Product.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getProduct_RentedDays(), ecorePackage.getEIntegerObject(), "rentedDays", null, 0, 1, Product.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProduct_ProductCategory(), this.getProductCategory(), this.getProductCategory_Products(), "productCategory", null, 0, 1, Product.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProduct_PriceCategory(), this.getPriceCategory(), null, "priceCategory", null, 0, 1, Product.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -580,7 +569,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEAttribute(getOrder_Comments(), ecorePackage.getEString(), "comments", null, 0, -1, Order.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(transactionEClass, Transaction.class, "Transaction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getTransaction_TransactionNr(), ecorePackage.getEString(), "transactionNr", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransaction_Number(), ecorePackage.getEString(), "number", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTransaction_Order(), this.getOrder(), this.getOrder_Transactions(), "order", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTransaction_Product(), this.getProduct(), null, "product", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_StartDate(), ecorePackage.getEDate(), "startDate", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

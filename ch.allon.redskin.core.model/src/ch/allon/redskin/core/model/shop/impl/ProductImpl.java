@@ -29,7 +29,6 @@ import ch.allon.redskin.core.model.shop.ShopPackage;
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getName <em>Name</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getNumber <em>Number</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getRentedDays <em>Rented Days</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getProductCategory <em>Product Category</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.ProductImpl#getPriceCategory <em>Price Category</em>}</li>
  * </ul>
@@ -97,26 +96,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 	 * @ordered
 	 */
 	protected String description = DESCRIPTION_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getRentedDays() <em>Rented Days</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getRentedDays()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final Integer RENTED_DAYS_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getRentedDays() <em>Rented Days</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getRentedDays()
-	 * @generated
-	 * @ordered
-	 */
-	protected Integer rentedDays = RENTED_DAYS_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getPriceCategory() <em>Price Category</em>}' reference.
@@ -208,27 +187,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 		description = newDescription;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.PRODUCT__DESCRIPTION, oldDescription, description));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Integer getRentedDays() {
-		return rentedDays;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setRentedDays(Integer newRentedDays) {
-		Integer oldRentedDays = rentedDays;
-		rentedDays = newRentedDays;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.PRODUCT__RENTED_DAYS, oldRentedDays, rentedDays));
 	}
 
 	/**
@@ -368,8 +326,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 				return getNumber();
 			case ShopPackage.PRODUCT__DESCRIPTION:
 				return getDescription();
-			case ShopPackage.PRODUCT__RENTED_DAYS:
-				return getRentedDays();
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				return getProductCategory();
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
@@ -395,9 +351,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 				return;
 			case ShopPackage.PRODUCT__DESCRIPTION:
 				setDescription((String)newValue);
-				return;
-			case ShopPackage.PRODUCT__RENTED_DAYS:
-				setRentedDays((Integer)newValue);
 				return;
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				setProductCategory((ProductCategory)newValue);
@@ -426,9 +379,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 			case ShopPackage.PRODUCT__DESCRIPTION:
 				setDescription(DESCRIPTION_EDEFAULT);
 				return;
-			case ShopPackage.PRODUCT__RENTED_DAYS:
-				setRentedDays(RENTED_DAYS_EDEFAULT);
-				return;
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				setProductCategory((ProductCategory)null);
 				return;
@@ -453,8 +403,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 				return NUMBER_EDEFAULT == null ? number != null : !NUMBER_EDEFAULT.equals(number);
 			case ShopPackage.PRODUCT__DESCRIPTION:
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
-			case ShopPackage.PRODUCT__RENTED_DAYS:
-				return RENTED_DAYS_EDEFAULT == null ? rentedDays != null : !RENTED_DAYS_EDEFAULT.equals(rentedDays);
 			case ShopPackage.PRODUCT__PRODUCT_CATEGORY:
 				return getProductCategory() != null;
 			case ShopPackage.PRODUCT__PRICE_CATEGORY:
@@ -479,8 +427,6 @@ public class ProductImpl extends EObjectImpl implements Product {
 		result.append(number);
 		result.append(", description: ");
 		result.append(description);
-		result.append(", rentedDays: ");
-		result.append(rentedDays);
 		result.append(')');
 		return result.toString();
 	}

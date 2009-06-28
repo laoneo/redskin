@@ -35,7 +35,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getTransactionNr <em>Transaction Nr</em>}</li>
+ *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getNumber <em>Number</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getOrder <em>Order</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getProduct <em>Product</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getStartDate <em>Start Date</em>}</li>
@@ -49,24 +49,24 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 public class TransactionImpl extends EObjectImpl implements Transaction {
 	/**
-	 * The default value of the '{@link #getTransactionNr() <em>Transaction Nr</em>}' attribute.
+	 * The default value of the '{@link #getNumber() <em>Number</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTransactionNr()
+	 * @see #getNumber()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String TRANSACTION_NR_EDEFAULT = null;
+	protected static final String NUMBER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getTransactionNr() <em>Transaction Nr</em>}' attribute.
+	 * The cached value of the '{@link #getNumber() <em>Number</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTransactionNr()
+	 * @see #getNumber()
 	 * @generated
 	 * @ordered
 	 */
-	protected String transactionNr = TRANSACTION_NR_EDEFAULT;
+	protected String number = NUMBER_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getProduct() <em>Product</em>}' reference.
@@ -151,10 +151,11 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected TransactionImpl() {
 		super();
+		number = Order.FORMAT.format(new Date());
 	}
 
 	/**
@@ -172,8 +173,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getTransactionNr() {
-		return transactionNr;
+	public String getNumber() {
+		return number;
 	}
 
 	/**
@@ -181,11 +182,11 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTransactionNr(String newTransactionNr) {
-		String oldTransactionNr = transactionNr;
-		transactionNr = newTransactionNr;
+	public void setNumber(String newNumber) {
+		String oldNumber = number;
+		number = newNumber;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.TRANSACTION__TRANSACTION_NR, oldTransactionNr, transactionNr));
+			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.TRANSACTION__NUMBER, oldNumber, number));
 	}
 
 	/**
@@ -394,8 +395,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ShopPackage.TRANSACTION__TRANSACTION_NR:
-				return getTransactionNr();
+			case ShopPackage.TRANSACTION__NUMBER:
+				return getNumber();
 			case ShopPackage.TRANSACTION__ORDER:
 				return getOrder();
 			case ShopPackage.TRANSACTION__PRODUCT:
@@ -422,8 +423,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ShopPackage.TRANSACTION__TRANSACTION_NR:
-				setTransactionNr((String)newValue);
+			case ShopPackage.TRANSACTION__NUMBER:
+				setNumber((String)newValue);
 				return;
 			case ShopPackage.TRANSACTION__ORDER:
 				setOrder((Order)newValue);
@@ -456,8 +457,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ShopPackage.TRANSACTION__TRANSACTION_NR:
-				setTransactionNr(TRANSACTION_NR_EDEFAULT);
+			case ShopPackage.TRANSACTION__NUMBER:
+				setNumber(NUMBER_EDEFAULT);
 				return;
 			case ShopPackage.TRANSACTION__ORDER:
 				setOrder((Order)null);
@@ -489,8 +490,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ShopPackage.TRANSACTION__TRANSACTION_NR:
-				return TRANSACTION_NR_EDEFAULT == null ? transactionNr != null : !TRANSACTION_NR_EDEFAULT.equals(transactionNr);
+			case ShopPackage.TRANSACTION__NUMBER:
+				return NUMBER_EDEFAULT == null ? number != null : !NUMBER_EDEFAULT.equals(number);
 			case ShopPackage.TRANSACTION__ORDER:
 				return getOrder() != null;
 			case ShopPackage.TRANSACTION__PRODUCT:
@@ -517,8 +518,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (transactionNr: ");
-		result.append(transactionNr);
+		result.append(" (number: ");
+		result.append(number);
 		result.append(", startDate: ");
 		result.append(startDate);
 		result.append(", endDate: ");

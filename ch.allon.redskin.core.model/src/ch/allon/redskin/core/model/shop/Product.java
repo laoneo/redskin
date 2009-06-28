@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getName <em>Name</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getNumber <em>Number</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getDescription <em>Description</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.Product#getRentedDays <em>Rented Days</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getProductCategory <em>Product Category</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Product#getPriceCategory <em>Price Category</em>}</li>
  * </ul>
@@ -107,32 +106,6 @@ public interface Product extends EObject {
 	 * @generated
 	 */
 	void setDescription(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Rented Days</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Rented Days</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Rented Days</em>' attribute.
-	 * @see #setRentedDays(Integer)
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getProduct_RentedDays()
-	 * @model
-	 * @generated
-	 */
-	Integer getRentedDays();
-
-	/**
-	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Product#getRentedDays <em>Rented Days</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Rented Days</em>' attribute.
-	 * @see #getRentedDays()
-	 * @generated
-	 */
-	void setRentedDays(Integer value);
 
 	/**
 	 * Returns the value of the '<em><b>Product Category</b></em>' container reference.

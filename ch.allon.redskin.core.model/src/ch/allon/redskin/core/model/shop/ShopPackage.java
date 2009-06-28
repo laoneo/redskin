@@ -97,22 +97,13 @@ public interface ShopPackage extends EPackage {
 	int PRODUCT__DESCRIPTION = 2;
 
 	/**
-	 * The feature id for the '<em><b>Rented Days</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PRODUCT__RENTED_DAYS = 3;
-
-	/**
 	 * The feature id for the '<em><b>Product Category</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__PRODUCT_CATEGORY = 4;
+	int PRODUCT__PRODUCT_CATEGORY = 3;
 
 	/**
 	 * The feature id for the '<em><b>Price Category</b></em>' reference.
@@ -121,7 +112,7 @@ public interface ShopPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT__PRICE_CATEGORY = 5;
+	int PRODUCT__PRICE_CATEGORY = 4;
 
 	/**
 	 * The number of structural features of the '<em>Product</em>' class.
@@ -130,7 +121,7 @@ public interface ShopPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCT_FEATURE_COUNT = 6;
+	int PRODUCT_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link ch.allon.redskin.core.model.shop.impl.CustomerImpl <em>Customer</em>}' class.
@@ -363,13 +354,13 @@ public interface ShopPackage extends EPackage {
 	int TRANSACTION = 5;
 
 	/**
-	 * The feature id for the '<em><b>Transaction Nr</b></em>' attribute.
+	 * The feature id for the '<em><b>Number</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION__TRANSACTION_NR = 0;
+	int TRANSACTION__NUMBER = 0;
 
 	/**
 	 * The feature id for the '<em><b>Order</b></em>' container reference.
@@ -477,17 +468,6 @@ public interface ShopPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getProduct_Description();
-
-	/**
-	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Product#getRentedDays <em>Rented Days</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Rented Days</em>'.
-	 * @see ch.allon.redskin.core.model.shop.Product#getRentedDays()
-	 * @see #getProduct()
-	 * @generated
-	 */
-	EAttribute getProduct_RentedDays();
 
 	/**
 	 * Returns the meta object for the container reference '{@link ch.allon.redskin.core.model.shop.Product#getProductCategory <em>Product Category</em>}'.
@@ -738,15 +718,15 @@ public interface ShopPackage extends EPackage {
 	EClass getTransaction();
 
 	/**
-	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Transaction#getTransactionNr <em>Transaction Nr</em>}'.
+	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Transaction#getNumber <em>Number</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Transaction Nr</em>'.
-	 * @see ch.allon.redskin.core.model.shop.Transaction#getTransactionNr()
+	 * @return the meta object for the attribute '<em>Number</em>'.
+	 * @see ch.allon.redskin.core.model.shop.Transaction#getNumber()
 	 * @see #getTransaction()
 	 * @generated
 	 */
-	EAttribute getTransaction_TransactionNr();
+	EAttribute getTransaction_Number();
 
 	/**
 	 * Returns the meta object for the container reference '{@link ch.allon.redskin.core.model.shop.Transaction#getOrder <em>Order</em>}'.
@@ -869,14 +849,6 @@ public interface ShopPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PRODUCT__DESCRIPTION = eINSTANCE.getProduct_Description();
-
-		/**
-		 * The meta object literal for the '<em><b>Rented Days</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PRODUCT__RENTED_DAYS = eINSTANCE.getProduct_RentedDays();
 
 		/**
 		 * The meta object literal for the '<em><b>Product Category</b></em>' container reference feature.
@@ -1073,12 +1045,12 @@ public interface ShopPackage extends EPackage {
 		EClass TRANSACTION = eINSTANCE.getTransaction();
 
 		/**
-		 * The meta object literal for the '<em><b>Transaction Nr</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Number</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute TRANSACTION__TRANSACTION_NR = eINSTANCE.getTransaction_TransactionNr();
+		EAttribute TRANSACTION__NUMBER = eINSTANCE.getTransaction_Number();
 
 		/**
 		 * The meta object literal for the '<em><b>Order</b></em>' container reference feature.

@@ -7,6 +7,7 @@
 package ch.allon.redskin.core.model.shop.impl;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -90,14 +91,16 @@ public class OrderImpl extends EObjectImpl implements Order {
 	 * @ordered
 	 */
 	protected EList<String> comments;
+	
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * 
 	 */
 	protected OrderImpl() {
 		super();
+		number = FORMAT.format(new Date());
 	}
 
 	/**

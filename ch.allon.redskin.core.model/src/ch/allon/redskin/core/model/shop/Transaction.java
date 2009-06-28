@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getTransactionNr <em>Transaction Nr</em>}</li>
+ *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getNumber <em>Number</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getOrder <em>Order</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getStartDate <em>Start Date</em>}</li>
@@ -36,30 +36,30 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Transaction extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Transaction Nr</b></em>' attribute.
+	 * Returns the value of the '<em><b>Number</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Transaction Nr</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Number</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Transaction Nr</em>' attribute.
-	 * @see #setTransactionNr(String)
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getTransaction_TransactionNr()
+	 * @return the value of the '<em>Number</em>' attribute.
+	 * @see #setNumber(String)
+	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getTransaction_Number()
 	 * @model
 	 * @generated
 	 */
-	String getTransactionNr();
+	String getNumber();
 
 	/**
-	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Transaction#getTransactionNr <em>Transaction Nr</em>}' attribute.
+	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Transaction#getNumber <em>Number</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Transaction Nr</em>' attribute.
-	 * @see #getTransactionNr()
+	 * @param value the new value of the '<em>Number</em>' attribute.
+	 * @see #getNumber()
 	 * @generated
 	 */
-	void setTransactionNr(String value);
+	void setNumber(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Order</b></em>' container reference.
