@@ -22,16 +22,12 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
 
-import ch.allon.redskin.core.model.shop.ProductCategory;
-import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.internal.core.RedskinCoreActivator;
 
 /**
@@ -40,159 +36,67 @@ import ch.allon.redskin.internal.core.RedskinCoreActivator;
  */
 public class DBFactory {
 
-	private static ProductCategory ROOT;
 	private static Resource PRICE_CATEGORIES_RESOURCE;
 	private static Resource ORDERS_RESOURCE;
 	private static Resource CUSTOMERS_RESOURCE;
+	private static Resource PRODUCTS_RESOURCE;
 
-	public static synchronized Resource getPriceCategoryResource() {
+	public synchronized static Resource getPriceCategoryResource() {
 		if (PRICE_CATEGORIES_RESOURCE == null) {
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.beginTransaction();
-			String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
-					+ "=ShopDB&query1=FROM PriceCategory";
-			URI uri = URI.createURI(uriStr);
-			PRICE_CATEGORIES_RESOURCE = new ResourceSetImpl().getResource(uri,
-					true);
-			// res.load(Collections.EMPTY_MAP);
-			PRICE_CATEGORIES_RESOURCE.eAdapters().add(new EContentAdapter() {
-				private boolean innerCall = false;
-
-				@Override
-				public void notifyChanged(Notification notification) {
-					if (innerCall)
-						return;
-					innerCall = true;
-					try {
-						PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						innerCall = false;
-					}
-				}
-			});
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.commitTransaction();
+			PRICE_CATEGORIES_RESOURCE = createResource("PriceCategory");
 		}
 		return PRICE_CATEGORIES_RESOURCE;
 	}
 
-	public static synchronized ProductCategory getProductsRootNode() {
-		if (ROOT == null) {
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.beginTransaction();
-			String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
-					+ "=ShopDB&query1=FROM ProductCategory";
-			URI uri = URI.createURI(uriStr);
-			final Resource res = new ResourceSetImpl().getResource(uri, true);
-			// res.load(Collections.EMPTY_MAP);
-
-			EList<EObject> contents = res.getContents();
-			ProductCategory loadedRoot;
-			// first time
-			if (contents.isEmpty()) {
-				loadedRoot = ShopFactory.eINSTANCE.createProductCategory();
-				loadedRoot.setName("root");
-				res.getContents().add(loadedRoot);
-				try {
-					RedskinCoreActivator.getSessionController()
-							.getSessionWrapper().beginTransaction();
-					res.save(Collections.EMPTY_MAP);
-					RedskinCoreActivator.getSessionController()
-							.getSessionWrapper().commitTransaction();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else
-				loadedRoot = (ProductCategory) contents.get(0);
-			res.eAdapters().add(new EContentAdapter() {
-				private boolean innerCall = false;
-
-				@Override
-				public void notifyChanged(Notification notification) {
-					if (innerCall)
-						return;
-					innerCall = true;
-					try {
-						RedskinCoreActivator.getSessionController()
-								.getSessionWrapper().beginTransaction();
-						res.save(Collections.EMPTY_MAP);
-						RedskinCoreActivator.getSessionController()
-								.getSessionWrapper().commitTransaction();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						innerCall = false;
-					}
-					super.notifyChanged(notification);
-				}
-			});
-			ROOT = loadedRoot;
+	public synchronized static Resource getProductsResource() {
+		if (PRODUCTS_RESOURCE == null) {
+			PRODUCTS_RESOURCE = createResource("ProductCategory");
 		}
-		return ROOT;
+		return PRODUCTS_RESOURCE;
 	}
 
 	public synchronized static Resource getOrdersResource() {
 		if (ORDERS_RESOURCE == null) {
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.beginTransaction();
-			String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
-					+ "=ShopDB&query1=FROM Order";
-			URI uri = URI.createURI(uriStr);
-			ORDERS_RESOURCE = new ResourceSetImpl().getResource(uri, true);
-			ORDERS_RESOURCE.eAdapters().add(new EContentAdapter() {
-				private boolean innerCall = false;
-
-				@Override
-				public void notifyChanged(Notification notification) {
-					if (innerCall)
-						return;
-					innerCall = true;
-					try {
-						ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						innerCall = false;
-					}
-				}
-			});
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.commitTransaction();
+			ORDERS_RESOURCE = createResource("Order");
 		}
 		return ORDERS_RESOURCE;
 	}
 
 	public synchronized static Resource getCustomerResource() {
 		if (CUSTOMERS_RESOURCE == null) {
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.beginTransaction();
-			String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
-					+ "=ShopDB&query1=FROM Customer";
-			URI uri = URI.createURI(uriStr);
-			CUSTOMERS_RESOURCE = new ResourceSetImpl().getResource(uri, true);
-			// res.load(Collections.EMPTY_MAP);
-			CUSTOMERS_RESOURCE.eAdapters().add(new EContentAdapter() {
-				private boolean innerCall = false;
-
-				@Override
-				public void notifyChanged(Notification notification) {
-					if (innerCall)
-						return;
-					innerCall = true;
-					try {
-						CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} finally {
-						innerCall = false;
-					}
-				}
-			});
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.commitTransaction();
+			CUSTOMERS_RESOURCE = createResource("Customer");
 		}
 		return CUSTOMERS_RESOURCE;
+	}
+
+	private static Resource createResource(String type) {
+		RedskinCoreActivator.getSessionController().getSessionWrapper()
+				.beginTransaction();
+		String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
+				+ "=ShopDB&query1=FROM " + type;
+		URI uri = URI.createURI(uriStr);
+		final Resource res = new ResourceSetImpl().getResource(uri, true);
+		// res.load(Collections.EMPTY_MAP);
+		res.eAdapters().add(new EContentAdapter() {
+			private boolean innerCall = false;
+
+			@Override
+			public void notifyChanged(Notification notification) {
+				if (innerCall)
+					return;
+				innerCall = true;
+				try {
+					res.save(Collections.EMPTY_MAP);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					innerCall = false;
+				}
+				super.notifyChanged(notification);
+			}
+		});
+		RedskinCoreActivator.getSessionController().getSessionWrapper()
+				.commitTransaction();
+		return res;
 	}
 }
