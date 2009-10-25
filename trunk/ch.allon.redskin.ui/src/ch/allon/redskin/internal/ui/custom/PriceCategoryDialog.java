@@ -115,7 +115,8 @@ public class PriceCategoryDialog extends EObjectDialog {
 				final IStructuredSelection selection = (IStructuredSelection) viewer
 						.getSelection();
 				final Row row = (Row) selection.getFirstElement();
-				if (row == null)
+				if (row == null || value == null
+						|| value.toString().length() == 0)
 					return;
 				row.price = Double.parseDouble((String) value);
 				viewer.refresh(row);

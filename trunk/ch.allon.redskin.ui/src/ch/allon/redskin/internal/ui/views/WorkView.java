@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -158,7 +159,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 		c.setText(Messages.WorkView_Price_Col);
 		c.setResizable(true);
 
-		// Column 4 : Percent complete (Text with digits only)
 		TextCellEditor textEditor = new TextCellEditor(table);
 		((Text) textEditor.getControl()).addVerifyListener(
 
@@ -614,6 +614,12 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 			public WorkViewTransactionItemProvider(AdapterFactory adapterFactory) {
 				super(adapterFactory);
+			}
+			
+			@Override
+			public void notifyChanged(Notification notification) {
+				super.notifyChanged(notification);
+				((TableViewer)getViewer()).refresh();
 			}
 
 			@Override
