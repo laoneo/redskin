@@ -40,11 +40,14 @@ public class NewOrderAction extends EObjectAction {
 			IViewReference[] references = RedskinUIActivator.getWindow()
 					.getActivePage().getViewReferences();
 			String secondId = null;
+			Order order = null;
+			if (selectedObjects.size() > 0)
+				order = (Order) selectedObjects.get(0);
 			for (IViewReference reference : references) {
 				if (reference.getId().equals(RedskinUIActivator.ID_WORK_VIEW)) {
 					WorkView view = (WorkView) reference.getPart(true);
-					if (view.getOrder() != null
-							&& view.getOrder().equals(selectedObjects.get(0)))
+					if (view != null && view.getOrder() != null
+							&& order != null && view.getOrder().equals(order))
 						return;
 					secondId = RedskinUIActivator.ID_WORK_VIEW
 							+ System.currentTimeMillis();
@@ -54,7 +57,7 @@ public class NewOrderAction extends EObjectAction {
 					.showView(RedskinUIActivator.ID_WORK_VIEW, secondId,
 							IWorkbenchPage.VIEW_ACTIVATE);
 			if (part instanceof WorkView && selectedObjects.size() > 0)
-				((WorkView) part).setOrder((Order) selectedObjects.get(0));
+				((WorkView) part).setOrder(order);
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
