@@ -311,8 +311,7 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 		numberField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false));
 		new ContentAssistCommandAdapter(numberField, new TextContentAdapter(),
-				new ProductProposalProvider(), null, new char[] { '1', '2',
-						'3', '4', '5', '6', '7', '8', '9' }, true);
+				new ProductProposalProvider(), null, new char[] {}, true);
 
 		label = new Label(buttonBar, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
@@ -375,8 +374,19 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 					Messages.WorkView_Error_Title,
 					Messages.WorkView_Correct_Number_1 + numberField.getText()
 							+ Messages.WorkView_Correct_Number_2, SWT.NONE);
+			numberField.setText("");
 			numberField.setFocus();
 			return;
+		}
+		for (Transaction t : getOrder().getTransactions()) {
+			if (t.getProduct().equals(product)) {
+				MessageDialog.open(MessageDialog.ERROR, getViewSite()
+						.getShell(), Messages.WorkView_Error_Title, "Nummer "
+						+ number + " ist schon registriert", SWT.NONE);
+				numberField.setText("");
+				numberField.setFocus();
+				return;
+			}
 		}
 		Transaction transaction = ShopFactory.eINSTANCE.createTransaction();
 		try {
@@ -389,9 +399,11 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 			c.add(GregorianCalendar.DAY_OF_MONTH, days);
 			transaction.setEndDate(c.getTime());
 			EList<Double> prices = product.getPriceCategory().getPrices();
-			double price = 0.0;
-			if (prices.size() > days)
-				price = prices.get(days);
+			double price = prices.get(Math.min(prices.size() - 2, days - 1));
+			if (prices.size() <= days) {
+				price += (days - prices.size())
+						* prices.get(prices.size() - 1);
+			}
 			transaction.setPrice(price);
 		} catch (Exception e) {
 			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
@@ -615,11 +627,11 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 			public WorkViewTransactionItemProvider(AdapterFactory adapterFactory) {
 				super(adapterFactory);
 			}
-			
+
 			@Override
 			public void notifyChanged(Notification notification) {
 				super.notifyChanged(notification);
-				((TableViewer)getViewer()).refresh();
+				((TableViewer) getViewer()).refresh();
 			}
 
 			@Override
