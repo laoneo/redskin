@@ -430,5 +430,13 @@ public class ProductImpl extends EObjectImpl implements Product {
 		result.append(')');
 		return result.toString();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Product))
+		return super.equals(obj);
+		return getNumber().equals(((Product)obj).getNumber());
+		
+	}
 
 } //ProductImpl

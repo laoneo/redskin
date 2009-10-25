@@ -7,7 +7,6 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 
 import ch.allon.redskin.core.model.shop.Order;
@@ -44,7 +43,7 @@ public class NewOrderAction extends EObjectAction {
 			for (IViewReference reference : references) {
 				if (reference.getId().equals(RedskinUIActivator.ID_WORK_VIEW)) {
 					WorkView view = (WorkView) reference.getPart(true);
-					if (view != null
+					if (view.getOrder() != null
 							&& view.getOrder().equals(selectedObjects.get(0)))
 						return;
 					secondId = RedskinUIActivator.ID_WORK_VIEW

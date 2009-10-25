@@ -193,6 +193,19 @@
                menubarPath="additions">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="ch.allon.redskin.core.model.shop.Transaction"
+            objectClass="ch.allon.redskin.core.model.shop.Transaction">
+         <action
+               class="ch.allon.redskin.internal.ui.actions.DeleteTransactionAction"
+               enablesFor="+"
+               icon="icons/actions/delete_transaction.gif"
+               id="ch.allon.redskin.ui.actions.DeleteTransactionAction"
+               label="Löschen"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          id="product"
