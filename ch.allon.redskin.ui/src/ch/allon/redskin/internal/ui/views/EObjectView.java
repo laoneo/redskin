@@ -106,6 +106,7 @@ public abstract class EObjectView extends ViewPart implements
 				UIUtil.getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
+						if(viewer.getInput() == null)
 						viewer.setInput(input);
 					}
 				});

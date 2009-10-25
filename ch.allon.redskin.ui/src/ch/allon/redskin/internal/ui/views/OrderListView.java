@@ -6,15 +6,24 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IMemento;
@@ -37,14 +46,17 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	protected Viewer createViewer(Composite parent) {
-		TreeViewer viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER);
+		final TreeViewer viewer = new TreeViewer(parent, SWT.MULTI
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		viewer.setColumnProperties(new String[] { Messages.WorkView_Number_Col,
+				Messages.WorkView_Description_Col, Messages.WorkView_Days_Col,
+				Messages.WorkView_Return_Col, Messages.WorkView_Price_Col });
 
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
@@ -52,7 +64,10 @@ public class OrderListView extends EObjectView {
 			public void doubleClick(DoubleClickEvent event) {
 				NewOrderAction action = new NewOrderAction();
 				action.setActivePart(null, OrderListView.this);
-				action.selectionChanged(null, event.getSelection());
+				Object obj=((IStructuredSelection)event.getSelection()).getFirstElement();
+				if(obj instanceof Transaction)
+					obj=((Transaction)obj).getOrder();
+				action.selectionChanged(null, new StructuredSelection(obj));
 				action.run();
 			}
 		});
@@ -87,6 +102,57 @@ public class OrderListView extends EObjectView {
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
 		c.setText(Messages.WorkView_Price_Col);
 		c.setResizable(true);
+
+		TextCellEditor textEditor = new TextCellEditor(tree);
+		((Text) textEditor.getControl()).addVerifyListener(
+
+		new VerifyListener() {
+			public void verifyText(VerifyEvent e) {
+				e.doit = "0123456789.".indexOf(e.text) >= 0; //$NON-NLS-1$
+			}
+		});
+		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(tree),
+				new TextCellEditor(tree), new TextCellEditor(tree),
+				new TextCellEditor(tree), textEditor });
+		viewer.setCellModifier(new ICellModifier() {
+
+			@Override
+			public void modify(Object element, String property, Object value) {
+				final IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				final Transaction row = (Transaction) selection
+						.getFirstElement();
+				if (row == null)
+					return;
+				String v = (String) value;
+				if (v.length() < 1)
+					return;
+				row.setPrice(Double.parseDouble(v));
+			}
+
+			@Override
+			public Object getValue(Object element, String property) {
+				ITableLabelProvider labelProvider = (ITableLabelProvider) viewer
+						.getLabelProvider();
+				int column = 0;
+				if (property.equals(Messages.WorkView_Number_Col))
+					column = 0;
+				else if (property.equals(Messages.WorkView_Description_Col))
+					column = 1;
+				else if (property.equals(Messages.WorkView_Days_Col))
+					column = 2;
+				else if (property.equals(Messages.WorkView_Return_Col))
+					column = 3;
+				else if (property.equals(Messages.WorkView_Price_Col))
+					column = 4;
+				return labelProvider.getColumnText(element, column);
+			}
+
+			@Override
+			public boolean canModify(Object element, String property) {
+				return property.equals(Messages.WorkView_Price_Col);
+			}
+		});
 
 		return viewer;
 	}

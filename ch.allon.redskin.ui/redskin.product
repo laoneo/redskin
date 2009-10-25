@@ -54,9 +54,11 @@
       <plugin id="org.eclipse.birt.data"/>
       <plugin id="org.eclipse.birt.data.aggregation"/>
       <plugin id="org.eclipse.birt.report.data.adapter"/>
+      <plugin id="org.eclipse.birt.report.data.bidi.utils"/>
       <plugin id="org.eclipse.birt.report.data.oda.jdbc"/>
       <plugin id="org.eclipse.birt.report.engine"/>
       <plugin id="org.eclipse.birt.report.engine.emitter.html"/>
+      <plugin id="org.eclipse.birt.report.engine.script.javascript"/>
       <plugin id="org.eclipse.birt.report.model"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
