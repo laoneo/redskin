@@ -61,16 +61,16 @@ public class ShowOrderReportAction extends EObjectAction {
 			IRunAndRenderTask task = engine.createRunAndRenderTask(design);
 			Customer c = order.getCustomer();
 			task
-					.setParameterValue("surname", c == null ? null : c
+					.setParameterValue("surname", c == null ? "" : c
 							.getSurname());
-			task.setParameterValue("familyname", c == null ? null : c
+			task.setParameterValue("familyname", c == null ? "" : c
 					.getFamilyName());
-			task.setParameterValue("telephone", c == null ? null : c
+			task.setParameterValue("telephone", c == null ? "" : c
 					.getTelephoneNr());
 			task
-					.setParameterValue("address", c == null ? null : c
+					.setParameterValue("address", c == null ? "" : c
 							.getAddress());
-			task.setParameterValue("hotel", c == null ? null : c.getHotel());
+			task.setParameterValue("hotel", c == null ? "" : c.getHotel());
 			task.setParameterValue("ordernr", order.getNumber());
 
 			// Set rendering options - such as file or stream output,
