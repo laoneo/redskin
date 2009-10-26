@@ -72,6 +72,7 @@ import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
+import ch.allon.redskin.internal.ui.actions.MarkOrderPaid;
 import ch.allon.redskin.internal.ui.actions.ShowOrderReportAction;
 import ch.allon.redskin.internal.ui.custom.CustomDialog;
 import ch.allon.redskin.internal.ui.custom.CustomerDialog;
@@ -218,7 +219,7 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 	protected void createBottomBar(Composite container) {
 		Composite buttonBar = new Composite(container, SWT.NONE);
 		buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		buttonBar.setLayout(new GridLayout(4, false));
+		buttonBar.setLayout(new GridLayout(5, false));
 
 		Button button = new Button(buttonBar, SWT.PUSH);
 		button
@@ -233,7 +234,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				doSave(null);
 			}
 		});
 
@@ -249,7 +249,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				handleAddCustomer();
 			}
 		});
 
@@ -272,7 +271,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				handleAddCustomer();
 			}
 		});
 
@@ -292,7 +290,25 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				handleAddCustomer();
+			}
+		});
+
+		Button markAsPaidButton = new Button(buttonBar, SWT.PUSH);
+		markAsPaidButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		markAsPaidButton.setText("Auftrag bezahlt markieren");
+		markAsPaidButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				MarkOrderPaid action = new MarkOrderPaid();
+				action.selectionChanged(null, new StructuredSelection(
+						getOrder()));
+				action.setActivePart(null, WorkView.this);
+				action.run();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
 	}
@@ -401,8 +417,7 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 			EList<Double> prices = product.getPriceCategory().getPrices();
 			double price = prices.get(Math.min(prices.size() - 2, days - 1));
 			if (prices.size() <= days) {
-				price += (days - prices.size())
-						* prices.get(prices.size() - 1);
+				price += (days - prices.size()) * prices.get(prices.size() - 1);
 			}
 			transaction.setPrice(price);
 		} catch (Exception e) {
@@ -622,7 +637,7 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 				TransactionItemProvider {
 
 			private final SimpleDateFormat FORMAT = new SimpleDateFormat(
-					"dd.MM.yyyyy");
+					"dd.MM.yyyy");
 
 			public WorkViewTransactionItemProvider(AdapterFactory adapterFactory) {
 				super(adapterFactory);

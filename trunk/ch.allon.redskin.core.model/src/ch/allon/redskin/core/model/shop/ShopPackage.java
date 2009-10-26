@@ -417,13 +417,22 @@ public interface ShopPackage extends EPackage {
 	int TRANSACTION__PRICE = 6;
 
 	/**
+	 * The feature id for the '<em><b>Paid Date</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSACTION__PAID_DATE = 7;
+
+	/**
 	 * The number of structural features of the '<em>Transaction</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_FEATURE_COUNT = 7;
+	int TRANSACTION_FEATURE_COUNT = 8;
 
 
 	/**
@@ -795,6 +804,17 @@ public interface ShopPackage extends EPackage {
 	EAttribute getTransaction_Price();
 
 	/**
+	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Transaction#getPaidDate <em>Paid Date</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Paid Date</em>'.
+	 * @see ch.allon.redskin.core.model.shop.Transaction#getPaidDate()
+	 * @see #getTransaction()
+	 * @generated
+	 */
+	EAttribute getTransaction_PaidDate();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1099,6 +1119,14 @@ public interface ShopPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute TRANSACTION__PRICE = eINSTANCE.getTransaction_Price();
+
+		/**
+		 * The meta object literal for the '<em><b>Paid Date</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSACTION__PAID_DATE = eINSTANCE.getTransaction_PaidDate();
 
 	}
 

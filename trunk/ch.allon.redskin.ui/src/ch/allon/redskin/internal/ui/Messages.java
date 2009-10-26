@@ -33,6 +33,8 @@ public class Messages extends NLS {
 	public static String NewPriceCategoryAction_Column_Price;
 	public static String NewPriceCategoryAction_New_Day_Action;
 	public static String NewPriceCategoryAction_Price_For_More_Days;
+	public static String OrderListView_No_Customer_Label;
+	public static String OrderListView_Paid_Col;
 	public static String WorkView_Correct_Number_1;
 	public static String WorkView_Correct_Number_2;
 	public static String WorkView_Days_Col;

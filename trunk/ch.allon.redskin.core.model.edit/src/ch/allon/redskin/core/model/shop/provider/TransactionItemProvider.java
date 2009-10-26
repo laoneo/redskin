@@ -66,6 +66,7 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 			addEndDatePropertyDescriptor(object);
 			addCommentsPropertyDescriptor(object);
 			addPricePropertyDescriptor(object);
+			addPaidDatePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -181,6 +182,28 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
+	 * This adds a property descriptor for the Paid Date feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addPaidDatePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transaction_paidDate_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_paidDate_feature", "_UI_Transaction_type"),
+				 ShopPackage.Literals.TRANSACTION__PAID_DATE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
 	 * This returns Transaction.gif. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -222,6 +245,7 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 			case ShopPackage.TRANSACTION__END_DATE:
 			case ShopPackage.TRANSACTION__COMMENTS:
 			case ShopPackage.TRANSACTION__PRICE:
+			case ShopPackage.TRANSACTION__PAID_DATE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}

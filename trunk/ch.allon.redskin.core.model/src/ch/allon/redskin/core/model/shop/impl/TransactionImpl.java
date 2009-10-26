@@ -20,6 +20,8 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EcoreFactory;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -42,6 +44,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getEndDate <em>End Date</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getComments <em>Comments</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getPrice <em>Price</em>}</li>
+ *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getPaidDate <em>Paid Date</em>}</li>
  * </ul>
  * </p>
  *
@@ -147,6 +150,26 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * @ordered
 	 */
 	protected double price = PRICE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getPaidDate() <em>Paid Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPaidDate()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Date PAID_DATE_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getPaidDate() <em>Paid Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPaidDate()
+	 * @generated
+	 * @ordered
+	 */
+	protected Date paidDate = PAID_DATE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -348,6 +371,27 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Date getPaidDate() {
+		return paidDate;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPaidDate(Date newPaidDate) {
+		Date oldPaidDate = paidDate;
+		paidDate = newPaidDate;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ShopPackage.TRANSACTION__PAID_DATE, oldPaidDate, paidDate));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -410,6 +454,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 				return getComments();
 			case ShopPackage.TRANSACTION__PRICE:
 				return getPrice();
+			case ShopPackage.TRANSACTION__PAID_DATE:
+				return getPaidDate();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -445,6 +491,9 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 			case ShopPackage.TRANSACTION__PRICE:
 				setPrice((Double)newValue);
 				return;
+			case ShopPackage.TRANSACTION__PAID_DATE:
+				setPaidDate((Date)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -478,6 +527,9 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 			case ShopPackage.TRANSACTION__PRICE:
 				setPrice(PRICE_EDEFAULT);
 				return;
+			case ShopPackage.TRANSACTION__PAID_DATE:
+				setPaidDate(PAID_DATE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -504,6 +556,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 				return comments != null && !comments.isEmpty();
 			case ShopPackage.TRANSACTION__PRICE:
 				return price != PRICE_EDEFAULT;
+			case ShopPackage.TRANSACTION__PAID_DATE:
+				return PAID_DATE_EDEFAULT == null ? paidDate != null : !PAID_DATE_EDEFAULT.equals(paidDate);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -528,6 +582,8 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 		result.append(comments);
 		result.append(", price: ");
 		result.append(price);
+		result.append(", paidDate: ");
+		result.append(paidDate);
 		result.append(')');
 		return result.toString();
 	}

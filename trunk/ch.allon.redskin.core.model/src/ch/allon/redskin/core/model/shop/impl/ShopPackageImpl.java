@@ -443,6 +443,15 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getTransaction_PaidDate() {
+		return (EAttribute)transactionEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ShopFactory getShopFactory() {
 		return (ShopFactory)getEFactoryInstance();
 	}
@@ -505,6 +514,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		createEAttribute(transactionEClass, TRANSACTION__END_DATE);
 		createEAttribute(transactionEClass, TRANSACTION__COMMENTS);
 		createEAttribute(transactionEClass, TRANSACTION__PRICE);
+		createEAttribute(transactionEClass, TRANSACTION__PAID_DATE);
 	}
 
 	/**
@@ -576,6 +586,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEAttribute(getTransaction_EndDate(), ecorePackage.getEDate(), "endDate", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_Comments(), ecorePackage.getEString(), "comments", null, 0, -1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_Price(), ecorePackage.getEDouble(), "price", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransaction_PaidDate(), ecorePackage.getEDate(), "paidDate", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);
