@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -11,9 +13,11 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -27,6 +31,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.Order;
@@ -46,8 +52,27 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	protected Viewer createViewer(Composite parent) {
-		final TreeViewer viewer = new TreeViewer(parent, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		FilteredTree filteredTree = new FilteredTree(parent,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
+						| SWT.FULL_SELECTION, new PatternFilter() {
+					@Override
+					protected boolean isLeafMatch(Viewer viewer, Object element) {
+						if (element instanceof Transaction) {
+							Transaction tr = (Transaction) element;
+							Order o = tr.getOrder();
+							String word = "";
+							if (o.getCustomer() == null)
+								word = Messages.OrderListView_No_Customer_Label;
+							else
+								word = o.getCustomer().getSurname() + " " //$NON-NLS-1$ //$NON-NLS-2$
+										+ o.getCustomer().getFamilyName();
+							return wordMatches(word);
+						}
+
+						return super.isLeafMatch(viewer, element);
+					}
+				}, true);
+		final TreeViewer viewer = filteredTree.getViewer();
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
@@ -56,7 +81,8 @@ public class OrderListView extends EObjectView {
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.setColumnProperties(new String[] { Messages.WorkView_Number_Col,
 				Messages.WorkView_Description_Col, Messages.WorkView_Days_Col,
-				Messages.WorkView_Return_Col, Messages.WorkView_Price_Col });
+				Messages.WorkView_Return_Col, Messages.WorkView_Price_Col,
+				Messages.OrderListView_Paid_Col });
 
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
@@ -64,9 +90,10 @@ public class OrderListView extends EObjectView {
 			public void doubleClick(DoubleClickEvent event) {
 				NewOrderAction action = new NewOrderAction();
 				action.setActivePart(null, OrderListView.this);
-				Object obj=((IStructuredSelection)event.getSelection()).getFirstElement();
-				if(obj instanceof Transaction)
-					obj=((Transaction)obj).getOrder();
+				Object obj = ((IStructuredSelection) event.getSelection())
+						.getFirstElement();
+				if (obj instanceof Transaction)
+					obj = ((Transaction) obj).getOrder();
 				action.selectionChanged(null, new StructuredSelection(obj));
 				action.run();
 			}
@@ -103,6 +130,11 @@ public class OrderListView extends EObjectView {
 		c.setText(Messages.WorkView_Price_Col);
 		c.setResizable(true);
 
+		c = new TreeColumn(tree, SWT.NONE);
+		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		c.setText(Messages.OrderListView_Paid_Col);
+		c.setResizable(true);
+
 		TextCellEditor textEditor = new TextCellEditor(tree);
 		((Text) textEditor.getControl()).addVerifyListener(
 
@@ -111,9 +143,12 @@ public class OrderListView extends EObjectView {
 				e.doit = "0123456789.".indexOf(e.text) >= 0; //$NON-NLS-1$
 			}
 		});
-		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(tree),
-				new TextCellEditor(tree), new TextCellEditor(tree),
-				new TextCellEditor(tree), textEditor });
+
+		viewer
+				.setCellEditors(new CellEditor[] { new TextCellEditor(tree),
+						new TextCellEditor(tree), new TextCellEditor(tree),
+						new TextCellEditor(tree), textEditor,
+						new TextCellEditor(tree) });
 		viewer.setCellModifier(new ICellModifier() {
 
 			@Override
@@ -145,6 +180,8 @@ public class OrderListView extends EObjectView {
 					column = 3;
 				else if (property.equals(Messages.WorkView_Price_Col))
 					column = 4;
+				else if (property.equals(Messages.OrderListView_Paid_Col))
+					column = 5;
 				return labelProvider.getColumnText(element, column);
 			}
 
@@ -187,11 +224,20 @@ public class OrderListView extends EObjectView {
 				TransactionItemProvider {
 
 			private final SimpleDateFormat FORMAT = new SimpleDateFormat(
-					"dd.MM.yyyyy");
+					"dd.MM.yyyy"); //$NON-NLS-1$
+
+			private final SimpleDateFormat PAID_FORMAT = new SimpleDateFormat(
+					"kk:mm dd.MM.yyyy"); //$NON-NLS-1$
 
 			public OrderViewTransactionItemProvider(
 					AdapterFactory adapterFactory) {
 				super(adapterFactory);
+			}
+
+			@Override
+			public void notifyChanged(Notification notification) {
+				super.notifyChanged(notification);
+				((TreeViewer) getViewer()).refresh();
 			}
 
 			@Override
@@ -201,19 +247,21 @@ public class OrderListView extends EObjectView {
 				Transaction tr = (Transaction) object;
 				switch (columnIndex) {
 				case 0:
-					return "" + tr.getProduct().getNumber();
+					return "" + tr.getProduct().getNumber(); //$NON-NLS-1$
 				case 1:
 					return tr.getProduct().getDescription();
 				case 2:
 					long diff = tr.getEndDate().getTime()
 							- tr.getStartDate().getTime();
-					return "" + (diff / 86400000);
+					return "" + (diff / 86400000); //$NON-NLS-1$
 				case 3:
 					return FORMAT.format(tr.getEndDate());
 				case 4:
-					return "" + tr.getPrice();
-				default:
-					break;
+					return "" + tr.getPrice(); //$NON-NLS-1$
+				case 5:
+					if (tr.getPaidDate() == null)
+						return "Noch nicht bezahlt";
+					return PAID_FORMAT.format(tr.getPaidDate());
 				}
 				return super.getColumnText(object, columnIndex);
 			}
@@ -233,9 +281,18 @@ public class OrderListView extends EObjectView {
 				switch (columnIndex) {
 				case 0:
 					if (o.getCustomer() == null)
-						return "Kein Kunde";
-					return "" + o.getCustomer().getSurname() + " "
+						return Messages.OrderListView_No_Customer_Label;
+					return "" + o.getCustomer().getSurname() + " " //$NON-NLS-1$ //$NON-NLS-2$
 							+ o.getCustomer().getFamilyName();
+				case 5:
+					boolean paid = true;
+					for (EObject tr : o.getTransactions()) {
+						if (((Transaction) tr).getPaidDate() == null) {
+							paid = false;
+							break;
+						}
+					}
+					return paid ? "Ja" : "Nein";
 				}
 				return super.getColumnText(object, columnIndex);
 			}

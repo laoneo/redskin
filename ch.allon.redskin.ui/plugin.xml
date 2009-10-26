@@ -171,6 +171,14 @@
                label="Löschen"
                menubarPath="additions">
          </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.MarkOrderPaid"
+               enablesFor="+"
+               icon="icons/actions/paid_order.gif"
+               id="ch.allon.redskin.ui.actions.MarkOrderPaid"
+               label="Bezahlt"
+               menubarPath="additions">
+         </action>
       </objectContribution>
       <objectContribution
             adaptable="false"
@@ -203,6 +211,14 @@
                icon="icons/actions/delete_transaction.gif"
                id="ch.allon.redskin.ui.actions.DeleteTransactionAction"
                label="Löschen"
+               menubarPath="additions">
+         </action>
+         <action
+               class="ch.allon.redskin.internal.ui.actions.MakeTransactionPaid"
+               enablesFor="+"
+               icon="icons/actions/paid_transaction.gif"
+               id="ch.allon.redskin.ui.actions.MakeTransactionPaid"
+               label="Bezahlt"
                menubarPath="additions">
          </action>
       </objectContribution>

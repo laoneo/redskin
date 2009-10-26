@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getEndDate <em>End Date</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getComments <em>Comments</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getPrice <em>Price</em>}</li>
+ *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getPaidDate <em>Paid Date</em>}</li>
  * </ul>
  * </p>
  *
@@ -208,5 +209,31 @@ public interface Transaction extends EObject {
 	 * @generated
 	 */
 	void setPrice(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Paid Date</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Paid Date</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Paid Date</em>' attribute.
+	 * @see #setPaidDate(Date)
+	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getTransaction_PaidDate()
+	 * @model
+	 * @generated
+	 */
+	Date getPaidDate();
+
+	/**
+	 * Sets the value of the '{@link ch.allon.redskin.core.model.shop.Transaction#getPaidDate <em>Paid Date</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Paid Date</em>' attribute.
+	 * @see #getPaidDate()
+	 * @generated
+	 */
+	void setPaidDate(Date value);
 
 } // Transaction
