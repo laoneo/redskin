@@ -32,11 +32,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -116,7 +116,7 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 	}
 
 	@Override
-	protected Viewer createViewer(Composite parent) {
+	protected StructuredViewer createViewer(Composite parent) {
 		final TableViewer viewer = new TableViewer(parent, SWT.MULTI
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
@@ -498,7 +498,8 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 
 	@Override
 	public void saveState(IMemento memento) {
-		memento.putString("ordernumber", getOrder().getNumber());
+		if (getOrder() != null)
+			memento.putString("ordernumber", getOrder().getNumber());
 		super.saveState(memento);
 	}
 

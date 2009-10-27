@@ -15,10 +15,15 @@ import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -27,6 +32,7 @@ import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.custom.CustomDialog;
+import ch.allon.redskin.internal.ui.views.WorkView;
 
 public class ShowOrderReportAction extends EObjectAction {
 
@@ -60,16 +66,12 @@ public class ShowOrderReportAction extends EObjectAction {
 			design = engine.openReportDesign(fs);
 			IRunAndRenderTask task = engine.createRunAndRenderTask(design);
 			Customer c = order.getCustomer();
-			task
-					.setParameterValue("surname", c == null ? "" : c
-							.getSurname());
+			task.setParameterValue("surname", c == null ? "" : c.getSurname());
 			task.setParameterValue("familyname", c == null ? "" : c
 					.getFamilyName());
 			task.setParameterValue("telephone", c == null ? "" : c
 					.getTelephoneNr());
-			task
-					.setParameterValue("address", c == null ? "" : c
-							.getAddress());
+			task.setParameterValue("address", c == null ? "" : c.getAddress());
 			task.setParameterValue("hotel", c == null ? "" : c.getHotel());
 			task.setParameterValue("ordernr", order.getNumber());
 
@@ -99,6 +101,7 @@ public class ShowOrderReportAction extends EObjectAction {
 	private class BrowserDialog extends CustomDialog {
 
 		private String text;
+		private Browser browser;
 
 		protected BrowserDialog(Shell shell, String title) {
 			super(shell, title);
@@ -107,7 +110,7 @@ public class ShowOrderReportAction extends EObjectAction {
 		@Override
 		protected Control createDialogArea(Composite parent) {
 			Composite container = (Composite) super.createDialogArea(parent);
-			Browser browser = new Browser(container, SWT.NONE);
+			browser = new Browser(container, SWT.NONE);
 			browser.setLayoutData(new GridData(GridData.FILL_BOTH));
 			browser.setText(text);
 
@@ -121,6 +124,23 @@ public class ShowOrderReportAction extends EObjectAction {
 		@Override
 		protected Point getInitialSize() {
 			return new Point(840, 500);
+		}
+
+		@Override
+		protected void createButtonsForButtonBar(Composite parent) {
+			Button printButton = createButton(parent,
+					IDialogConstants.CLIENT_ID, "Drucken", false);
+			printButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					browser.execute("window.print();");
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
+			});
+			super.createButtonsForButtonBar(parent);
 		}
 
 	}

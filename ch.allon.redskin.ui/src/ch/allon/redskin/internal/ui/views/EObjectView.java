@@ -51,7 +51,7 @@ public abstract class EObjectView extends ViewPart implements
 		IEditingDomainProvider {
 
 	private AdapterFactoryEditingDomain ed;
-	private Viewer viewer;
+	private StructuredViewer viewer;
 	private IMemento memento;
 
 	@Override
@@ -61,15 +61,11 @@ public abstract class EObjectView extends ViewPart implements
 		viewer = createViewer(container);
 		createBottomBar(container);
 
-		if (viewer instanceof StructuredViewer) {
-			StructuredViewer structuredViewer = (StructuredViewer) viewer;
-			structuredViewer
-					.setContentProvider(new AdapterFactoryContentProvider(
-							getEditingDomain().getAdapterFactory()));
-			structuredViewer.setLabelProvider(new AdapterFactoryLabelProvider(
-					getEditingDomain().getAdapterFactory()));
-			structuredViewer.setUseHashlookup(true);
-		}
+		viewer.setContentProvider(new AdapterFactoryContentProvider(
+				getEditingDomain().getAdapterFactory()));
+		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
+				getEditingDomain().getAdapterFactory()));
+		viewer.setUseHashlookup(true);
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -106,8 +102,9 @@ public abstract class EObjectView extends ViewPart implements
 				UIUtil.getDisplay().asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						if(viewer.getInput() == null)
-						viewer.setInput(input);
+						if (viewer.getInput() == null
+								&& viewer.getContentProvider() != null)
+							viewer.setInput(input);
 					}
 				});
 
@@ -124,7 +121,7 @@ public abstract class EObjectView extends ViewPart implements
 
 	protected abstract Object createInput(IMemento memento);
 
-	protected abstract Viewer createViewer(Composite parent);
+	protected abstract StructuredViewer createViewer(Composite parent);
 
 	protected void createToolBar(Composite parent) {
 		EObjectAction[] actions = createToolBarActions();
