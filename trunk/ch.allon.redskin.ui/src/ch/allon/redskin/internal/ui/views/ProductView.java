@@ -1,7 +1,7 @@
 package ch.allon.redskin.internal.ui.views;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
@@ -20,7 +20,7 @@ public class ProductView extends EObjectView {
 	}
 
 	@Override
-	protected Viewer createViewer(Composite parent) {
+	protected StructuredViewer createViewer(Composite parent) {
 		FilteredTree tree = new FilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), true);
 		return tree.getViewer();

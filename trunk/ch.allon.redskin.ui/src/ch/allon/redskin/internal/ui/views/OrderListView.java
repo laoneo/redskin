@@ -13,7 +13,6 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -51,7 +50,7 @@ public class OrderListView extends EObjectView {
 	}
 
 	@Override
-	protected Viewer createViewer(Composite parent) {
+	protected StructuredViewer createViewer(Composite parent) {
 		FilteredTree filteredTree = new FilteredTree(parent,
 				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
 						| SWT.FULL_SELECTION, new PatternFilter() {
