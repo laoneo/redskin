@@ -171,18 +171,6 @@ public class PriceCategoryImpl extends EObjectImpl implements PriceCategory {
 		}
 		return super.eIsSet(featureID);
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(getName()==null || obj==null||! (obj instanceof PriceCategory))return super.equals(obj);
-		return getName().equals(((PriceCategory)obj).getName());
-	}
-	
-	@Override
-	public int hashCode() {
-		if(getName()==null)return super.hashCode();
-		return getName().hashCode();
-	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
