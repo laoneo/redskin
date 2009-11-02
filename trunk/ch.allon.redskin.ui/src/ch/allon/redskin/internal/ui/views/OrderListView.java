@@ -6,6 +6,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -46,6 +47,16 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	protected Object createInput(IMemento memento) {
+		DBFactory.getOrdersResource().eAdapters().add(new EContentAdapter() {
+			@Override
+			public void notifyChanged(Notification notification) {
+				if (notification.getNotifier() instanceof Transaction)
+					((TreeViewer) getViewer())
+							.refresh(((Transaction) notification.getNotifier())
+									.getOrder());
+				super.notifyChanged(notification);
+			}
+		});
 		return DBFactory.getOrdersResource();
 	}
 
@@ -55,10 +66,10 @@ public class OrderListView extends EObjectView {
 				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
 						| SWT.FULL_SELECTION, new PatternFilter() {
 					@Override
-					protected boolean isLeafMatch(Viewer viewer, Object element) {
-						if (element instanceof Transaction) {
-							Transaction tr = (Transaction) element;
-							Order o = tr.getOrder();
+					protected boolean isParentMatch(Viewer viewer,
+							Object element) {
+						if (element instanceof Order) {
+							Order o = (Order) element;
 							String word = "";
 							if (o.getCustomer() == null)
 								word = Messages.OrderListView_No_Customer_Label;
@@ -67,7 +78,19 @@ public class OrderListView extends EObjectView {
 										+ o.getCustomer().getFamilyName();
 							return wordMatches(word);
 						}
+						return super.isParentMatch(viewer, element);
+					}
 
+					@Override
+					protected boolean isLeafMatch(Viewer viewer, Object element) {
+						if (element instanceof Transaction) {
+							Transaction t = (Transaction) element;
+							String word = "";
+							word = t.getProduct().getNumber() + " "
+									+ t.getProduct().getName() + " "
+									+ t.getProduct().getDescription();
+							return wordMatches(word)||isParentMatch(viewer, t.getOrder());
+						}
 						return super.isLeafMatch(viewer, element);
 					}
 				}, true);
@@ -231,12 +254,6 @@ public class OrderListView extends EObjectView {
 			public OrderViewTransactionItemProvider(
 					AdapterFactory adapterFactory) {
 				super(adapterFactory);
-			}
-
-			@Override
-			public void notifyChanged(Notification notification) {
-				super.notifyChanged(notification);
-				((TreeViewer) getViewer()).refresh();
 			}
 
 			@Override

@@ -14,7 +14,7 @@ public class CustomerDialog extends EObjectDialog {
 	
 	@Override
 	protected Point getInitialSize() {
-		return new Point(400, 230);
+		return new Point(400, 240);
 	}
 
 	@Override

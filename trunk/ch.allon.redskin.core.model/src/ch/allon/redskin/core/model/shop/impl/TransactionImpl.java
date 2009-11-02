@@ -6,29 +6,23 @@
  */
 package ch.allon.redskin.core.model.shop.impl;
 
-import ch.allon.redskin.core.model.shop.Order;
-import ch.allon.redskin.core.model.shop.Product;
-import ch.allon.redskin.core.model.shop.ShopPackage;
-import ch.allon.redskin.core.model.shop.Transaction;
-
 import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import ch.allon.redskin.core.model.shop.Order;
+import ch.allon.redskin.core.model.shop.Product;
+import ch.allon.redskin.core.model.shop.ShopPackage;
+import ch.allon.redskin.core.model.shop.Transaction;
 
 /**
  * <!-- begin-user-doc -->
