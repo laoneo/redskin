@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,7 +31,6 @@ import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.custom.CustomDialog;
-import ch.allon.redskin.internal.ui.views.WorkView;
 
 public class ShowOrderReportAction extends EObjectAction {
 
