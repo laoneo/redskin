@@ -36,67 +36,93 @@ import ch.allon.redskin.internal.core.RedskinCoreActivator;
  */
 public class DBFactory {
 
+	private static EContentAdapter resourceSaver = new EContentAdapter() {
+		private boolean innerCall = false;
+
+		@Override
+		public void notifyChanged(Notification notification) {
+			if (innerCall)
+				return;
+			innerCall = true;
+			try {
+				RedskinCoreActivator.getSessionController().getSessionWrapper()
+						.beginTransaction();
+				PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
+				PRODUCTS_RESOURCE.save(Collections.EMPTY_MAP);
+				ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
+				CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
+				RedskinCoreActivator.getSessionController().getSessionWrapper()
+						.commitTransaction();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				innerCall = false;
+			}
+			super.notifyChanged(notification);
+		}
+	};
+
 	private static Resource PRICE_CATEGORIES_RESOURCE;
 	private static Resource ORDERS_RESOURCE;
 	private static Resource CUSTOMERS_RESOURCE;
 	private static Resource PRODUCTS_RESOURCE;
 
+	private static ResourceSetImpl resourceSet = new ResourceSetImpl();
+
+	static {
+		createResources();
+	}
+
 	public synchronized static Resource getPriceCategoryResource() {
-		if (PRICE_CATEGORIES_RESOURCE == null) {
-			PRICE_CATEGORIES_RESOURCE = createResource("PriceCategory");
-		}
 		return PRICE_CATEGORIES_RESOURCE;
 	}
 
 	public synchronized static Resource getProductsResource() {
-		if (PRODUCTS_RESOURCE == null) {
-			PRODUCTS_RESOURCE = createResource("ProductCategory where parent=null");
-		}
 		return PRODUCTS_RESOURCE;
 	}
 
 	public synchronized static Resource getOrdersResource() {
-		if (ORDERS_RESOURCE == null) {
-			ORDERS_RESOURCE = createResource("Order");
-		}
 		return ORDERS_RESOURCE;
 	}
 
 	public synchronized static Resource getCustomerResource() {
-		if (CUSTOMERS_RESOURCE == null) {
-			CUSTOMERS_RESOURCE = createResource("Customer");
-		}
 		return CUSTOMERS_RESOURCE;
 	}
 
-	private static Resource createResource(String type) {
-		RedskinCoreActivator.getSessionController().getSessionWrapper()
-				.beginTransaction();
-		String uriStr = "hibernate://?" + HibernateResource.DS_NAME_PARAM
-				+ "=ShopDB&query1=FROM " + type;
-		URI uri = URI.createURI(uriStr);
-		final Resource res = new ResourceSetImpl().getResource(uri, true);
-		// res.load(Collections.EMPTY_MAP);
-		res.eAdapters().add(new EContentAdapter() {
-			private boolean innerCall = false;
-
-			@Override
-			public void notifyChanged(Notification notification) {
-				if (innerCall)
-					return;
-				innerCall = true;
-				try {
-					res.save(Collections.EMPTY_MAP);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					innerCall = false;
-				}
-				super.notifyChanged(notification);
-			}
-		});
-		RedskinCoreActivator.getSessionController().getSessionWrapper()
-				.commitTransaction();
-		return res;
+	private static void createResources() {
+		try {
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.beginTransaction();
+			PRICE_CATEGORIES_RESOURCE = resourceSet.createResource(URI
+					.createURI("hibernate://?"
+							+ HibernateResource.SESSION_CONTROLLER_PARAM
+							+ "=ShopDB&query1=FROM PriceCategory"));
+			PRICE_CATEGORIES_RESOURCE.load(Collections.EMPTY_MAP);
+			PRODUCTS_RESOURCE = resourceSet
+					.createResource(URI
+							.createURI("hibernate://?"
+									+ HibernateResource.SESSION_CONTROLLER_PARAM
+									+ "=ShopDB&query1=FROM ProductCategory where parent=null"));
+			PRODUCTS_RESOURCE.load(Collections.EMPTY_MAP);
+			ORDERS_RESOURCE = resourceSet.createResource(URI
+					.createURI("hibernate://?"
+							+ HibernateResource.SESSION_CONTROLLER_PARAM
+							+ "=ShopDB&query1=FROM Order"));
+			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
+			CUSTOMERS_RESOURCE = resourceSet.createResource(URI
+					.createURI("hibernate://?"
+							+ HibernateResource.SESSION_CONTROLLER_PARAM
+							+ "=ShopDB&query1=FROM Customer"));
+			CUSTOMERS_RESOURCE.load(Collections.EMPTY_MAP);
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.commitTransaction();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		PRICE_CATEGORIES_RESOURCE.eAdapters().add(resourceSaver);
+		PRODUCTS_RESOURCE.eAdapters().add(resourceSaver);
+		ORDERS_RESOURCE.eAdapters().add(resourceSaver);
+		CUSTOMERS_RESOURCE.eAdapters().add(resourceSaver);
 	}
 }

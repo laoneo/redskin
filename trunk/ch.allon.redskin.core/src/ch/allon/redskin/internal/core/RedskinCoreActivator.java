@@ -19,7 +19,7 @@ import ch.allon.redskin.core.model.shop.ShopPackage;
 public class RedskinCoreActivator extends Plugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "ch.allon.shop.core";
+	public static final String PLUGIN_ID = "ch.allon.redskin.core";
 
 	// The shared instance
 	private static RedskinCoreActivator plugin;
