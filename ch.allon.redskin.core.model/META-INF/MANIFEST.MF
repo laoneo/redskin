@@ -13,3 +13,4 @@ Export-Package: ch.allon.redskin.core.model.shop,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: ch.allon.redskin.internal.core.model.RedskinModelActivator
