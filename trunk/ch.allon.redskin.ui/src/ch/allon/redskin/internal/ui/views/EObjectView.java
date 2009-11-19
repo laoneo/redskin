@@ -61,8 +61,7 @@ public abstract class EObjectView extends ViewPart implements
 		viewer = createViewer(container);
 		createBottomBar(container);
 
-		viewer.setContentProvider(new AdapterFactoryContentProvider(
-				getEditingDomain().getAdapterFactory()));
+		viewer.setContentProvider(createContentProvider());
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setUseHashlookup(true);
@@ -114,6 +113,14 @@ public abstract class EObjectView extends ViewPart implements
 		createContextMenu();
 
 		initialize(memento);
+	}
+
+	/**
+	 * @return
+	 */
+	protected AdapterFactoryContentProvider createContentProvider() {
+		return new AdapterFactoryContentProvider(
+				getEditingDomain().getAdapterFactory());
 	}
 
 	protected void createBottomBar(Composite container) {
