@@ -109,7 +109,7 @@ public class DBFactory {
 				return (Order) obj;
 		}
 		Object[] objects = ORDERS_RESOURCE.getObjectsByQuery(
-				"FROM Order where number = " + number, true);
+				"FROM Order where number = '" + number+"'", true);
 		if (objects.length < 1)
 			return null;
 		return (Order) objects[0];
