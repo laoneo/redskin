@@ -2,7 +2,6 @@ package ch.allon.redskin.internal.ui.views;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -12,7 +11,6 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -52,7 +50,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
@@ -76,12 +73,11 @@ import ch.allon.redskin.internal.ui.custom.CustomDialog;
 import ch.allon.redskin.internal.ui.custom.CustomerDialog;
 import ch.allon.redskin.internal.ui.custom.ProductProposalProvider;
 
-public class WorkView extends EObjectView implements ISaveablePart2 {
+public class WorkView extends EObjectView {
 
 	private Text numberField;
 	private Text rentField;
 	private Button tomorrowButton;
-	private boolean dirty;
 
 	@Override
 	protected Object createInput(IMemento memento) {
@@ -103,7 +99,9 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 				}
 			}
 		}
-		return ShopFactory.eINSTANCE.createOrder();
+		Order order = ShopFactory.eINSTANCE.createOrder();
+		DBFactory.getOrdersResource().getContents().add(order);
+		return order;
 	}
 
 	@Override
@@ -212,22 +210,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 		buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		buttonBar.setLayout(new GridLayout(5, false));
 
-		Button button = new Button(buttonBar, SWT.PUSH);
-		button
-				.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
-						false));
-		button.setText(Messages.WorkView_Save);
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				doSave(null);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-
 		Button customerButton = new Button(buttonBar, SWT.PUSH);
 		customerButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
@@ -256,8 +238,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 				if (dialog.open() == Dialog.CANCEL)
 					return;
 				getOrder().getComments().add(dialog.getValue());
-				dirty = true;
-				firePropertyChange(PROP_DIRTY);
 			}
 
 			@Override
@@ -358,9 +338,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 			return;
 		getOrder().setCustomer(dialog.getCustomer());
 		setPartName(dialog.getCustomer().toString());
-		dirty = getOrder().eResource() == null ? true : getOrder().eResource()
-				.isModified();
-		firePropertyChange(PROP_DIRTY);
 	}
 
 	private void handleCreateTransaction() {
@@ -424,48 +401,6 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 		getOrder().getTransactions().add(transaction);
 		numberField.setText("");
 		numberField.setFocus();
-		dirty = true;
-		firePropertyChange(PROP_DIRTY);
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		EList<EObject> contents = DBFactory.getOrdersResource().getContents();
-		if (contents.contains(getOrder())) {
-			DBFactory.getOrdersResource().save(Collections.EMPTY_MAP);
-		} else
-			contents.add(getOrder());
-		dirty = DBFactory.getOrdersResource().isModified();
-		firePropertyChange(PROP_DIRTY);
-	}
-
-	@Override
-	public void doSaveAs() {
-	}
-
-	@Override
-	public boolean isDirty() {
-		return dirty;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-
-	@Override
-	public boolean isSaveOnCloseNeeded() {
-		return true;
-	}
-
-	@Override
-	public int promptToSaveOnClose() {
-		boolean save = MessageDialog
-				.openQuestion(
-						getViewSite().getShell(),
-						"Speichern",
-						"Der Auftrag wurde noch nicht gespeichert, soll gespeichert werden vor dem schliessen?");
-		return save ? YES : NO;
 	}
 
 	@Override
