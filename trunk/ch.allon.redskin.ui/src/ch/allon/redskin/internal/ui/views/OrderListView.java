@@ -57,7 +57,7 @@ public class OrderListView extends EObjectView {
 				super.notifyChanged(notification);
 			}
 		});
-		return DBFactory.getOrdersResource();
+		return DBFactory.getOrdersResource().getContents().toArray();
 	}
 
 	@Override
@@ -89,7 +89,8 @@ public class OrderListView extends EObjectView {
 							word = t.getProduct().getNumber() + " "
 									+ t.getProduct().getName() + " "
 									+ t.getProduct().getDescription();
-							return wordMatches(word)||isParentMatch(viewer, t.getOrder());
+							return wordMatches(word)
+									|| isParentMatch(viewer, t.getOrder());
 						}
 						return super.isLeafMatch(viewer, element);
 					}
@@ -214,6 +215,19 @@ public class OrderListView extends EObjectView {
 		});
 
 		return viewer;
+	}
+
+	@Override
+	protected AdapterFactoryContentProvider createContentProvider() {
+		return new AdapterFactoryContentProvider(getEditingDomain()
+				.getAdapterFactory()) {
+			@Override
+			public Object[] getElements(Object object) {
+				if (object instanceof Object[])
+					return (Object[]) object;
+				return super.getElements(object);
+			}
+		};
 	}
 
 	@Override

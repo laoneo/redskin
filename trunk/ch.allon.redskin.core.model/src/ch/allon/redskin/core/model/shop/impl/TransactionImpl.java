@@ -36,7 +36,6 @@ import ch.allon.redskin.core.model.shop.Transaction;
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getProduct <em>Product</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getStartDate <em>Start Date</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getEndDate <em>End Date</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getComments <em>Comments</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getPrice <em>Price</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.impl.TransactionImpl#getPaidDate <em>Paid Date</em>}</li>
  * </ul>
@@ -114,16 +113,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * @ordered
 	 */
 	protected Date endDate = END_DATE_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getComments() <em>Comments</em>}' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getComments()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<String> comments;
 
 	/**
 	 * The default value of the '{@link #getPrice() <em>Price</em>}' attribute.
@@ -332,18 +321,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<String> getComments() {
-		if (comments == null) {
-			comments = new EDataTypeUniqueEList<String>(String.class, this, ShopPackage.TRANSACTION__COMMENTS);
-		}
-		return comments;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public double getPrice() {
 		return price;
 	}
@@ -444,8 +421,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 				return getStartDate();
 			case ShopPackage.TRANSACTION__END_DATE:
 				return getEndDate();
-			case ShopPackage.TRANSACTION__COMMENTS:
-				return getComments();
 			case ShopPackage.TRANSACTION__PRICE:
 				return getPrice();
 			case ShopPackage.TRANSACTION__PAID_DATE:
@@ -477,10 +452,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 				return;
 			case ShopPackage.TRANSACTION__END_DATE:
 				setEndDate((Date)newValue);
-				return;
-			case ShopPackage.TRANSACTION__COMMENTS:
-				getComments().clear();
-				getComments().addAll((Collection<? extends String>)newValue);
 				return;
 			case ShopPackage.TRANSACTION__PRICE:
 				setPrice((Double)newValue);
@@ -515,9 +486,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 			case ShopPackage.TRANSACTION__END_DATE:
 				setEndDate(END_DATE_EDEFAULT);
 				return;
-			case ShopPackage.TRANSACTION__COMMENTS:
-				getComments().clear();
-				return;
 			case ShopPackage.TRANSACTION__PRICE:
 				setPrice(PRICE_EDEFAULT);
 				return;
@@ -546,8 +514,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 				return START_DATE_EDEFAULT == null ? startDate != null : !START_DATE_EDEFAULT.equals(startDate);
 			case ShopPackage.TRANSACTION__END_DATE:
 				return END_DATE_EDEFAULT == null ? endDate != null : !END_DATE_EDEFAULT.equals(endDate);
-			case ShopPackage.TRANSACTION__COMMENTS:
-				return comments != null && !comments.isEmpty();
 			case ShopPackage.TRANSACTION__PRICE:
 				return price != PRICE_EDEFAULT;
 			case ShopPackage.TRANSACTION__PAID_DATE:
@@ -572,8 +538,6 @@ public class TransactionImpl extends EObjectImpl implements Transaction {
 		result.append(startDate);
 		result.append(", endDate: ");
 		result.append(endDate);
-		result.append(", comments: ");
-		result.append(comments);
 		result.append(", price: ");
 		result.append(price);
 		result.append(", paidDate: ");

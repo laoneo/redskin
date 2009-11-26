@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getProduct <em>Product</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getStartDate <em>Start Date</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getEndDate <em>End Date</em>}</li>
- *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getComments <em>Comments</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getPrice <em>Price</em>}</li>
  *   <li>{@link ch.allon.redskin.core.model.shop.Transaction#getPaidDate <em>Paid Date</em>}</li>
  * </ul>
@@ -167,22 +166,6 @@ public interface Transaction extends EObject {
 	 * @generated
 	 */
 	void setEndDate(Date value);
-
-	/**
-	 * Returns the value of the '<em><b>Comments</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.String}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Comments</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Comments</em>' attribute list.
-	 * @see ch.allon.redskin.core.model.shop.ShopPackage#getTransaction_Comments()
-	 * @model
-	 * @generated
-	 */
-	EList<String> getComments();
 
 	/**
 	 * Returns the value of the '<em><b>Price</b></em>' attribute.

@@ -23,11 +23,14 @@ import java.util.Collections;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
 
+import ch.allon.redskin.core.model.shop.Order;
+import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.core.RedskinCoreActivator;
 
 /**
@@ -36,36 +39,10 @@ import ch.allon.redskin.internal.core.RedskinCoreActivator;
  */
 public class DBFactory {
 
-	private static EContentAdapter resourceSaver = new EContentAdapter() {
-		private boolean innerCall = false;
-
-		@Override
-		public void notifyChanged(Notification notification) {
-			if (innerCall)
-				return;
-			innerCall = true;
-			try {
-				RedskinCoreActivator.getSessionController().getSessionWrapper()
-						.beginTransaction();
-				PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
-				PRODUCTS_RESOURCE.save(Collections.EMPTY_MAP);
-				ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
-				CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
-				RedskinCoreActivator.getSessionController().getSessionWrapper()
-						.commitTransaction();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				innerCall = false;
-			}
-			super.notifyChanged(notification);
-		}
-	};
-
 	private static Resource PRICE_CATEGORIES_RESOURCE;
-	private static Resource ORDERS_RESOURCE;
 	private static Resource CUSTOMERS_RESOURCE;
 	private static Resource PRODUCTS_RESOURCE;
+	private static HibernateResource ORDERS_RESOURCE;
 
 	private static ResourceSetImpl resourceSet = new ResourceSetImpl();
 
@@ -73,20 +50,20 @@ public class DBFactory {
 		createResources();
 	}
 
-	public synchronized static Resource getPriceCategoryResource() {
+	public static Resource getPriceCategoryResource() {
 		return PRICE_CATEGORIES_RESOURCE;
 	}
 
-	public synchronized static Resource getProductsResource() {
+	public static Resource getProductsResource() {
 		return PRODUCTS_RESOURCE;
 	}
 
-	public synchronized static Resource getOrdersResource() {
-		return ORDERS_RESOURCE;
+	public static Resource getCustomerResource() {
+		return CUSTOMERS_RESOURCE;
 	}
 
-	public synchronized static Resource getCustomerResource() {
-		return CUSTOMERS_RESOURCE;
+	public static HibernateResource getOrdersResource() {
+		return ORDERS_RESOURCE;
 	}
 
 	private static void createResources() {
@@ -104,25 +81,70 @@ public class DBFactory {
 									+ HibernateResource.SESSION_CONTROLLER_PARAM
 									+ "=ShopDB&query1=FROM ProductCategory where parent=null"));
 			PRODUCTS_RESOURCE.load(Collections.EMPTY_MAP);
-			ORDERS_RESOURCE = resourceSet.createResource(URI
-					.createURI("hibernate://?"
-							+ HibernateResource.SESSION_CONTROLLER_PARAM
-							+ "=ShopDB&query1=FROM Order"));
-			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
 			CUSTOMERS_RESOURCE = resourceSet.createResource(URI
 					.createURI("hibernate://?"
 							+ HibernateResource.SESSION_CONTROLLER_PARAM
 							+ "=ShopDB&query1=FROM Customer"));
 			CUSTOMERS_RESOURCE.load(Collections.EMPTY_MAP);
+			ORDERS_RESOURCE = (HibernateResource) resourceSet
+					.createResource(URI
+							.createURI("hibernate://?"
+									+ HibernateResource.SESSION_CONTROLLER_PARAM
+									+ "=ShopDB&query1=select o FROM Order o join o.transactions t where t.paidDate = null"));
+			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
 					.commitTransaction();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		PRICE_CATEGORIES_RESOURCE.eAdapters().add(resourceSaver);
-		PRODUCTS_RESOURCE.eAdapters().add(resourceSaver);
-		ORDERS_RESOURCE.eAdapters().add(resourceSaver);
-		CUSTOMERS_RESOURCE.eAdapters().add(resourceSaver);
+		new ResourceSaver(new Resource[] { PRICE_CATEGORIES_RESOURCE,
+				PRODUCTS_RESOURCE, CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
 	}
+
+	public static Order findOrder(String number) {
+		for (EObject obj : ORDERS_RESOURCE.getContents()) {
+			if (obj.eClass().getClassifierID() == ShopPackage.ORDER
+					&& ((Order) obj).getNumber().equals(number))
+				return (Order) obj;
+		}
+		Object[] objects = ORDERS_RESOURCE.getObjectsByQuery(
+				"FROM Order where number = " + number, true);
+		if (objects.length < 1)
+			return null;
+		return (Order) objects[0];
+	}
+
+	public static class ResourceSaver extends EContentAdapter {
+		private boolean innerCall = false;
+		private final Resource[] resources;
+
+		public ResourceSaver(Resource[] resources) {
+			this.resources = resources;
+			for (Resource resource : resources) {
+				resource.eAdapters().add(this);
+			}
+		}
+
+		@Override
+		public void notifyChanged(Notification notification) {
+			if (innerCall)
+				return;
+			innerCall = true;
+			try {
+				RedskinCoreActivator.getSessionController().getSessionWrapper()
+						.beginTransaction();
+				for (Resource resource : resources) {
+					resource.save(Collections.EMPTY_MAP);
+				}
+				RedskinCoreActivator.getSessionController().getSessionWrapper()
+						.commitTransaction();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				innerCall = false;
+			}
+			super.notifyChanged(notification);
+		}
+	};
 }

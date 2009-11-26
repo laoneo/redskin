@@ -399,22 +399,13 @@ public interface ShopPackage extends EPackage {
 	int TRANSACTION__END_DATE = 4;
 
 	/**
-	 * The feature id for the '<em><b>Comments</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int TRANSACTION__COMMENTS = 5;
-
-	/**
 	 * The feature id for the '<em><b>Price</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION__PRICE = 6;
+	int TRANSACTION__PRICE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Paid Date</b></em>' attribute.
@@ -423,7 +414,7 @@ public interface ShopPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION__PAID_DATE = 7;
+	int TRANSACTION__PAID_DATE = 6;
 
 	/**
 	 * The number of structural features of the '<em>Transaction</em>' class.
@@ -432,7 +423,7 @@ public interface ShopPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TRANSACTION_FEATURE_COUNT = 8;
+	int TRANSACTION_FEATURE_COUNT = 7;
 
 
 	/**
@@ -782,17 +773,6 @@ public interface ShopPackage extends EPackage {
 	EAttribute getTransaction_EndDate();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link ch.allon.redskin.core.model.shop.Transaction#getComments <em>Comments</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Comments</em>'.
-	 * @see ch.allon.redskin.core.model.shop.Transaction#getComments()
-	 * @see #getTransaction()
-	 * @generated
-	 */
-	EAttribute getTransaction_Comments();
-
-	/**
 	 * Returns the meta object for the attribute '{@link ch.allon.redskin.core.model.shop.Transaction#getPrice <em>Price</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1103,14 +1083,6 @@ public interface ShopPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute TRANSACTION__END_DATE = eINSTANCE.getTransaction_EndDate();
-
-		/**
-		 * The meta object literal for the '<em><b>Comments</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute TRANSACTION__COMMENTS = eINSTANCE.getTransaction_Comments();
 
 		/**
 		 * The meta object literal for the '<em><b>Price</b></em>' attribute feature.
