@@ -64,7 +64,6 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 			addNumberPropertyDescriptor(object);
 			addStartDatePropertyDescriptor(object);
 			addEndDatePropertyDescriptor(object);
-			addCommentsPropertyDescriptor(object);
 			addPricePropertyDescriptor(object);
 			addPaidDatePropertyDescriptor(object);
 		}
@@ -129,28 +128,6 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 				 getString("_UI_Transaction_endDate_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_endDate_feature", "_UI_Transaction_type"),
 				 ShopPackage.Literals.TRANSACTION__END_DATE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Comments feature. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addCommentsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Transaction_comments_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Transaction_comments_feature", "_UI_Transaction_type"),
-				 ShopPackage.Literals.TRANSACTION__COMMENTS,
 				 true,
 				 false,
 				 false,
@@ -243,7 +220,6 @@ public class TransactionItemProvider extends ItemProviderAdapter implements
 			case ShopPackage.TRANSACTION__NUMBER:
 			case ShopPackage.TRANSACTION__START_DATE:
 			case ShopPackage.TRANSACTION__END_DATE:
-			case ShopPackage.TRANSACTION__COMMENTS:
 			case ShopPackage.TRANSACTION__PRICE:
 			case ShopPackage.TRANSACTION__PAID_DATE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

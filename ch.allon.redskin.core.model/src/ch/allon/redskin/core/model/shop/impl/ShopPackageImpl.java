@@ -425,7 +425,7 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTransaction_Comments() {
+	public EAttribute getTransaction_Price() {
 		return (EAttribute)transactionEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -434,17 +434,8 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTransaction_Price() {
-		return (EAttribute)transactionEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getTransaction_PaidDate() {
-		return (EAttribute)transactionEClass.getEStructuralFeatures().get(7);
+		return (EAttribute)transactionEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -512,7 +503,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		createEReference(transactionEClass, TRANSACTION__PRODUCT);
 		createEAttribute(transactionEClass, TRANSACTION__START_DATE);
 		createEAttribute(transactionEClass, TRANSACTION__END_DATE);
-		createEAttribute(transactionEClass, TRANSACTION__COMMENTS);
 		createEAttribute(transactionEClass, TRANSACTION__PRICE);
 		createEAttribute(transactionEClass, TRANSACTION__PAID_DATE);
 	}
@@ -584,7 +574,6 @@ public class ShopPackageImpl extends EPackageImpl implements ShopPackage {
 		initEReference(getTransaction_Product(), this.getProduct(), null, "product", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_StartDate(), ecorePackage.getEDate(), "startDate", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_EndDate(), ecorePackage.getEDate(), "endDate", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getTransaction_Comments(), ecorePackage.getEString(), "comments", null, 0, -1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_Price(), ecorePackage.getEDouble(), "price", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTransaction_PaidDate(), ecorePackage.getEDate(), "paidDate", null, 0, 1, Transaction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

@@ -1,11 +1,9 @@
 package ch.allon.redskin.internal.ui.views;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -90,25 +88,18 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 		if (memento != null) {
 			String number = memento.getString("ordernumber");
 			if (number != null) {
-				for (Iterator<EObject> j = DBFactory.getOrdersResource()
-						.getAllContents(); j.hasNext();) {
-					EObject obj = j.next();
-					if (obj instanceof Order) {
-						final Order order = (Order) obj;
-						if (order.getNumber().equals(number)) {
-							if (order.getCustomer() != null) {
-								UIUtil.getDisplay().asyncExec(new Runnable() {
+				final Order order = DBFactory.findOrder(number);
+				if (order != null) {
+					if (order.getCustomer() != null) {
+						UIUtil.getDisplay().asyncExec(new Runnable() {
 
-									@Override
-									public void run() {
-										setPartName(order.getCustomer()
-												.toString());
-									}
-								});
+							@Override
+							public void run() {
+								setPartName(order.getCustomer().toString());
 							}
-							return order;
-						}
+						});
 					}
+					return order;
 				}
 			}
 		}
@@ -441,11 +432,7 @@ public class WorkView extends EObjectView implements ISaveablePart2 {
 	public void doSave(IProgressMonitor monitor) {
 		EList<EObject> contents = DBFactory.getOrdersResource().getContents();
 		if (contents.contains(getOrder())) {
-			try {
-				DBFactory.getOrdersResource().save(Collections.EMPTY_MAP);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			DBFactory.getOrdersResource().save(Collections.EMPTY_MAP);
 		} else
 			contents.add(getOrder());
 		dirty = DBFactory.getOrdersResource().isModified();
