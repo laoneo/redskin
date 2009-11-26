@@ -8,7 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-collections-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/dom4j-1.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hibernate3.jar" sourcepath="C:/Users/AMo/Downloads/hibernate-distribution-3.3.2.GA-dist.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/hibernate3.jar" sourcepath="C:/Users/allon/Downloads/hibernate-distribution-3.3.2.GA-dist.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/jta-1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
