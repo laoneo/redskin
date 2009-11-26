@@ -231,5 +231,10 @@ public class ProductCategoryItemProvider
 	public ResourceLocator getResourceLocator() {
 		return RedskinEditActivator.INSTANCE;
 	}
+	
+	@Override
+	public boolean hasChildren(Object object) {
+		return true;
+	}
 
 }
