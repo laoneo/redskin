@@ -19,7 +19,9 @@
 package ch.allon.redskin.core;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
@@ -62,7 +64,7 @@ public class DBFactory {
 		return CUSTOMERS_RESOURCE;
 	}
 
-	public static HibernateResource getOrdersResource() {
+	public static Resource getOrdersResource() {
 		return ORDERS_RESOURCE;
 	}
 
@@ -87,10 +89,9 @@ public class DBFactory {
 							+ "=ShopDB&query1=FROM Customer"));
 			CUSTOMERS_RESOURCE.load(Collections.EMPTY_MAP);
 			ORDERS_RESOURCE = (HibernateResource) resourceSet
-					.createResource(URI
-							.createURI("hibernate://?"
-									+ HibernateResource.SESSION_CONTROLLER_PARAM
-									+ "=ShopDB&query1=select o FROM Order o join o.transactions t where t.paidDate = null"));
+					.createResource(URI.createURI("hibernate://?"
+							+ HibernateResource.SESSION_CONTROLLER_PARAM
+							+ "=ShopDB&query1=FROM Order where number < '0'"));
 			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
 					.commitTransaction();
@@ -109,7 +110,7 @@ public class DBFactory {
 				return (Order) obj;
 		}
 		Object[] objects = ORDERS_RESOURCE.getObjectsByQuery(
-				"FROM Order where number = '" + number+"'", true);
+				"FROM Order where number = '" + number + "'", false);
 		if (objects.length < 1)
 			return null;
 		return (Order) objects[0];
@@ -146,5 +147,30 @@ public class DBFactory {
 			}
 			super.notifyChanged(notification);
 		}
+	}
+
+	public static Object[] computeOrders(Date from, Date to, String text,
+			boolean nonPaid) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		StringBuilder hqlQuery = new StringBuilder();
+		hqlQuery.append("select o from Order o where ");
+		hqlQuery
+				.append("0 < (select count(t.number) from Transaction t where t in elements(o.transactions) and ");
+		hqlQuery.append("t.endDate between timestamp('" + format.format(from)
+				+ " 00:00:00') and timestamp('" + format.format(to)
+				+ " 23:59:59') ");
+		if (nonPaid)
+			hqlQuery.append("and t.paidDate is null");
+		hqlQuery.append(") ");
+		if (text != null && text.length() > 0) {
+			hqlQuery.append("and ( o.customer.surname like '%" + text
+					+ "%' or ");
+			hqlQuery.append("o.customer.familyName like '%" + text + "%' or ");
+			hqlQuery.append("o.customer.address like '%" + text + "%' or ");
+			hqlQuery.append("o.customer.hotel like '%" + text + "%')");
+		}
+		return ((HibernateResource) getOrdersResource()).getObjectsByQuery(
+				hqlQuery.toString(), false);
 	};
 }

@@ -1,7 +1,14 @@
 package ch.allon.redskin.internal.ui.views;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -21,81 +28,83 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 import ch.allon.redskin.core.DBFactory;
+import ch.allon.redskin.core.IJobRunnable;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Transaction;
 import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
 import ch.allon.redskin.internal.ui.Messages;
+import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.actions.NewOrderAction;
 
 public class OrderListView extends EObjectView {
+
+	private DateTime fromDateControl;
+	private DateTime toDateControl;
+	private Button todayBackButton;
+	private Button tomorrowBackButton;
+	private Text nameText;
+
+	private int scheduledTextJobsCounter;
+	private Button nonPaidButton;
 
 	@Override
 	protected Object createInput(IMemento memento) {
 		DBFactory.getOrdersResource().eAdapters().add(new EContentAdapter() {
 			@Override
 			public void notifyChanged(Notification notification) {
-				if (notification.getNotifier() instanceof Transaction)
+				if (notification.getEventType() == Notification.ADD
+						|| notification.getEventType() == Notification.ADD_MANY
+						|| notification.getEventType() == Notification.REMOVE
+						|| notification.getEventType() == Notification.REMOVE_MANY) {
+					UIUtil.getDisplay().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							updateContent();
+						}
+					});
+				} else if (notification.getNotifier() instanceof Transaction)
 					((TreeViewer) getViewer())
 							.refresh(((Transaction) notification.getNotifier())
 									.getOrder());
 				super.notifyChanged(notification);
 			}
 		});
-		return DBFactory.getOrdersResource().getContents().toArray();
+		UIUtil.getDisplay().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				updateContent();
+			}
+		});
+		return Collections.EMPTY_LIST.toArray();
 	}
 
 	@Override
 	protected StructuredViewer createViewer(Composite parent) {
-		FilteredTree filteredTree = new FilteredTree(parent,
-				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
-						| SWT.FULL_SELECTION, new PatternFilter() {
-					@Override
-					protected boolean isParentMatch(Viewer viewer,
-							Object element) {
-						if (element instanceof Order) {
-							Order o = (Order) element;
-							String word = "";
-							if (o.getCustomer() == null)
-								word = Messages.OrderListView_No_Customer_Label;
-							else
-								word = o.getCustomer().getSurname() + " " //$NON-NLS-1$ //$NON-NLS-2$
-										+ o.getCustomer().getFamilyName();
-							return wordMatches(word);
-						}
-						return super.isParentMatch(viewer, element);
-					}
-
-					@Override
-					protected boolean isLeafMatch(Viewer viewer, Object element) {
-						if (element instanceof Transaction) {
-							Transaction t = (Transaction) element;
-							String word = "";
-							word = t.getProduct().getNumber() + " "
-									+ t.getProduct().getName() + " "
-									+ t.getProduct().getDescription();
-							return wordMatches(word)
-									|| isParentMatch(viewer, t.getOrder());
-						}
-						return super.isLeafMatch(viewer, element);
-					}
-				}, true);
-		final TreeViewer viewer = filteredTree.getViewer();
+		final TreeViewer viewer = new TreeViewer(parent, SWT.MULTI
+				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
@@ -215,6 +224,249 @@ public class OrderListView extends EObjectView {
 		});
 
 		return viewer;
+	}
+
+	@Override
+	protected void createToolBar(Composite parent) {
+		Composite container = UIUtil.createStandardComposite(parent, 7);
+		GridLayout layout = (GridLayout) container.getLayout();
+		layout.horizontalSpacing = 4;
+		layout.marginTop = 4;
+		layout.marginWidth = 4;
+		layout.verticalSpacing = 4;
+
+		todayBackButton = new Button(container, SWT.CHECK);
+		todayBackButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		todayBackButton.setText("Heute zurück");
+		todayBackButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (todayBackButton.getSelection()
+						|| tomorrowBackButton.getSelection()) {
+					toDateControl.setEnabled(false);
+					fromDateControl.setEnabled(false);
+				} else {
+					toDateControl.setEnabled(true);
+					fromDateControl.setEnabled(true);
+				}
+				updateContent();
+			}
+		});
+
+		tomorrowBackButton = new Button(container, SWT.CHECK);
+		tomorrowBackButton.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.CENTER, false, false));
+		tomorrowBackButton.setText("Morgen zurück");
+		tomorrowBackButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (todayBackButton.getSelection()
+						|| tomorrowBackButton.getSelection()) {
+					toDateControl.setEnabled(false);
+					fromDateControl.setEnabled(false);
+				} else {
+					toDateControl.setEnabled(true);
+					fromDateControl.setEnabled(true);
+				}
+				updateContent();
+			}
+		});
+
+		Label label = new Label(container, SWT.NONE);
+		GridData gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+		gd.horizontalIndent = 30;
+		label.setLayoutData(gd);
+		label.setText("Von:");
+		fromDateControl = new DateTime(container, SWT.DATE | SWT.DROP_DOWN
+				| SWT.MEDIUM);
+		fromDateControl.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		fromDateControl.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateContent();
+			}
+		});
+
+		label = new Label(container, SWT.NONE);
+		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+		gd.horizontalIndent = 30;
+		label.setLayoutData(gd);
+		label.setText("Bis:");
+		toDateControl = new DateTime(container, SWT.DATE | SWT.DROP_DOWN
+				| SWT.MEDIUM);
+		toDateControl.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		toDateControl.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateContent();
+			}
+		});
+
+		nonPaidButton = new Button(container, SWT.CHECK);
+		nonPaidButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		nonPaidButton.setText("Nicht bezahlt");
+		nonPaidButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateContent();
+			}
+		});
+
+		container = UIUtil.createStandardComposite(parent, 2);
+		layout = (GridLayout) container.getLayout();
+		layout.horizontalSpacing = 4;
+		layout.marginBottom = 4;
+		layout.marginWidth = 4;
+		layout.verticalSpacing = 4;
+		label = new Label(container, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+				false));
+		label.setText("Person:");
+		nameText = new Text(container, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		nameText.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				Thread t = new Thread(new Runnable() {
+					public void run() {
+						try {
+							scheduledTextJobsCounter++;
+							Thread.sleep(1000);
+							if (scheduledTextJobsCounter > 1)
+								return;
+							UIUtil.getDisplay().asyncExec(new Runnable() {
+
+								@Override
+								public void run() {
+									updateContent();
+								}
+							});
+						} catch (InterruptedException e) {
+						} finally {
+							scheduledTextJobsCounter--;
+						}
+
+					}
+				});
+				t.start();
+			}
+		});
+	}
+
+	private void updateContent() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+		Date from = null;
+		Date to = null;
+		try {
+			from = simpleDateFormat.parse(fromDateControl.getYear() + ""
+					+ (fromDateControl.getMonth() + 1) + ""
+					+ fromDateControl.getDay());
+			to = simpleDateFormat.parse(toDateControl.getYear() + ""
+					+ (toDateControl.getMonth() + 1) + ""
+					+ toDateControl.getDay());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.add(GregorianCalendar.DATE, 1);
+
+		if (todayBackButton.getSelection() && tomorrowBackButton.getSelection()) {
+			from = new Date();
+			to = cal.getTime();
+		} else if (todayBackButton.getSelection()) {
+			from = new Date();
+			to = new Date();
+		} else if (tomorrowBackButton.getSelection()) {
+			from = cal.getTime();
+			to = cal.getTime();
+		}
+		final Date tmpFrom = from;
+		final Date tmpTo = to;
+		final String tmpPerson = nameText.getText();
+		final boolean nonPaid = nonPaidButton.getSelection();
+		UIUtil.runUIJob(new IJobRunnable() {
+
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				final Object[] orders = DBFactory.computeOrders(tmpFrom, tmpTo,
+						tmpPerson, nonPaid);
+				UIUtil.getDisplay().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						getViewer().setInput(orders);
+					}
+				});
+				return Status.OK_STATUS;
+			}
+		});
+	}
+
+	@Override
+	protected void initialize(IMemento memento) {
+		if (memento != null) {
+			todayBackButton.setSelection(Boolean.getBoolean(memento
+					.getString("todayBack")));
+			tomorrowBackButton.setSelection(Boolean.getBoolean(memento
+					.getString("tomorrowBack")));
+			if (todayBackButton.getSelection()
+					|| tomorrowBackButton.getSelection()) {
+				toDateControl.setEnabled(false);
+				fromDateControl.setEnabled(false);
+			} else {
+				toDateControl.setEnabled(true);
+				fromDateControl.setEnabled(true);
+			}
+			nonPaidButton.setSelection(Boolean.getBoolean(memento
+					.getString("nonPaid")));
+
+			fromDateControl.setYear(Integer.parseInt(memento
+					.getString("fromDateYear")));
+			fromDateControl.setMonth(Integer.parseInt(memento
+					.getString("fromDateMonth")));
+			fromDateControl.setDay(Integer.parseInt(memento
+					.getString("fromDateDay")));
+			toDateControl.setYear(Integer.parseInt(memento
+					.getString("toDateYear")));
+			toDateControl.setMonth(Integer.parseInt(memento
+					.getString("toDateMonth")));
+			toDateControl.setDay(Integer.parseInt(memento
+					.getString("toDateDay")));
+			nameText.setText(memento.getString("personText"));
+		} else {
+			nonPaidButton.setSelection(true);
+		}
+		super.initialize(memento);
+	}
+
+	@Override
+	public void saveState(IMemento memento) {
+		memento.putString("todayBack", "" + todayBackButton.getSelection());
+		memento.putString("tomorrowBack", ""
+				+ tomorrowBackButton.getSelection());
+		memento.putString("nonPaid", "" + nonPaidButton.getSelection());
+		memento.putString("fromDateYear", "" + fromDateControl.getYear());
+		memento.putString("fromDateMonth", "" + fromDateControl.getMonth());
+		memento.putString("fromDateDay", "" + fromDateControl.getDay());
+		memento.putString("toDateYear", "" + toDateControl.getYear());
+		memento.putString("toDateMonth", "" + toDateControl.getMonth());
+		memento.putString("toDateDay", "" + toDateControl.getDay());
+		memento.putString("personText", nameText.getText());
+		super.saveState(memento);
 	}
 
 	@Override

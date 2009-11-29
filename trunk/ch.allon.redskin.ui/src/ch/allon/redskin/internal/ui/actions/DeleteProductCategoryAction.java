@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 
+import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ProductCategory;
 
 public class DeleteProductCategoryAction extends EObjectAction {
@@ -15,7 +16,10 @@ public class DeleteProductCategoryAction extends EObjectAction {
 		for (EObject obj : selectedObjects) {
 			if (obj instanceof ProductCategory) {
 				ProductCategory p = (ProductCategory) obj;
-				p.getParent().getSubCategorys().remove(p);
+				if (p.getParent() == null)
+					DBFactory.getProductsResource().getContents().remove(p);
+				else
+					p.getParent().getSubCategorys().remove(p);
 			}
 		}
 	}

@@ -99,9 +99,7 @@ public class WorkView extends EObjectView {
 				}
 			}
 		}
-		Order order = ShopFactory.eINSTANCE.createOrder();
-		DBFactory.getOrdersResource().getContents().add(order);
-		return order;
+		return ShopFactory.eINSTANCE.createOrder();
 	}
 
 	@Override
@@ -336,8 +334,20 @@ public class WorkView extends EObjectView {
 				.getShell());
 		if (dialog.open() == Dialog.CANCEL || dialog.getCustomer() == null)
 			return;
-		getOrder().setCustomer(dialog.getCustomer());
-		setPartName(dialog.getCustomer().toString());
+		final Customer customer = dialog.getCustomer();
+		UIUtil.runUIJob(new IJobRunnable() {
+
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				if (!DBFactory.getOrdersResource().getContents().contains(
+						getOrder())) {
+					DBFactory.getOrdersResource().getContents().add(getOrder());
+				}
+				getOrder().setCustomer(customer);
+				return Status.OK_STATUS;
+			}
+		});
+		setPartName(customer.toString());
 	}
 
 	private void handleCreateTransaction() {
@@ -352,7 +362,7 @@ public class WorkView extends EObjectView {
 			numberField.setFocus();
 			return;
 		}
-		Product product = ProductIndexer.getProduct(number);
+		final Product product = ProductIndexer.getProduct(number);
 		if (product == null) {
 			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
 					Messages.WorkView_Error_Title,
@@ -372,7 +382,8 @@ public class WorkView extends EObjectView {
 				return;
 			}
 		}
-		Transaction transaction = ShopFactory.eINSTANCE.createTransaction();
+		final Transaction transaction = ShopFactory.eINSTANCE
+				.createTransaction();
 		try {
 			GregorianCalendar c = new GregorianCalendar();
 			if (tomorrowButton.getSelection()) {
@@ -397,8 +408,19 @@ public class WorkView extends EObjectView {
 			return;
 		}
 
-		transaction.setProduct(product);
-		getOrder().getTransactions().add(transaction);
+		UIUtil.runUIJob(new IJobRunnable() {
+
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				if (!DBFactory.getOrdersResource().getContents().contains(
+						getOrder())) {
+					DBFactory.getOrdersResource().getContents().add(getOrder());
+				}
+				transaction.setProduct(product);
+				getOrder().getTransactions().add(transaction);
+				return Status.OK_STATUS;
+			}
+		});
 		numberField.setText("");
 		numberField.setFocus();
 	}
@@ -569,7 +591,13 @@ public class WorkView extends EObjectView {
 			@Override
 			public void notifyChanged(Notification notification) {
 				super.notifyChanged(notification);
-				((TableViewer) getViewer()).refresh();
+				UIUtil.getDisplay().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						((TableViewer) getViewer()).refresh();
+					}
+				});
 			}
 
 			@Override
