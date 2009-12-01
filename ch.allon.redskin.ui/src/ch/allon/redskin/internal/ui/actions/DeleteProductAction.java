@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 
 import ch.allon.redskin.core.model.shop.Product;
+import ch.allon.redskin.internal.ui.UIUtil;
 
 public class DeleteProductAction extends EObjectAction {
 
@@ -15,7 +16,11 @@ public class DeleteProductAction extends EObjectAction {
 		for (EObject obj : selectedObjects) {
 			if (obj instanceof Product) {
 				Product p = (Product) obj;
-				p.getProductCategory().getProducts().remove(p);
+				try {
+					p.getProductCategory().getProducts().remove(p);
+				} catch (Exception e) {
+					UIUtil.handleException(e);
+				}
 			}
 		}
 	}

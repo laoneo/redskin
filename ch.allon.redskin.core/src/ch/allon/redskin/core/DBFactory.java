@@ -136,6 +136,11 @@ public class DBFactory {
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.beginTransaction();
 				for (Resource resource : resources) {
+					if (notification.getEventType() == Notification.SET) {
+						continue;
+					}
+					// if(resource.getContents().contains(notification.getOldValue()))
+					// resource.getContents().remove(notification.getOldValue());
 					resource.save(Collections.EMPTY_MAP);
 				}
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
