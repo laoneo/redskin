@@ -20,7 +20,9 @@ package ch.allon.redskin.internal.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,6 +77,12 @@ public class UIUtil {
 		layout.verticalSpacing = 0;
 		container.setLayout(layout);
 		return container;
+	}
+
+	public static void handleException(Exception e) {
+		ErrorDialog.openError(getDisplay().getActiveShell(), "Error", e
+				.getLocalizedMessage(), new Status(IStatus.ERROR,
+				"ch.allon.redskin.ui", e.getLocalizedMessage()));
 	}
 
 }

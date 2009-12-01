@@ -247,5 +247,31 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.eclipse.birt.report.designer.ui.editors.reportdesign"
+            file-extensions="rptdesign">
+      </file-association>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+     <editor
+           class="ch.allon.redskin.internal.ui.report.RCPMultiPageReportEditor"
+           contributorClass="ch.allon.redskin.internal.ui.report.ReportActionBarContributor"
+           default="false"
+           icon="platform:/plugin/org.eclipse.birt.report.designer.ui/icons/eview16/report.gif"
+           id="org.eclipse.birt.report.designer.ui.editors.ReportEditor"
+           name="ReportEditor">
+         <contentTypeBinding contentTypeId="org.eclipse.birt.report.designer.ui.editors.reportdesign"/>
+      </editor>
+
+   </extension>
+   <extension
+         point="org.eclipse.birt.report.designer.ui.editors.multiPageEditorContributor">
+      <targetEditor
+            targetEditorId="org.eclipse.birt.report.designer.ui.editors.ReportEditor">
+      </targetEditor>
+   </extension>
 
 </plugin>
