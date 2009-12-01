@@ -15,7 +15,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import ch.allon.redskin.internal.ui.actions.NewOrderAction;
-import ch.allon.redskin.internal.ui.actions.OpenReportEditorAction;
 
 /**
  * An action bar advisor is responsible for creating, adding, and disposing of
@@ -29,7 +28,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	// in the fill methods. This ensures that the actions aren't recreated
 	// when fillActionBars is called with FILL_PROXY.
 	private IWorkbenchAction exitAction;
-	private OpenReportEditorAction reportAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
@@ -44,7 +42,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// the window is closed.
 
 		exitAction = ActionFactory.QUIT.create(window);
-		reportAction =new OpenReportEditorAction();
 		register(exitAction);
 	}
 
@@ -53,7 +50,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 				IWorkbenchActionConstants.M_FILE);
 		menuBar.add(fileMenu);
 		fileMenu.add(exitAction);
-		fileMenu.add(reportAction);
 	}
 
 	/*
