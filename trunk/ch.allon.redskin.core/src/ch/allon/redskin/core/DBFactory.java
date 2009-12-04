@@ -136,12 +136,8 @@ public class DBFactory {
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.beginTransaction();
 				for (Resource resource : resources) {
-					if (notification.getEventType() == Notification.SET) {
-						continue;
-					}
-					// if(resource.getContents().contains(notification.getOldValue()))
-					// resource.getContents().remove(notification.getOldValue());
-					resource.save(Collections.EMPTY_MAP);
+					if (resource.isModified())
+						resource.save(Collections.EMPTY_MAP);
 				}
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.commitTransaction();
@@ -159,15 +155,13 @@ public class DBFactory {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 		StringBuilder hqlQuery = new StringBuilder();
-		hqlQuery.append("select o from Order o where ");
 		hqlQuery
-				.append("0 < (select count(t.number) from Transaction t where t in elements(o.transactions) and ");
+				.append("select distinct o from Order o join o.transactions t where ");
 		hqlQuery.append("t.endDate between timestamp('" + format.format(from)
 				+ " 00:00:00') and timestamp('" + format.format(to)
 				+ " 23:59:59') ");
 		if (nonPaid)
-			hqlQuery.append("and t.paidDate is null");
-		hqlQuery.append(") ");
+			hqlQuery.append("and t.paidDate is null ");
 		if (text != null && text.length() > 0) {
 			hqlQuery.append("and ( o.customer.surname like '%" + text
 					+ "%' or ");
@@ -177,5 +171,5 @@ public class DBFactory {
 		}
 		return ((HibernateResource) getOrdersResource()).getObjectsByQuery(
 				hqlQuery.toString(), false);
-	};
+	}
 }

@@ -1,6 +1,5 @@
 package ch.allon.redskin.internal.ui.views;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -368,34 +367,28 @@ public class OrderListView extends EObjectView {
 	}
 
 	private void updateContent() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-		Date from = null;
-		Date to = null;
-		try {
-			from = simpleDateFormat.parse(fromDateControl.getYear() + ""
-					+ (fromDateControl.getMonth() + 1) + ""
-					+ fromDateControl.getDay());
-			to = simpleDateFormat.parse(toDateControl.getYear() + ""
-					+ (toDateControl.getMonth() + 1) + ""
-					+ toDateControl.getDay());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.add(GregorianCalendar.DATE, 1);
+		GregorianCalendar from = null;
+		GregorianCalendar to = null;
+		from = new GregorianCalendar(fromDateControl.getYear(),
+				(fromDateControl.getMonth() + 1), fromDateControl.getDay());
+		to = new GregorianCalendar(toDateControl.getYear(), (toDateControl
+				.getMonth() + 1), toDateControl.getDay());
 
 		if (todayBackButton.getSelection() && tomorrowBackButton.getSelection()) {
-			from = new Date();
-			to = cal.getTime();
+			from = new GregorianCalendar();
+			to = new GregorianCalendar();
+			to.add(GregorianCalendar.DATE, 1);
 		} else if (todayBackButton.getSelection()) {
-			from = new Date();
-			to = new Date();
+			from = new GregorianCalendar();
+			to = new GregorianCalendar();
 		} else if (tomorrowBackButton.getSelection()) {
-			from = cal.getTime();
-			to = cal.getTime();
+			from = new GregorianCalendar();
+			from.add(GregorianCalendar.DATE, 1);
+			to = new GregorianCalendar();
+			to.add(GregorianCalendar.DATE, 1);
 		}
-		final Date tmpFrom = from;
-		final Date tmpTo = to;
+		final Date tmpFrom = from.getTime();
+		final Date tmpTo = to.getTime();
 		final String tmpPerson = nameText.getText();
 		final boolean nonPaid = nonPaidButton.getSelection();
 		UIUtil.runUIJob(new IJobRunnable() {
