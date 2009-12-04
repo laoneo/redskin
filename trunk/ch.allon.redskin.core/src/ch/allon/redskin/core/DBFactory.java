@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
@@ -47,6 +48,7 @@ public class DBFactory {
 	private static HibernateResource ORDERS_RESOURCE;
 
 	private static ResourceSetImpl resourceSet = new ResourceSetImpl();
+	private static ResourceSaver resourceSaver;
 
 	static {
 		createResources();
@@ -99,8 +101,9 @@ public class DBFactory {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		new ResourceSaver(new Resource[] { PRICE_CATEGORIES_RESOURCE,
-				PRODUCTS_RESOURCE, CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
+		resourceSaver = new ResourceSaver(new Resource[] {
+				PRICE_CATEGORIES_RESOURCE, PRODUCTS_RESOURCE,
+				CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
 	}
 
 	public static Order findOrder(String number) {
@@ -119,6 +122,7 @@ public class DBFactory {
 	public static class ResourceSaver extends EContentAdapter {
 		private boolean innerCall = false;
 		private final Resource[] resources;
+		private boolean isTracking = true;
 
 		public ResourceSaver(Resource[] resources) {
 			this.resources = resources;
@@ -129,14 +133,15 @@ public class DBFactory {
 
 		@Override
 		public void notifyChanged(Notification notification) {
-			if (innerCall)
+			if (innerCall || !isTracking)
 				return;
 			innerCall = true;
 			try {
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.beginTransaction();
 				for (Resource resource : resources) {
-					if (resource.isModified())
+					if (resource.isModified()
+							|| notification.getEventType() == Notification.ADD)
 						resource.save(Collections.EMPTY_MAP);
 				}
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
@@ -148,28 +153,55 @@ public class DBFactory {
 			}
 			super.notifyChanged(notification);
 		}
+
+		public void setTracking(boolean isTracking) {
+			this.isTracking = isTracking;
+		}
 	}
 
 	public static Object[] computeOrders(Date from, Date to, String text,
-			boolean nonPaid) {
+			boolean nonPaid, boolean showAll) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 		StringBuilder hqlQuery = new StringBuilder();
-		hqlQuery
-				.append("select distinct o from Order o join o.transactions t where ");
-		hqlQuery.append("t.endDate between timestamp('" + format.format(from)
-				+ " 00:00:00') and timestamp('" + format.format(to)
-				+ " 23:59:59') ");
-		if (nonPaid)
-			hqlQuery.append("and t.paidDate is null ");
-		if (text != null && text.length() > 0) {
-			hqlQuery.append("and ( o.customer.surname like '%" + text
-					+ "%' or ");
-			hqlQuery.append("o.customer.familyName like '%" + text + "%' or ");
-			hqlQuery.append("o.customer.address like '%" + text + "%' or ");
-			hqlQuery.append("o.customer.hotel like '%" + text + "%')");
+		hqlQuery.append("select distinct o from Order o ");
+		if (!showAll) {
+			hqlQuery.append("join o.transactions t where ");
+			hqlQuery.append("t.endDate between timestamp('"
+					+ format.format(from) + " 00:00:00') and timestamp('"
+					+ format.format(to) + " 23:59:59') ");
+			if (nonPaid)
+				hqlQuery.append("and t.paidDate is null ");
+			if (text != null && text.length() > 0) {
+				hqlQuery.append("and ( o.customer.surname like '%" + text
+						+ "%' or ");
+				hqlQuery.append("o.customer.familyName like '%" + text
+						+ "%' or ");
+				hqlQuery.append("o.customer.address like '%" + text + "%' or ");
+				hqlQuery.append("o.customer.hotel like '%" + text + "%')");
+			}
 		}
 		return ((HibernateResource) getOrdersResource()).getObjectsByQuery(
 				hqlQuery.toString(), false);
+	}
+
+	public static void deleteFromResource(List<EObject> objects) {
+		if (objects.size() < 1)
+			return;
+		try {
+			resourceSaver.setTracking(false);
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.beginTransaction();
+			for (EObject obj : objects) {
+				obj.eResource().getContents().remove(obj);
+				RedskinCoreActivator.getSessionController().getSessionWrapper()
+						.delete(obj);
+			}
+
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.commitTransaction();
+		} finally {
+			resourceSaver.setTracking(true);
+		}
 	}
 }
