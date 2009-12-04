@@ -41,8 +41,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
-import ch.allon.redskin.core.IJobRunnable;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
+import ch.allon.redskin.internal.ui.IJobRunnable;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.actions.EObjectAction;

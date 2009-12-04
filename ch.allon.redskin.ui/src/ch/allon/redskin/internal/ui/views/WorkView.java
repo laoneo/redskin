@@ -55,8 +55,8 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 
 import ch.allon.redskin.core.DBFactory;
-import ch.allon.redskin.core.IJobRunnable;
 import ch.allon.redskin.core.ProductIndexer;
+import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Product;
@@ -65,6 +65,7 @@ import ch.allon.redskin.core.model.shop.Transaction;
 import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
+import ch.allon.redskin.internal.ui.IJobRunnable;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.actions.MarkOrderPaid;
@@ -372,6 +373,13 @@ public class WorkView extends EObjectView {
 			numberField.setFocus();
 			return;
 		}
+		if (product.getPriceCategory() == null) {
+			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
+					Messages.WorkView_Error_Title,
+					"Produkt hat keine Preis Kategorie", SWT.NONE);
+			numberField.setFocus();
+			return;
+		}
 		for (Transaction t : getOrder().getTransactions()) {
 			if (t.getProduct().equals(product)) {
 				MessageDialog.open(MessageDialog.ERROR, getViewSite()
@@ -400,10 +408,7 @@ public class WorkView extends EObjectView {
 			}
 			transaction.setPrice(price);
 		} catch (Exception e) {
-			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
-					Messages.WorkView_Error_Title,
-					"Ein Fehler ist aufgetreten:\n" + e.getLocalizedMessage(),
-					SWT.NONE);
+			RedskinCore.handleException(e);
 			numberField.setFocus();
 			return;
 		}

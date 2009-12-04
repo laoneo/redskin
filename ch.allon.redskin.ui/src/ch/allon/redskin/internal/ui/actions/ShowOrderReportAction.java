@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
@@ -89,7 +90,7 @@ public class ShowOrderReportAction extends EObjectAction {
 			// set Browser text accordingly
 			return bos.toString("utf-8");
 		} catch (Exception e) {
-			e.printStackTrace();
+			RedskinCore.handleException(e);
 		} finally {
 			engine.destroy();
 		}
