@@ -66,6 +66,7 @@ public class OrderListView extends EObjectView {
 
 	private int scheduledTextJobsCounter;
 	private Button nonPaidButton;
+	private Button showAllButton;
 
 	@Override
 	protected Object createInput(IMemento memento) {
@@ -227,7 +228,7 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	protected void createToolBar(Composite parent) {
-		Composite container = UIUtil.createStandardComposite(parent, 7);
+		Composite container = UIUtil.createStandardComposite(parent, 8);
 		GridLayout layout = (GridLayout) container.getLayout();
 		layout.horizontalSpacing = 4;
 		layout.marginTop = 4;
@@ -320,6 +321,18 @@ public class OrderListView extends EObjectView {
 			}
 		});
 
+		showAllButton = new Button(container, SWT.CHECK);
+		showAllButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false));
+		showAllButton.setText("Alle");
+		showAllButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateContent();
+			}
+		});
+
 		container = UIUtil.createStandardComposite(parent, 2);
 		layout = (GridLayout) container.getLayout();
 		layout.horizontalSpacing = 4;
@@ -391,12 +404,13 @@ public class OrderListView extends EObjectView {
 		final Date tmpTo = to.getTime();
 		final String tmpPerson = nameText.getText();
 		final boolean nonPaid = nonPaidButton.getSelection();
+		final boolean showAll = showAllButton.getSelection();
 		UIUtil.runUIJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
 				final Object[] orders = DBFactory.computeOrders(tmpFrom, tmpTo,
-						tmpPerson, nonPaid);
+						tmpPerson, nonPaid, showAll);
 				UIUtil.getDisplay().asyncExec(new Runnable() {
 
 					@Override

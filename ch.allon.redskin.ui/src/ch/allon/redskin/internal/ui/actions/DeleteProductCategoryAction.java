@@ -1,5 +1,6 @@
 package ch.allon.redskin.internal.ui.actions;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -16,8 +17,6 @@ public class DeleteProductCategoryAction extends EObjectAction {
 
 	@Override
 	protected void run(final List<EObject> selectedObjects) {
-		if (selectedObjects.size() < 1)
-			return;
 		UIUtil.runUIJob(new IJobRunnable() {
 
 			@Override
@@ -25,11 +24,8 @@ public class DeleteProductCategoryAction extends EObjectAction {
 				for (EObject obj : selectedObjects) {
 					if (obj instanceof ProductCategory) {
 						ProductCategory p = (ProductCategory) obj;
-						p.getProducts().clear();
-						p.getSubCategorys().clear();
 						if (p.getParent() == null)
-							DBFactory.getProductsResource().getContents()
-									.remove(p);
+							DBFactory.deleteFromResource(Arrays.asList(obj));
 						else {
 							p.getParent().getSubCategorys().remove(p);
 						}
