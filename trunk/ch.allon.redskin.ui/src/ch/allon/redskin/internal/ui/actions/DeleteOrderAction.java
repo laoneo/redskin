@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 
 import ch.allon.redskin.core.DBFactory;
-import ch.allon.redskin.core.IJobRunnable;
+import ch.allon.redskin.internal.ui.IJobRunnable;
 import ch.allon.redskin.internal.ui.UIUtil;
 
 public class DeleteOrderAction extends EObjectAction {

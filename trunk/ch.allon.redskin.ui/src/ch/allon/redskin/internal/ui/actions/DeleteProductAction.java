@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 
+import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.Product;
-import ch.allon.redskin.internal.ui.UIUtil;
 
 public class DeleteProductAction extends EObjectAction {
 
@@ -19,7 +19,7 @@ public class DeleteProductAction extends EObjectAction {
 				try {
 					p.getProductCategory().getProducts().remove(p);
 				} catch (Exception e) {
-					UIUtil.handleException(e);
+					RedskinCore.handleException(e);
 				}
 			}
 		}

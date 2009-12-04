@@ -1,11 +1,16 @@
 package ch.allon.redskin.internal.ui;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import ch.allon.redskin.core.IErrorService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -22,7 +27,7 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 	public static final String ID_WORK_PERSPECTIVE = "ch.allon.redskin.ui.WorkPerspective"; //$NON-NLS-1$
 	public static final String ID_ORDER_PERSPECTIVE = "ch.allon.redskin.ui.OrderPerspective"; //$NON-NLS-1$
 	public static final String ID_CUSTOMER_PERSPECTIVE = "ch.allon.redskin.ui.CustomerPerspective"; //$NON-NLS-1$
-	
+
 	// The shared instance
 	private static RedskinUIActivator plugin;
 	private static ImageRegistry imageRegistry;
@@ -43,6 +48,19 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		context.registerService(IErrorService.class.getName(),
+				new IErrorService() {
+					public void handleException(Exception exception) {
+						String message = exception.getMessage();
+						if (exception.getLocalizedMessage() != null
+								&& exception.getLocalizedMessage().length() > 0)
+							message = exception.getLocalizedMessage();
+						ErrorDialog.openError(UIUtil.getDisplay()
+								.getActiveShell(), "Error", message,
+								new Status(IStatus.ERROR,
+										"ch.allon.redskin.ui", message));
+					}
+				}, null);
 	}
 
 	/*

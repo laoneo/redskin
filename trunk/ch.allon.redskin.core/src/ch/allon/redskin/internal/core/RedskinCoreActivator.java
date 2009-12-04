@@ -11,6 +11,7 @@ import org.eclipse.emf.teneo.hibernate.resource.SessionController;
 import org.hibernate.cfg.Environment;
 import org.osgi.framework.BundleContext;
 
+import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 
 /**
@@ -74,8 +75,7 @@ public class RedskinCoreActivator extends Plugin {
 				NetworkServerControl server = new NetworkServerControl();
 				server.start(null);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				RedskinCore.handleException(e);
 			}
 
 			Properties props = new Properties();

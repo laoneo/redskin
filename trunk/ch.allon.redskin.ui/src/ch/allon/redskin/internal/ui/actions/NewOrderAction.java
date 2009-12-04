@@ -9,6 +9,7 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
+import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
@@ -59,7 +60,7 @@ public class NewOrderAction extends EObjectAction {
 			if (part instanceof WorkView && selectedObjects.size() > 0)
 				((WorkView) part).setOrder(order);
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			RedskinCore.handleException(e);
 		}
 	}
 }

@@ -16,7 +16,7 @@
  * @copyright 2007-2009 Allon Moritz
  * @version 0.1.0
  */
-package ch.allon.redskin.core;
+package ch.allon.redskin.internal.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

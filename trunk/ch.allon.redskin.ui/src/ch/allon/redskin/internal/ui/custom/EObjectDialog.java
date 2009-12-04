@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.FieldMessages;
 
@@ -126,14 +127,13 @@ public class EObjectDialog extends CustomDialog {
 						return (String) field.get(null);
 				}
 			} catch (SecurityException e) {
-				e.printStackTrace();
+				RedskinCore.handleException(e);
 			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
-				return null;
+				RedskinCore.handleException(e);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				RedskinCore.handleException(e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				RedskinCore.handleException(e);
 			}
 		}
 		return null;

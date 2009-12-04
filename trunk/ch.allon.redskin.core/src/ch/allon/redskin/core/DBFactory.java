@@ -97,9 +97,8 @@ public class DBFactory {
 			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
 					.commitTransaction();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			RedskinCore.handleException(e);
 		}
 		resourceSaver = new ResourceSaver(new Resource[] {
 				PRICE_CATEGORIES_RESOURCE, PRODUCTS_RESOURCE,
@@ -147,7 +146,7 @@ public class DBFactory {
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.commitTransaction();
 			} catch (IOException e) {
-				e.printStackTrace();
+				RedskinCore.handleException(e);
 			} finally {
 				innerCall = false;
 			}

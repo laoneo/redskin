@@ -46,12 +46,12 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IMemento;
 
 import ch.allon.redskin.core.DBFactory;
-import ch.allon.redskin.core.IJobRunnable;
 import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.Transaction;
 import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
 import ch.allon.redskin.core.model.shop.provider.TransactionItemProvider;
+import ch.allon.redskin.internal.ui.IJobRunnable;
 import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.actions.NewOrderAction;
@@ -72,7 +72,7 @@ public class OrderListView extends EObjectView {
 	protected Object createInput(IMemento memento) {
 		DBFactory.getOrdersResource().eAdapters().add(new EContentAdapter() {
 			@Override
-			public void notifyChanged(Notification notification) {
+			public void notifyChanged(final Notification notification) {
 				if (notification.getEventType() == Notification.ADD
 						|| notification.getEventType() == Notification.ADD_MANY
 						|| notification.getEventType() == Notification.REMOVE
@@ -85,9 +85,15 @@ public class OrderListView extends EObjectView {
 						}
 					});
 				} else if (notification.getNotifier() instanceof Transaction)
-					((TreeViewer) getViewer())
-							.refresh(((Transaction) notification.getNotifier())
-									.getOrder());
+					UIUtil.getDisplay().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							((TreeViewer) getViewer())
+									.refresh(((Transaction) notification
+											.getNotifier()).getOrder());
+						}
+					});
 				super.notifyChanged(notification);
 			}
 		});
