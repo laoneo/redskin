@@ -10,9 +10,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -70,33 +68,6 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	protected Object createInput(IMemento memento) {
-		DBFactory.getOrdersResource().eAdapters().add(new EContentAdapter() {
-			@Override
-			public void notifyChanged(final Notification notification) {
-				if (notification.getEventType() == Notification.ADD
-						|| notification.getEventType() == Notification.ADD_MANY
-						|| notification.getEventType() == Notification.REMOVE
-						|| notification.getEventType() == Notification.REMOVE_MANY) {
-					UIUtil.getDisplay().asyncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							updateContent();
-						}
-					});
-				} else if (notification.getNotifier() instanceof Transaction)
-					UIUtil.getDisplay().asyncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							((TreeViewer) getViewer())
-									.refresh(((Transaction) notification
-											.getNotifier()).getOrder());
-						}
-					});
-				super.notifyChanged(notification);
-			}
-		});
 		UIUtil.getDisplay().asyncExec(new Runnable() {
 
 			@Override
