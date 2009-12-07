@@ -89,7 +89,8 @@ public class ProductIndexer {
 						public void notifyChanged(Notification notification) {
 							if (notification.getFeature() != null
 									&& ((EStructuralFeature) notification
-											.getFeature()).getFeatureID() == ShopPackage.PRODUCT__NUMBER) {
+											.getFeature()).getFeatureID() == ShopPackage.PRODUCT__NUMBER
+									&& productIndex != null) {
 								productIndex.remove(notification.getOldValue());
 								productIndex.put((Integer) notification
 										.getNewValue(), p);

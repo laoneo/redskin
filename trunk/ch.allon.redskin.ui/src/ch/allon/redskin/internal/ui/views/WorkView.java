@@ -404,7 +404,8 @@ public class WorkView extends EObjectView {
 			EList<Double> prices = product.getPriceCategory().getPrices();
 			double price = prices.get(Math.min(prices.size() - 2, days - 1));
 			if (prices.size() <= days) {
-				price += (days - prices.size()) * prices.get(prices.size() - 1);
+				price += (days - prices.size() + 1)
+						* prices.get(prices.size() - 1);
 			}
 			transaction.setPrice(price);
 		} catch (Exception e) {

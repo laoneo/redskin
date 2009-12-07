@@ -203,4 +203,22 @@ public class DBFactory {
 			resourceSaver.setTracking(true);
 		}
 	}
+
+	public static void save(EObject object) {
+		try {
+			resourceSaver.setTracking(false);
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.beginTransaction();
+			PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
+			PRODUCTS_RESOURCE.save(Collections.EMPTY_MAP);
+			CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
+			ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.commitTransaction();
+		} catch (IOException e) {
+			RedskinCore.handleException(e);
+		} finally {
+			resourceSaver.setTracking(true);
+		}
+	}
 }
