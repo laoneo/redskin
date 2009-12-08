@@ -46,7 +46,6 @@ public class NewProductCategoryAction extends EObjectAction {
 				} else {
 					DBFactory.getProductsResource().getContents().add(object);
 				}
-				DBFactory.save(object);
 				return Status.OK_STATUS;
 			}
 		});

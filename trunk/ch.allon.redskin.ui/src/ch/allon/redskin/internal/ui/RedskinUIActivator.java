@@ -50,15 +50,25 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 		plugin = this;
 		context.registerService(IErrorService.class.getName(),
 				new IErrorService() {
-					public void handleException(Exception exception) {
-						String message = exception.getMessage();
-						if (exception.getLocalizedMessage() != null
-								&& exception.getLocalizedMessage().length() > 0)
-							message = exception.getLocalizedMessage();
-						ErrorDialog.openError(UIUtil.getDisplay()
-								.getActiveShell(), "Error", message,
-								new Status(IStatus.ERROR,
-										"ch.allon.redskin.ui", message));
+					public void handleException(final Exception exception) {
+						UIUtil.getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								String message = exception.getMessage();
+								if (exception.getLocalizedMessage() != null
+										&& exception.getLocalizedMessage()
+												.length() > 0)
+									message = exception.getLocalizedMessage();
+								ErrorDialog
+										.openError(UIUtil.getDisplay()
+												.getActiveShell(), "Error",
+												message, new Status(
+														IStatus.ERROR,
+														"ch.allon.redskin.ui",
+														message));
+							}
+						});
 					}
 				}, null);
 	}

@@ -46,7 +46,6 @@ public class NewProductAction extends EObjectAction {
 			public IStatus run(IProgressMonitor monitor) {
 				ProductCategory category = (ProductCategory) selectedObjects.get(0);
 				category.getProducts().add(object);
-				DBFactory.save(object);
 				return Status.OK_STATUS;
 			}
 		});
