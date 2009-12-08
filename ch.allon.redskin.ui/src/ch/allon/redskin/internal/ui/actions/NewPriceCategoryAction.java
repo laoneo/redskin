@@ -60,7 +60,6 @@ public class NewPriceCategoryAction extends EObjectAction {
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
 				DBFactory.getPriceCategoryResource().getContents().add(object);
-				DBFactory.save(object);
 				return Status.OK_STATUS;
 			}
 		});

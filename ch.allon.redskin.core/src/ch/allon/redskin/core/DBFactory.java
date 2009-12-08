@@ -18,7 +18,6 @@
  */
 package ch.allon.redskin.core;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -30,6 +29,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
 
 import ch.allon.redskin.core.model.shop.Order;
@@ -48,7 +48,6 @@ public class DBFactory {
 	private static HibernateResource ORDERS_RESOURCE;
 
 	private static ResourceSetImpl resourceSet = new ResourceSetImpl();
-	private static ResourceSaver resourceSaver;
 
 	static {
 		createResources();
@@ -97,12 +96,11 @@ public class DBFactory {
 			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
 			RedskinCoreActivator.getSessionController().getSessionWrapper()
 					.commitTransaction();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			RedskinCore.handleException(e);
 		}
-		resourceSaver = new ResourceSaver(new Resource[] {
-				PRICE_CATEGORIES_RESOURCE, PRODUCTS_RESOURCE,
-				CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
+		new ResourceSaver(new Resource[] { PRICE_CATEGORIES_RESOURCE,
+				PRODUCTS_RESOURCE, CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
 	}
 
 	public static Order findOrder(String number) {
@@ -139,13 +137,11 @@ public class DBFactory {
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.beginTransaction();
 				for (Resource resource : resources) {
-					if (resource.isModified()
-							|| notification.getEventType() == Notification.ADD)
-						resource.save(Collections.EMPTY_MAP);
+					resource.save(Collections.EMPTY_MAP);
 				}
 				RedskinCoreActivator.getSessionController().getSessionWrapper()
 						.commitTransaction();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				RedskinCore.handleException(e);
 			} finally {
 				innerCall = false;
@@ -184,41 +180,14 @@ public class DBFactory {
 				hqlQuery.toString(), false);
 	}
 
-	public static void deleteFromResource(List<EObject> objects) {
-		if (objects.size() < 1)
-			return;
-		try {
-			resourceSaver.setTracking(false);
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.beginTransaction();
-			for (EObject obj : objects) {
-				obj.eResource().getContents().remove(obj);
-				RedskinCoreActivator.getSessionController().getSessionWrapper()
-						.delete(obj);
+	public static void deleteFromResource(List<EObject> selectedObjects) {
+		for (EObject eObject : selectedObjects) {
+			try {
+				EcoreUtil.delete(eObject);
+			} catch (Exception e) {
+				RedskinCore.handleException(e);
 			}
-
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.commitTransaction();
-		} finally {
-			resourceSaver.setTracking(true);
 		}
 	}
 
-	public static void save(EObject object) {
-		try {
-			resourceSaver.setTracking(false);
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.beginTransaction();
-			PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
-			PRODUCTS_RESOURCE.save(Collections.EMPTY_MAP);
-			CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
-			ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
-			RedskinCoreActivator.getSessionController().getSessionWrapper()
-					.commitTransaction();
-		} catch (IOException e) {
-			RedskinCore.handleException(e);
-		} finally {
-			resourceSaver.setTracking(true);
-		}
-	}
 }

@@ -37,7 +37,7 @@ public class NewCustomerAction extends EObjectAction {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
-				DBFactory.save(object);
+				DBFactory.getCustomerResource().getContents().add(object);
 				return Status.OK_STATUS;
 			}
 		});

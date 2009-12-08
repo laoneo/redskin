@@ -360,9 +360,9 @@ public class OrderListView extends EObjectView {
 		GregorianCalendar from = null;
 		GregorianCalendar to = null;
 		from = new GregorianCalendar(fromDateControl.getYear(),
-				(fromDateControl.getMonth() + 1), fromDateControl.getDay());
-		to = new GregorianCalendar(toDateControl.getYear(), (toDateControl
-				.getMonth() + 1), toDateControl.getDay());
+				fromDateControl.getMonth(), fromDateControl.getDay());
+		to = new GregorianCalendar(toDateControl.getYear(), toDateControl
+				.getMonth(), toDateControl.getDay());
 
 		if (todayBackButton.getSelection() && tomorrowBackButton.getSelection()) {
 			from = new GregorianCalendar();

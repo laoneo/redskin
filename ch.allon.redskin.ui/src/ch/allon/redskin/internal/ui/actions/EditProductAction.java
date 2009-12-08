@@ -2,17 +2,11 @@ package ch.allon.redskin.internal.ui.actions;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.jface.dialogs.Dialog;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
-import ch.allon.redskin.internal.ui.IJobRunnable;
-import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
 public class EditProductAction extends EObjectAction {
@@ -36,16 +30,7 @@ public class EditProductAction extends EObjectAction {
 			}
 		};
 		dialog.setNewObject(selectedObjects.get(0));
-		if (dialog.open() == Dialog.CANCEL)
-			return;
-		UIUtil.runUIJob(new IJobRunnable() {
-
-			@Override
-			public IStatus run(IProgressMonitor monitor) {
-				DBFactory.save(dialog.getNewObject());
-				return Status.OK_STATUS;
-			}
-		});
+		dialog.open();
 	}
 
 }
