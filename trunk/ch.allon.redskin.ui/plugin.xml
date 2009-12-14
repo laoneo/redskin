@@ -104,7 +104,7 @@
                class="ch.allon.redskin.internal.ui.actions.DeleteProductCategoryAction"
                enablesFor="+"
                icon="icons/actions/delete_product_category.gif"
-               id="ch.allon.redskin.ui.action5"
+               id="ch.allon.redskin.ui.actions.DeleteProductCategoryAction"
                label="Löschen"
                menubarPath="additions">
          </action>

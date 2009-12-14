@@ -10,7 +10,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -68,6 +70,19 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	protected Object createInput(IMemento memento) {
+		DBFactory.getOrdersResource().eAdapters().add(new EContentAdapter() {
+			@Override
+			public void notifyChanged(Notification notification) {
+				UIUtil.getDisplay().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						getViewer().refresh();
+					}
+				});
+				super.notifyChanged(notification);
+			}
+		});
 		UIUtil.getDisplay().asyncExec(new Runnable() {
 
 			@Override
@@ -359,8 +374,8 @@ public class OrderListView extends EObjectView {
 	private void updateContent() {
 		GregorianCalendar from = null;
 		GregorianCalendar to = null;
-		from = new GregorianCalendar(fromDateControl.getYear(),
-				fromDateControl.getMonth(), fromDateControl.getDay());
+		from = new GregorianCalendar(fromDateControl.getYear(), fromDateControl
+				.getMonth(), fromDateControl.getDay());
 		to = new GregorianCalendar(toDateControl.getYear(), toDateControl
 				.getMonth(), toDateControl.getDay());
 
