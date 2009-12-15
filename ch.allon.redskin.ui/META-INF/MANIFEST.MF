@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ui
+Bundle-Name: Redskin UI
 Bundle-SymbolicName: ch.allon.redskin.ui;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: ch.allon.redskin.internal.ui.RedskinUIActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
