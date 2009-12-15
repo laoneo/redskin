@@ -25,7 +25,7 @@ public class NewProductCategoryAction extends EObjectAction {
 
 	@Override
 	public String getActionImagePath() {
-		return "icons/actions/new_product_category.gif";
+		return "icons/actions/new_product_category.gif"; //$NON-NLS-1$
 	}
 
 	@Override

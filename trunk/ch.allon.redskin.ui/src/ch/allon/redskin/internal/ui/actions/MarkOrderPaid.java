@@ -3,6 +3,8 @@ package ch.allon.redskin.internal.ui.actions;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 
 import ch.allon.redskin.core.model.shop.Order;
@@ -10,10 +12,9 @@ import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.core.model.shop.Transaction;
 
 public class MarkOrderPaid extends EObjectAction {
+
 	@Override
-	protected void run(List<EObject> selectedObjects) {
-		if (selectedObjects.isEmpty())
-			return;
+	protected IStatus runInModelThread(List<EObject> selectedObjects) {
 		for (EObject obj : selectedObjects) {
 			if (obj.eClass().getClassifierID() == ShopPackage.TRANSACTION) {
 				((Transaction) obj).setPaidDate(new Date());
@@ -23,6 +24,6 @@ public class MarkOrderPaid extends EObjectAction {
 				}
 			}
 		}
+		return Status.OK_STATUS;
 	}
-
 }

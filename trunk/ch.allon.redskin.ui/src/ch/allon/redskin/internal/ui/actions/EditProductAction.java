@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
 public class EditProductAction extends EObjectAction {
@@ -17,7 +18,7 @@ public class EditProductAction extends EObjectAction {
 			return;
 
 		final EObjectDialog dialog = new EObjectDialog(getShell(),
-				"Produkt bearbeiten") {
+				Messages.EditProductAction_Dialog_Title) {
 
 			@Override
 			protected List<EObject> getChilds(EObject object,

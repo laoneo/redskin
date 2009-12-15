@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -43,6 +46,8 @@ import org.eclipse.swt.widgets.Text;
 import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.FieldMessages;
+import ch.allon.redskin.internal.ui.IJobRunnable;
+import ch.allon.redskin.internal.ui.UIUtil;
 
 /**
  * @author Allon Moritz
@@ -72,7 +77,7 @@ public class EObjectDialog extends CustomDialog {
 			if (!attribute.isMany())
 				createTextField(c, getFieldText(attribute) + ":", attribute); //$NON-NLS-1$
 			else
-				createList(c, getFieldText(attribute) + ":", attribute);
+				createList(c, getFieldText(attribute) + ":", attribute); //$NON-NLS-1$
 		}
 
 		EList<EReference> references = newObject.eClass().getEReferences();
@@ -178,6 +183,26 @@ public class EObjectDialog extends CustomDialog {
 
 	@Override
 	protected void okPressed() {
+		final Map<EStructuralFeature, Object> data = collectDataInUIThread();
+		UIUtil.runUIJob(new IJobRunnable() {
+
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				setDataInModelThread(data);
+				return Status.OK_STATUS;
+			}
+		});
+		super.okPressed();
+	}
+
+	protected void setDataInModelThread(
+			final Map<EStructuralFeature, Object> data) {
+		for (EStructuralFeature feature : data.keySet())
+			newObject.eSet(feature, data.get(feature));
+	}
+
+	protected Map<EStructuralFeature, Object> collectDataInUIThread() {
+		final Map<EStructuralFeature, Object> data = new HashMap<EStructuralFeature, Object>();
 		EList<EAttribute> attributes = newObject.eClass().getEAllAttributes();
 		for (EAttribute attribute : attributes) {
 			Object control = fields.get(attribute);
@@ -193,9 +218,9 @@ public class EObjectDialog extends CustomDialog {
 						value = 0;
 					}
 				if (value != null)
-					newObject.eSet(attribute, value);
+					data.put(attribute, value);
 				else
-					System.err.println("Missing value");
+					System.err.println("Missing value"); //$NON-NLS-1$
 			}
 		}
 
@@ -203,11 +228,12 @@ public class EObjectDialog extends CustomDialog {
 		for (EReference reference : references) {
 			Object control = fields.get(reference);
 			if (control instanceof EObjectCombo) {
-				newObject.eSet(reference, ((EObjectCombo) control)
-						.getSelectedChild());
+				data
+						.put(reference, ((EObjectCombo) control)
+								.getSelectedChild());
 			}
 		}
-		super.okPressed();
+		return data;
 	}
 
 	/**

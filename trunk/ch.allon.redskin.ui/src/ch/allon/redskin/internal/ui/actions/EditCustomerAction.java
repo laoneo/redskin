@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.custom.CustomerDialog;
 
 public class EditCustomerAction extends EObjectAction {
@@ -14,7 +15,7 @@ public class EditCustomerAction extends EObjectAction {
 			return;
 
 		CustomerDialog dialog = new CustomerDialog(getShell(),
-				"Kunde bearbeiten");
+				Messages.EditCustomerAction_Title);
 		dialog.setNewObject(selectedObjects.get(0));
 		dialog.open();
 	}

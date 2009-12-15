@@ -11,6 +11,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -83,7 +84,7 @@ public class WorkView extends EObjectView {
 	@Override
 	protected Object createInput(IMemento memento) {
 		if (memento != null) {
-			String number = memento.getString("ordernumber");
+			String number = memento.getString("ordernumber"); //$NON-NLS-1$
 			if (number != null) {
 				final Order order = DBFactory.findOrder(number);
 				if (order != null) {
@@ -114,8 +115,9 @@ public class WorkView extends EObjectView {
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.setColumnProperties(new String[] { Messages.WorkView_Number_Col,
-				Messages.WorkView_Description_Col, Messages.WorkView_Days_Col,
-				Messages.WorkView_Return_Col, Messages.WorkView_Price_Col });
+				Messages.WorkView_Name_Col, Messages.WorkView_Description_Col,
+				Messages.WorkView_Days_Col, Messages.WorkView_Return_Col,
+				Messages.WorkView_Price_Col, Messages.WorkView_Paid_Col });
 
 		Table table = viewer.getTable();
 		TableLayout layout = new TableLayout();
@@ -124,8 +126,13 @@ public class WorkView extends EObjectView {
 		table.setLinesVisible(true);
 
 		TableColumn c = new TableColumn(table, SWT.NONE);
-		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		layout.addColumnData(new ColumnWeightData(3, 50, true));
 		c.setText(Messages.WorkView_Number_Col);
+		c.setResizable(true);
+
+		c = new TableColumn(table, SWT.NONE);
+		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		c.setText(Messages.WorkView_Name_Col);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
@@ -134,18 +141,23 @@ public class WorkView extends EObjectView {
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
-		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		layout.addColumnData(new ColumnWeightData(3, 10, true));
 		c.setText(Messages.WorkView_Days_Col);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
-		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		layout.addColumnData(new ColumnWeightData(3, 80, true));
 		c.setText(Messages.WorkView_Return_Col);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
-		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		layout.addColumnData(new ColumnWeightData(3, 70, true));
 		c.setText(Messages.WorkView_Price_Col);
+		c.setResizable(true);
+
+		c = new TableColumn(table, SWT.NONE);
+		layout.addColumnData(new ColumnWeightData(3, 80, true));
+		c.setText(Messages.WorkView_Paid_Col);
 		c.setResizable(true);
 
 		TextCellEditor textEditor = new TextCellEditor(table);
@@ -158,7 +170,8 @@ public class WorkView extends EObjectView {
 		});
 		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(table),
 				new TextCellEditor(table), new TextCellEditor(table),
-				new TextCellEditor(table), textEditor });
+				new TextCellEditor(table), new TextCellEditor(table),
+				textEditor, new TextCellEditor(table) });
 		viewer.setCellModifier(new ICellModifier() {
 
 			@Override
@@ -169,11 +182,24 @@ public class WorkView extends EObjectView {
 						.getFirstElement();
 				if (row == null)
 					return;
-				String v = (String) value;
+				final String v = (String) value;
 				if (v.length() < 1)
 					return;
-				row.setPrice(Double.parseDouble(v));
-				viewer.refresh();
+				UIUtil.runUIJob(new IJobRunnable() {
+
+					@Override
+					public IStatus run(IProgressMonitor monitor) {
+						row.setPrice(Double.parseDouble(v));
+						UIUtil.getDisplay().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								viewer.refresh();
+							}
+						});
+						return Status.OK_STATUS;
+					}
+				});
 			}
 
 			@Override
@@ -183,14 +209,18 @@ public class WorkView extends EObjectView {
 				int column = 0;
 				if (property.equals(Messages.WorkView_Number_Col))
 					column = 0;
-				else if (property.equals(Messages.WorkView_Description_Col))
+				else if (property.equals(Messages.WorkView_Name_Col))
 					column = 1;
-				else if (property.equals(Messages.WorkView_Days_Col))
+				else if (property.equals(Messages.WorkView_Description_Col))
 					column = 2;
-				else if (property.equals(Messages.WorkView_Return_Col))
+				else if (property.equals(Messages.WorkView_Days_Col))
 					column = 3;
-				else if (property.equals(Messages.WorkView_Price_Col))
+				else if (property.equals(Messages.WorkView_Return_Col))
 					column = 4;
+				else if (property.equals(Messages.WorkView_Price_Col))
+					column = 5;
+				else if (property.equals(Messages.WorkView_Paid_Col))
+					column = 6;
 				return labelProvider.getColumnText(element, column);
 			}
 
@@ -212,7 +242,7 @@ public class WorkView extends EObjectView {
 		Button customerButton = new Button(buttonBar, SWT.PUSH);
 		customerButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		customerButton.setText("Kunde suchen");
+		customerButton.setText(Messages.WorkView_Search_Customer_Action);
 		customerButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -227,16 +257,25 @@ public class WorkView extends EObjectView {
 		Button commentButton = new Button(buttonBar, SWT.PUSH);
 		commentButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		commentButton.setText("Kommentar eingeben");
+		commentButton.setText(Messages.WorkView_Enter_Comment);
 		commentButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				InputDialog dialog = new InputDialog(getSite().getShell(),
-						"Kommentar", "Bitte einen Kommentar eingeben.", "",
+						Messages.WorkView_Comment_Dialog_Title,
+						Messages.WorkView_Comment_Dialog_Text, "", //$NON-NLS-3$ //$NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-1$
 						null);
 				if (dialog.open() == Dialog.CANCEL)
 					return;
-				getOrder().getComments().add(dialog.getValue());
+				final String input = dialog.getValue();
+				UIUtil.runUIJob(new IJobRunnable() {
+
+					@Override
+					public IStatus run(IProgressMonitor monitor) {
+						getOrder().getComments().add(input);
+						return Status.OK_STATUS;
+					}
+				});
 			}
 
 			@Override
@@ -247,7 +286,7 @@ public class WorkView extends EObjectView {
 		Button printButton = new Button(buttonBar, SWT.PUSH);
 		printButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		printButton.setText("Auftrag zeigen");
+		printButton.setText(Messages.WorkView_Show_Order_Action);
 		printButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -266,7 +305,7 @@ public class WorkView extends EObjectView {
 		Button markAsPaidButton = new Button(buttonBar, SWT.PUSH);
 		markAsPaidButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		markAsPaidButton.setText("Auftrag bezahlt markieren");
+		markAsPaidButton.setText(Messages.WorkView_Mark_Order_Paid_Action);
 		markAsPaidButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -369,23 +408,25 @@ public class WorkView extends EObjectView {
 					Messages.WorkView_Error_Title,
 					Messages.WorkView_Correct_Number_1 + numberField.getText()
 							+ Messages.WorkView_Correct_Number_2, SWT.NONE);
-			numberField.setText("");
+			numberField.setText(""); //$NON-NLS-1$
 			numberField.setFocus();
 			return;
 		}
 		if (product.getPriceCategory() == null) {
 			MessageDialog.open(MessageDialog.ERROR, getViewSite().getShell(),
 					Messages.WorkView_Error_Title,
-					"Produkt hat keine Preis Kategorie", SWT.NONE);
+					Messages.WorkView_Product_No_Price_Error, SWT.NONE);
 			numberField.setFocus();
 			return;
 		}
 		for (Transaction t : getOrder().getTransactions()) {
 			if (t.getProduct().equals(product)) {
 				MessageDialog.open(MessageDialog.ERROR, getViewSite()
-						.getShell(), Messages.WorkView_Error_Title, "Nummer "
-						+ number + " ist schon registriert", SWT.NONE);
-				numberField.setText("");
+						.getShell(), Messages.WorkView_Error_Title,
+						Messages.WorkView_Number_Registered_Error_1 + number
+								+ Messages.WorkView_Number_Registered_Error_2,
+						SWT.NONE);
+				numberField.setText(""); //$NON-NLS-1$
 				numberField.setFocus();
 				return;
 			}
@@ -393,42 +434,43 @@ public class WorkView extends EObjectView {
 		final Transaction transaction = ShopFactory.eINSTANCE
 				.createTransaction();
 		try {
-			GregorianCalendar c = new GregorianCalendar();
+			final GregorianCalendar startDate = new GregorianCalendar();
+			final GregorianCalendar endDate = new GregorianCalendar();
 			if (tomorrowButton.getSelection()) {
-				c.add(GregorianCalendar.DAY_OF_MONTH, 1);
+				endDate.add(GregorianCalendar.DAY_OF_MONTH, 1);
 			}
-			transaction.setStartDate(c.getTime());
 			int days = Integer.parseInt(rentField.getText());
-			c.add(GregorianCalendar.DAY_OF_MONTH, days);
-			transaction.setEndDate(c.getTime());
+			endDate.add(GregorianCalendar.DAY_OF_MONTH, days);
 			EList<Double> prices = product.getPriceCategory().getPrices();
 			double price = prices.get(Math.min(prices.size() - 2, days - 1));
 			if (prices.size() <= days) {
 				price += (days - prices.size() + 1)
 						* prices.get(prices.size() - 1);
 			}
-			transaction.setPrice(price);
+			final double tmpPrice = price;
+			UIUtil.runUIJob(new IJobRunnable() {
+
+				@Override
+				public IStatus run(IProgressMonitor monitor) {
+					transaction.setStartDate(startDate.getTime());
+					transaction.setEndDate(endDate.getTime());
+					transaction.setPrice(tmpPrice);
+					if (!DBFactory.getOrdersResource().getContents().contains(
+							getOrder())) {
+						DBFactory.getOrdersResource().getContents().add(
+								getOrder());
+					}
+					transaction.setProduct(product);
+					getOrder().getTransactions().add(transaction);
+					return Status.OK_STATUS;
+				}
+			});
+			numberField.setText(""); //$NON-NLS-1$
+			numberField.setFocus();
 		} catch (Exception e) {
 			RedskinCore.handleException(e);
 			numberField.setFocus();
-			return;
 		}
-
-		UIUtil.runUIJob(new IJobRunnable() {
-
-			@Override
-			public IStatus run(IProgressMonitor monitor) {
-				if (!DBFactory.getOrdersResource().getContents().contains(
-						getOrder())) {
-					DBFactory.getOrdersResource().getContents().add(getOrder());
-				}
-				transaction.setProduct(product);
-				getOrder().getTransactions().add(transaction);
-				return Status.OK_STATUS;
-			}
-		});
-		numberField.setText("");
-		numberField.setFocus();
 	}
 
 	@Override
@@ -449,7 +491,7 @@ public class WorkView extends EObjectView {
 	@Override
 	public void saveState(IMemento memento) {
 		if (getOrder() != null)
-			memento.putString("ordernumber", getOrder().getNumber());
+			memento.putString("ordernumber", getOrder().getNumber()); //$NON-NLS-1$
 		super.saveState(memento);
 	}
 
@@ -464,7 +506,7 @@ public class WorkView extends EObjectView {
 		private TreeViewer treeViewer;
 
 		protected CustomerListDialog(Shell parentShell) {
-			super(parentShell, "Kunden Liste");
+			super(parentShell, Messages.WorkView_Customer_List_Dialog_Title);
 		}
 
 		public Customer getCustomer() {
@@ -512,21 +554,29 @@ public class WorkView extends EObjectView {
 
 		@Override
 		protected void createButtonsForButtonBar(Composite parent) {
-			createButton(parent, IDialogConstants.CLIENT_ID, "Neuer Kunde",
-					true);
+			createButton(parent, IDialogConstants.CLIENT_ID,
+					Messages.WorkView_New_Customer_Action, true);
 			super.createButtonsForButtonBar(parent);
 		}
 
 		@Override
 		protected void buttonPressed(int buttonId) {
 			if (buttonId == IDialogConstants.CLIENT_ID) {
-				CustomerDialog dialog = new CustomerDialog(getShell(),
-						"Neuer Kunde");
+				final CustomerDialog dialog = new CustomerDialog(getShell(),
+						Messages.WorkView_New_Customer_Dialog_Title);
 				dialog.setNewObject(ShopFactory.eINSTANCE.createCustomer());
 				if (dialog.open() == Dialog.CANCEL)
 					return;
-				DBFactory.getCustomerResource().getContents().add(
-						dialog.getNewObject());
+				final EObject customer = dialog.getNewObject();
+				UIUtil.runUIJob(new IJobRunnable() {
+
+					@Override
+					public IStatus run(IProgressMonitor monitor) {
+						DBFactory.getCustomerResource().getContents().add(
+								customer);
+						return Status.OK_STATUS;
+					}
+				});
 			} else if (buttonId == IDialogConstants.OK_ID) {
 				ISelection selection = treeViewer.getSelection();
 				if (!selection.isEmpty()
@@ -570,7 +620,7 @@ public class WorkView extends EObjectView {
 			public WorkViewOrderItemProvider(AdapterFactory adapterFactory) {
 				super(adapterFactory);
 				TOTAL_ROW = ShopFactory.eINSTANCE.createTransaction();
-				TOTAL_ROW.setNumber("-1");
+				TOTAL_ROW.setNumber("-1"); //$NON-NLS-1$
 			}
 
 			@SuppressWarnings("unchecked")
@@ -588,7 +638,10 @@ public class WorkView extends EObjectView {
 				TransactionItemProvider {
 
 			private final SimpleDateFormat FORMAT = new SimpleDateFormat(
-					"dd.MM.yyyy");
+					"dd.MM.yyyy"); //$NON-NLS-1$
+
+			private final SimpleDateFormat PAID_FORMAT = new SimpleDateFormat(
+					"kk:mm dd.MM.yyyy"); //$NON-NLS-1$
 
 			public WorkViewTransactionItemProvider(AdapterFactory adapterFactory) {
 				super(adapterFactory);
@@ -612,11 +665,11 @@ public class WorkView extends EObjectView {
 					return super.getColumnText(object, columnIndex);
 				Transaction tr = (Transaction) object;
 
-				if (tr.getNumber().equals("-1")) {
+				if (tr.getNumber().equals("-1")) { //$NON-NLS-1$
 					switch (columnIndex) {
-					case 3:
-						return "Total:";
 					case 4:
+						return Messages.WorkView_Total_Value;
+					case 5:
 						EList<Transaction> transactions = getOrder()
 								.getTransactions();
 						double price = 0;
@@ -625,23 +678,29 @@ public class WorkView extends EObjectView {
 						}
 						return new Double(price).toString();
 					default:
-						return "";
+						return ""; //$NON-NLS-1$
 					}
 				}
 
 				switch (columnIndex) {
 				case 0:
-					return "" + tr.getProduct().getNumber();
+					return "" + tr.getProduct().getNumber(); //$NON-NLS-1$
 				case 1:
-					return tr.getProduct().getDescription();
+					return tr.getProduct().getName();
 				case 2:
+					return tr.getProduct().getDescription();
+				case 3:
 					long diff = tr.getEndDate().getTime()
 							- tr.getStartDate().getTime();
-					return "" + (diff / 86400000);
-				case 3:
-					return FORMAT.format(tr.getEndDate());
+					return "" + (diff / 86400000); //$NON-NLS-1$
 				case 4:
-					return "" + tr.getPrice();
+					return FORMAT.format(tr.getEndDate());
+				case 5:
+					return "" + tr.getPrice(); //$NON-NLS-1$
+				case 6:
+					if (tr.getPaidDate() == null)
+						return Messages.WorkView_Not_Paid_Label;
+					return PAID_FORMAT.format(tr.getPaidDate());
 				default:
 					break;
 				}

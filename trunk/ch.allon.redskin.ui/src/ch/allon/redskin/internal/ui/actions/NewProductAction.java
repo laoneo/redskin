@@ -15,6 +15,7 @@ import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.IJobRunnable;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
@@ -24,7 +25,7 @@ public class NewProductAction extends EObjectAction {
 	protected void run(final List<EObject> selectedObjects) {
 		if (selectedObjects.isEmpty())
 			return;
-		EObjectDialog dialog = new EObjectDialog(getShell(), "Neues Produkt") {
+		EObjectDialog dialog = new EObjectDialog(getShell(), Messages.NewProductAction_Title) {
 
 			@Override
 			protected List<EObject> getChilds(EObject object,

@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Shell;
 import ch.allon.redskin.core.RedskinCore;
 import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.Order;
+import ch.allon.redskin.core.model.shop.ShopPackage;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.custom.CustomDialog;
 
@@ -38,9 +40,9 @@ public class ShowOrderReportAction extends EObjectAction {
 	@Override
 	protected void run(List<EObject> selectedObjects) {
 		if (selectedObjects.isEmpty()
-				|| !(selectedObjects.get(0) instanceof Order))
+				|| !(selectedObjects.get(0).eClass().getClassifierID() == ShopPackage.ORDER))
 			return;
-		BrowserDialog dialog = new BrowserDialog(getShell(), "Report");
+		BrowserDialog dialog = new BrowserDialog(getShell(), Messages.ShowOrderReportAction_Dialog_Title);
 		dialog.setText(createReport((Order) selectedObjects.get(0)));
 		dialog.open();
 	}
@@ -59,27 +61,27 @@ public class ShowOrderReportAction extends EObjectAction {
 			// embedded images etc.
 			String report = FileLocator.toFileURL(
 					FileLocator.find(RedskinUIActivator.getDefault()
-							.getBundle(), new Path("report/redskin.rptdesign"),
+							.getBundle(), new Path("report/redskin.rptdesign"), //$NON-NLS-1$
 							null)).getPath();
 			FileInputStream fs = new FileInputStream(report);
 			design = engine.openReportDesign(fs);
 			IRunAndRenderTask task = engine.createRunAndRenderTask(design);
 			Customer c = order.getCustomer();
-			task.setParameterValue("surname", c == null ? "" : c.getSurname());
-			task.setParameterValue("familyname", c == null ? "" : c
+			task.setParameterValue("surname", c == null ? "" : c.getSurname()); //$NON-NLS-1$ //$NON-NLS-2$
+			task.setParameterValue("familyname", c == null ? "" : c //$NON-NLS-1$ //$NON-NLS-2$
 					.getFamilyName());
-			task.setParameterValue("telephone", c == null ? "" : c
+			task.setParameterValue("telephone", c == null ? "" : c //$NON-NLS-1$ //$NON-NLS-2$
 					.getTelephoneNr());
-			task.setParameterValue("address", c == null ? "" : c.getAddress());
-			task.setParameterValue("hotel", c == null ? "" : c.getHotel());
-			task.setParameterValue("ordernr", order.getNumber());
+			task.setParameterValue("address", c == null ? "" : c.getAddress()); //$NON-NLS-1$ //$NON-NLS-2$
+			task.setParameterValue("hotel", c == null ? "" : c.getHotel()); //$NON-NLS-1$ //$NON-NLS-2$
+			task.setParameterValue("ordernr", order.getNumber()); //$NON-NLS-1$
 
 			// Set rendering options - such as file or stream output,
 			// output format, whether it is embeddable, etc
 			IRenderOption options = new HTMLRenderOption();
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			options.setOutputStream(bos);
-			options.setOutputFormat("html");
+			options.setOutputFormat("html"); //$NON-NLS-1$
 
 			task.setRenderOption(options);
 
@@ -88,13 +90,13 @@ public class ShowOrderReportAction extends EObjectAction {
 			task.close();
 
 			// set Browser text accordingly
-			return bos.toString("utf-8");
+			return bos.toString("utf-8"); //$NON-NLS-1$
 		} catch (Exception e) {
 			RedskinCore.handleException(e);
 		} finally {
 			engine.destroy();
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	private class BrowserDialog extends CustomDialog {
@@ -128,11 +130,11 @@ public class ShowOrderReportAction extends EObjectAction {
 		@Override
 		protected void createButtonsForButtonBar(Composite parent) {
 			Button printButton = createButton(parent,
-					IDialogConstants.CLIENT_ID, "Drucken", false);
+					IDialogConstants.CLIENT_ID, Messages.ShowOrderReportAction_Print_Dialog_Title, false);
 			printButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					browser.execute("window.print();");
+					browser.execute("window.print();"); //$NON-NLS-1$
 				}
 
 				@Override
