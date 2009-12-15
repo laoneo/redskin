@@ -6,7 +6,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.graphics.Point;
 
+import ch.allon.redskin.core.model.shop.Order;
 import ch.allon.redskin.core.model.shop.ShopPackage;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
 public class EditOrderAction extends EObjectAction {
@@ -17,7 +19,7 @@ public class EditOrderAction extends EObjectAction {
 			return;
 
 		EObjectDialog dialog = new EObjectDialog(getShell(),
-				"Auftrag bearbeiten") {
+				Messages.EditOrderAction_Title) {
 
 			@Override
 			protected boolean isFieldEditable(EAttribute attribute) {
@@ -31,7 +33,9 @@ public class EditOrderAction extends EObjectAction {
 				return new Point(400, 200);
 			}
 		};
-		dialog.setNewObject(selectedObjects.get(0));
+		Order order = (Order) selectedObjects.get(0);
+		order.getComments();
+		dialog.setNewObject(order);
 		dialog.open();
 	}
 

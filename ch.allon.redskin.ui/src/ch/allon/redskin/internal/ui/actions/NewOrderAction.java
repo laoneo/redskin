@@ -24,7 +24,7 @@ public class NewOrderAction extends EObjectAction {
 
 	@Override
 	public String getActionImagePath() {
-		return "icons/actions/new_order.gif";
+		return "icons/actions/new_order.gif"; //$NON-NLS-1$
 	}
 
 	@Override

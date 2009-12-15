@@ -20,9 +20,11 @@ package ch.allon.redskin.internal.ui.custom;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -63,7 +65,7 @@ public class PriceCategoryDialog extends EObjectDialog {
 	 * @param config
 	 */
 	public PriceCategoryDialog(Shell shell) {
-		super(shell, "Preis Kategorie");
+		super(shell, Messages.PriceCategoryDialog_Title);
 	}
 
 	@Override
@@ -125,10 +127,10 @@ public class PriceCategoryDialog extends EObjectDialog {
 			@Override
 			public Object getValue(Object element, String property) {
 				if (property.equals(Messages.NewPriceCategoryAction_Column_Day))
-					return "" + ((Row) element).pos;
+					return "" + ((Row) element).pos; //$NON-NLS-1$
 				else if (property
 						.equals(Messages.NewPriceCategoryAction_Column_Price))
-					return "" + ((Row) element).price;
+					return "" + ((Row) element).price; //$NON-NLS-1$
 				return null;
 			}
 
@@ -145,17 +147,16 @@ public class PriceCategoryDialog extends EObjectDialog {
 	}
 
 	@Override
-	protected void okPressed() {
+	protected void setDataInModelThread(Map<EStructuralFeature, Object> data) {
 		PricesTableProvider provider = (PricesTableProvider) viewer
 				.getContentProvider();
-		List<Row> data = provider.getData();
+		List<Row> rows = provider.getData();
 		PriceCategory cat = (PriceCategory) getNewObject();
 		cat.getPrices().clear();
-		for (Row row : data) {
+		for (Row row : rows) {
 			cat.getPrices().add(row.price);
 		}
-
-		super.okPressed();
+		super.setDataInModelThread(data);
 	}
 
 	@Override

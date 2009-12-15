@@ -72,12 +72,27 @@ public class OrderListView extends EObjectView {
 	protected Object createInput(IMemento memento) {
 		DBFactory.getOrdersResource().eAdapters().add(new EContentAdapter() {
 			@Override
-			public void notifyChanged(Notification notification) {
+			public void notifyChanged(final Notification notification) {
 				UIUtil.getDisplay().asyncExec(new Runnable() {
 
 					@Override
 					public void run() {
-						getViewer().refresh();
+						if ((notification.getEventType() == Notification.REMOVE || notification
+								.getEventType() == Notification.REMOVE_MANY)
+								&& notification.getOldValue() instanceof Order) {
+							TreeViewer treeViewer = (TreeViewer) getViewer();
+							treeViewer
+									.remove(((Order) notification.getOldValue())
+											.getTransactions().toArray());
+							treeViewer.remove(notification.getOldValue());
+						}
+						if ((notification.getEventType() == Notification.ADD || notification
+								.getEventType() == Notification.ADD_MANY)
+								&& notification.getNewValue() instanceof Order) {
+							TreeViewer treeViewer = (TreeViewer) getViewer();
+							treeViewer.add(treeViewer.getInput(), notification
+									.getNewValue());
+						}
 					}
 				});
 				super.notifyChanged(notification);
@@ -104,9 +119,9 @@ public class OrderListView extends EObjectView {
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 		viewer.setColumnProperties(new String[] { Messages.WorkView_Number_Col,
-				Messages.WorkView_Description_Col, Messages.WorkView_Days_Col,
-				Messages.WorkView_Return_Col, Messages.WorkView_Price_Col,
-				Messages.OrderListView_Paid_Col });
+				Messages.WorkView_Name_Col, Messages.WorkView_Description_Col,
+				Messages.WorkView_Days_Col, Messages.WorkView_Return_Col,
+				Messages.WorkView_Price_Col, Messages.OrderListView_Paid_Col });
 
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
@@ -132,6 +147,11 @@ public class OrderListView extends EObjectView {
 		TreeColumn c = new TreeColumn(tree, SWT.NONE);
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
 		c.setText(Messages.WorkView_Number_Col);
+		c.setResizable(true);
+		
+		c = new TreeColumn(tree, SWT.NONE);
+		layout.addColumnData(new ColumnWeightData(3, 100, true));
+		c.setText(Messages.WorkView_Name_Col);
 		c.setResizable(true);
 
 		c = new TreeColumn(tree, SWT.NONE);
@@ -169,7 +189,7 @@ public class OrderListView extends EObjectView {
 		});
 
 		viewer
-				.setCellEditors(new CellEditor[] { new TextCellEditor(tree),
+				.setCellEditors(new CellEditor[] { new TextCellEditor(tree),new TextCellEditor(tree),
 						new TextCellEditor(tree), new TextCellEditor(tree),
 						new TextCellEditor(tree), textEditor,
 						new TextCellEditor(tree) });
@@ -183,10 +203,17 @@ public class OrderListView extends EObjectView {
 						.getFirstElement();
 				if (row == null)
 					return;
-				String v = (String) value;
+				final String v = (String) value;
 				if (v.length() < 1)
 					return;
-				row.setPrice(Double.parseDouble(v));
+				UIUtil.runUIJob(new IJobRunnable() {
+
+					@Override
+					public IStatus run(IProgressMonitor monitor) {
+						row.setPrice(Double.parseDouble(v));
+						return Status.OK_STATUS;
+					}
+				});
 			}
 
 			@Override
@@ -196,16 +223,18 @@ public class OrderListView extends EObjectView {
 				int column = 0;
 				if (property.equals(Messages.WorkView_Number_Col))
 					column = 0;
-				else if (property.equals(Messages.WorkView_Description_Col))
+				else if (property.equals(Messages.WorkView_Name_Col))
 					column = 1;
-				else if (property.equals(Messages.WorkView_Days_Col))
+				else if (property.equals(Messages.WorkView_Description_Col))
 					column = 2;
-				else if (property.equals(Messages.WorkView_Return_Col))
+				else if (property.equals(Messages.WorkView_Days_Col))
 					column = 3;
-				else if (property.equals(Messages.WorkView_Price_Col))
+				else if (property.equals(Messages.WorkView_Return_Col))
 					column = 4;
-				else if (property.equals(Messages.OrderListView_Paid_Col))
+				else if (property.equals(Messages.WorkView_Price_Col))
 					column = 5;
+				else if (property.equals(Messages.WorkView_Paid_Col))
+					column = 6;
 				return labelProvider.getColumnText(element, column);
 			}
 
@@ -230,7 +259,7 @@ public class OrderListView extends EObjectView {
 		todayBackButton = new Button(container, SWT.CHECK);
 		todayBackButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		todayBackButton.setText("Heute zurück");
+		todayBackButton.setText(Messages.OrderListView_Today_Back);
 		todayBackButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -250,7 +279,7 @@ public class OrderListView extends EObjectView {
 		tomorrowBackButton = new Button(container, SWT.CHECK);
 		tomorrowBackButton.setLayoutData(new GridData(SWT.BEGINNING,
 				SWT.CENTER, false, false));
-		tomorrowBackButton.setText("Morgen zurück");
+		tomorrowBackButton.setText(Messages.OrderListView_Tomorrow_Back);
 		tomorrowBackButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -271,7 +300,7 @@ public class OrderListView extends EObjectView {
 		GridData gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
 		gd.horizontalIndent = 30;
 		label.setLayoutData(gd);
-		label.setText("Von:");
+		label.setText(Messages.OrderListView_From);
 		fromDateControl = new DateTime(container, SWT.DATE | SWT.DROP_DOWN
 				| SWT.MEDIUM);
 		fromDateControl.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
@@ -288,7 +317,7 @@ public class OrderListView extends EObjectView {
 		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
 		gd.horizontalIndent = 30;
 		label.setLayoutData(gd);
-		label.setText("Bis:");
+		label.setText(Messages.OrderListView_To);
 		toDateControl = new DateTime(container, SWT.DATE | SWT.DROP_DOWN
 				| SWT.MEDIUM);
 		toDateControl.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
@@ -304,7 +333,7 @@ public class OrderListView extends EObjectView {
 		nonPaidButton = new Button(container, SWT.CHECK);
 		nonPaidButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		nonPaidButton.setText("Nicht bezahlt");
+		nonPaidButton.setText(Messages.OrderListView_Not_Paid);
 		nonPaidButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -316,7 +345,7 @@ public class OrderListView extends EObjectView {
 		showAllButton = new Button(container, SWT.CHECK);
 		showAllButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
 				false, false));
-		showAllButton.setText("Alle");
+		showAllButton.setText(Messages.OrderListView_All);
 		showAllButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -334,7 +363,7 @@ public class OrderListView extends EObjectView {
 		label = new Label(container, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
 				false));
-		label.setText("Person:");
+		label.setText(Messages.OrderListView_Person);
 		nameText = new Text(container, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		nameText.addKeyListener(new KeyListener() {
@@ -419,9 +448,9 @@ public class OrderListView extends EObjectView {
 	protected void initialize(IMemento memento) {
 		if (memento != null) {
 			todayBackButton.setSelection(Boolean.getBoolean(memento
-					.getString("todayBack")));
+					.getString("todayBack"))); //$NON-NLS-1$
 			tomorrowBackButton.setSelection(Boolean.getBoolean(memento
-					.getString("tomorrowBack")));
+					.getString("tomorrowBack"))); //$NON-NLS-1$
 			if (todayBackButton.getSelection()
 					|| tomorrowBackButton.getSelection()) {
 				toDateControl.setEnabled(false);
@@ -431,21 +460,21 @@ public class OrderListView extends EObjectView {
 				fromDateControl.setEnabled(true);
 			}
 			nonPaidButton.setSelection(Boolean.getBoolean(memento
-					.getString("nonPaid")));
+					.getString("nonPaid"))); //$NON-NLS-1$
 
 			fromDateControl.setYear(Integer.parseInt(memento
-					.getString("fromDateYear")));
+					.getString("fromDateYear"))); //$NON-NLS-1$
 			fromDateControl.setMonth(Integer.parseInt(memento
-					.getString("fromDateMonth")));
+					.getString("fromDateMonth"))); //$NON-NLS-1$
 			fromDateControl.setDay(Integer.parseInt(memento
-					.getString("fromDateDay")));
+					.getString("fromDateDay"))); //$NON-NLS-1$
 			toDateControl.setYear(Integer.parseInt(memento
-					.getString("toDateYear")));
+					.getString("toDateYear"))); //$NON-NLS-1$
 			toDateControl.setMonth(Integer.parseInt(memento
-					.getString("toDateMonth")));
+					.getString("toDateMonth"))); //$NON-NLS-1$
 			toDateControl.setDay(Integer.parseInt(memento
-					.getString("toDateDay")));
-			nameText.setText(memento.getString("personText"));
+					.getString("toDateDay"))); //$NON-NLS-1$
+			nameText.setText(memento.getString("personText")); //$NON-NLS-1$
 		} else {
 			nonPaidButton.setSelection(true);
 		}
@@ -454,17 +483,17 @@ public class OrderListView extends EObjectView {
 
 	@Override
 	public void saveState(IMemento memento) {
-		memento.putString("todayBack", "" + todayBackButton.getSelection());
-		memento.putString("tomorrowBack", ""
+		memento.putString("todayBack", "" + todayBackButton.getSelection()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("tomorrowBack", "" //$NON-NLS-1$ //$NON-NLS-2$
 				+ tomorrowBackButton.getSelection());
-		memento.putString("nonPaid", "" + nonPaidButton.getSelection());
-		memento.putString("fromDateYear", "" + fromDateControl.getYear());
-		memento.putString("fromDateMonth", "" + fromDateControl.getMonth());
-		memento.putString("fromDateDay", "" + fromDateControl.getDay());
-		memento.putString("toDateYear", "" + toDateControl.getYear());
-		memento.putString("toDateMonth", "" + toDateControl.getMonth());
-		memento.putString("toDateDay", "" + toDateControl.getDay());
-		memento.putString("personText", nameText.getText());
+		memento.putString("nonPaid", "" + nonPaidButton.getSelection()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("fromDateYear", "" + fromDateControl.getYear()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("fromDateMonth", "" + fromDateControl.getMonth()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("fromDateDay", "" + fromDateControl.getDay()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("toDateYear", "" + toDateControl.getYear()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("toDateMonth", "" + toDateControl.getMonth()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("toDateDay", "" + toDateControl.getDay()); //$NON-NLS-1$ //$NON-NLS-2$
+		memento.putString("personText", nameText.getText()); //$NON-NLS-1$
 		super.saveState(memento);
 	}
 
@@ -530,18 +559,20 @@ public class OrderListView extends EObjectView {
 				case 0:
 					return "" + tr.getProduct().getNumber(); //$NON-NLS-1$
 				case 1:
-					return tr.getProduct().getDescription();
+					return tr.getProduct().getName();
 				case 2:
+					return tr.getProduct().getDescription();
+				case 3:
 					long diff = tr.getEndDate().getTime()
 							- tr.getStartDate().getTime();
 					return "" + (diff / 86400000); //$NON-NLS-1$
-				case 3:
-					return FORMAT.format(tr.getEndDate());
 				case 4:
-					return "" + tr.getPrice(); //$NON-NLS-1$
+					return FORMAT.format(tr.getEndDate());
 				case 5:
+					return "" + tr.getPrice(); //$NON-NLS-1$
+				case 6:
 					if (tr.getPaidDate() == null)
-						return "Noch nicht bezahlt";
+						return Messages.OrderListView_Not_Paid_1;
 					return PAID_FORMAT.format(tr.getPaidDate());
 				}
 				return super.getColumnText(object, columnIndex);
@@ -573,7 +604,7 @@ public class OrderListView extends EObjectView {
 							break;
 						}
 					}
-					return paid ? "Ja" : "Nein";
+					return paid ? Messages.OrderListView_Yes : Messages.OrderListView_No;
 				}
 				return super.getColumnText(object, columnIndex);
 			}

@@ -29,6 +29,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.internal.ui.IJobRunnable;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.custom.PriceCategoryDialog;
 
@@ -40,12 +41,12 @@ public class NewPriceCategoryAction extends EObjectAction {
 
 	@Override
 	public String getActionText() {
-		return "Neue Preis Kategorie";
+		return Messages.NewPriceCategoryAction_Text;
 	}
 
 	@Override
 	public String getActionImagePath() {
-		return "icons/actions/new_price_category.gif";
+		return "icons/actions/new_price_category.gif"; //$NON-NLS-1$
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.internal.ui.IJobRunnable;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.custom.CustomerDialog;
 
@@ -18,17 +19,17 @@ public class NewCustomerAction extends EObjectAction {
 
 	@Override
 	public String getActionText() {
-		return "Neuer Kunde";
+		return Messages.NewCustomerAction_Text;
 	}
 
 	@Override
 	public String getActionImagePath() {
-		return "icons/actions/new_customer.gif";
+		return "icons/actions/new_customer.gif"; //$NON-NLS-1$
 	}
 
 	@Override
 	protected void run(List<EObject> selectedObjects) {
-		CustomerDialog dialog = new CustomerDialog(getShell(), "Neuer Kunde");
+		CustomerDialog dialog = new CustomerDialog(getShell(), Messages.NewCustomerAction_Dialog_Title);
 		dialog.setNewObject(ShopFactory.eINSTANCE.createCustomer());
 		if (dialog.open() == Dialog.CANCEL)
 			return;

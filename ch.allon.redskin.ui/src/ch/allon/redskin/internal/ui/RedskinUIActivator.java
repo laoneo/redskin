@@ -62,10 +62,10 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 									message = exception.getLocalizedMessage();
 								ErrorDialog
 										.openError(UIUtil.getDisplay()
-												.getActiveShell(), "Error",
+												.getActiveShell(), Messages.RedskinUIActivator_Error_Dialog_Title,
 												message, new Status(
 														IStatus.ERROR,
-														"ch.allon.redskin.ui",
+														"ch.allon.redskin.ui", //$NON-NLS-1$
 														message));
 							}
 						});
@@ -111,7 +111,7 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 			imageRegistry = getDefault().createImageRegistry();
 		Image image = imageRegistry.get(path);
 		if (image == null) {
-			ImageDescriptor desc = getImageDescriptor(path.startsWith("icons/") ? path : "icons/" + path); //$NON-NLS-1$
+			ImageDescriptor desc = getImageDescriptor(path.startsWith("icons/") ? path : "icons/" + path); //$NON-NLS-1$ //$NON-NLS-2$
 			image = desc.createImage();
 			imageRegistry.put(path, image);
 		}

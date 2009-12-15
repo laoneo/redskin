@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
@@ -34,7 +37,10 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 
+import ch.allon.redskin.core.RedskinCore;
+import ch.allon.redskin.internal.ui.IJobRunnable;
 import ch.allon.redskin.internal.ui.RedskinUIActivator;
+import ch.allon.redskin.internal.ui.UIUtil;
 
 /**
  * @author Allon Moritz
@@ -68,7 +74,12 @@ public abstract class EObjectAction extends Action implements
 	/**
 	 * @param selectedObject
 	 */
-	protected abstract void run(List<EObject> selectedObjects);
+	protected void run(List<EObject> selectedObjects) {
+	}
+
+	protected IStatus runInModelThread(List<EObject> selectedObjects) {
+		return Status.OK_STATUS;
+	}
 
 	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
@@ -78,12 +89,28 @@ public abstract class EObjectAction extends Action implements
 
 	@Override
 	public void run(IAction action) {
-		run(selectedObjects);
+		run();
 	}
 
 	@Override
 	public void run() {
-		run(selectedObjects);
+		try {
+			run(selectedObjects);
+		} catch (Exception e) {
+			RedskinCore.handleException(e);
+		}
+		UIUtil.runUIJob(new IJobRunnable() {
+
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				try {
+					return runInModelThread(selectedObjects);
+				} catch (Exception e) {
+					RedskinCore.handleException(e);
+				}
+				return Status.OK_STATUS;
+			}
+		});
 	}
 
 	@Override

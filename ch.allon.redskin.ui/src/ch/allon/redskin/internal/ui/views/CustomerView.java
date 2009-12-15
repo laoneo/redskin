@@ -21,6 +21,7 @@ import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.Customer;
 import ch.allon.redskin.core.model.shop.provider.OrderItemProvider;
 import ch.allon.redskin.core.model.shop.provider.ShopItemProviderAdapterFactory;
+import ch.allon.redskin.internal.ui.Messages;
 import ch.allon.redskin.internal.ui.actions.EObjectAction;
 import ch.allon.redskin.internal.ui.actions.EditCustomerAction;
 import ch.allon.redskin.internal.ui.actions.NewCustomerAction;
@@ -67,27 +68,27 @@ public class CustomerView extends EObjectView {
 
 		TableColumn c = new TableColumn(table, SWT.NONE);
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
-		c.setText("Vorname");
+		c.setText(Messages.CustomerView_Label_Pre_Name);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
-		c.setText("Nachname");
+		c.setText(Messages.CustomerView_Label_Name);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
-		c.setText("Telefon");
+		c.setText(Messages.CustomerView_Label_Tel);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
-		c.setText("Hotel");
+		c.setText(Messages.CustomerView_Label_Hotel);
 		c.setResizable(true);
 
 		c = new TableColumn(table, SWT.NONE);
 		layout.addColumnData(new ColumnWeightData(3, 100, true));
-		c.setText("Adresse");
+		c.setText(Messages.CustomerView_Label_Addr);
 		c.setResizable(true);
 
 		return viewer;
