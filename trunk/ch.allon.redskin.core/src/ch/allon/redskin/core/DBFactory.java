@@ -22,14 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
 
 import ch.allon.redskin.core.model.shop.Order;
@@ -99,8 +95,6 @@ public class DBFactory {
 		} catch (Exception e) {
 			RedskinCore.handleException(e);
 		}
-		new ResourceSaver(new Resource[] { PRICE_CATEGORIES_RESOURCE,
-				PRODUCTS_RESOURCE, CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
 	}
 
 	public static Order findOrder(String number) {
@@ -142,49 +136,18 @@ public class DBFactory {
 				hqlQuery.toString(), false);
 	}
 
-	public static class ResourceSaver extends EContentAdapter {
-		private boolean innerCall = false;
-		private final Resource[] resources;
-		private boolean isTracking = true;
-
-		public ResourceSaver(Resource[] resources) {
-			this.resources = resources;
-			for (Resource resource : resources) {
-				resource.eAdapters().add(this);
-			}
-		}
-
-		@Override
-		public void notifyChanged(Notification notification) {
-			if (innerCall || !isTracking)
-				return;
-
-			final EStructuralFeature eFeature = (EStructuralFeature) notification
-					.getFeature();
-			// let the parent notification take care of this save
-			if (eFeature != null && eFeature instanceof EReference
-					&& ((EReference) eFeature).isContainer()) {
-				return;
-			}
-			innerCall = true;
-			try {
-				RedskinCoreActivator.getSessionController().getSessionWrapper()
-						.beginTransaction();
-				for (Resource resource : resources) {
-					resource.save(Collections.EMPTY_MAP);
-				}
-				RedskinCoreActivator.getSessionController().getSessionWrapper()
-						.commitTransaction();
-			} catch (Exception e) {
-				RedskinCore.handleException(e);
-			} finally {
-				innerCall = false;
-			}
-			super.notifyChanged(notification);
-		}
-
-		public void setTracking(boolean isTracking) {
-			this.isTracking = isTracking;
+	public static synchronized void saveResources() {
+		try {
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.beginTransaction();
+			PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
+			PRODUCTS_RESOURCE.save(Collections.EMPTY_MAP);
+			CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
+			ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
+			RedskinCoreActivator.getSessionController().getSessionWrapper()
+					.commitTransaction();
+		} catch (Exception e) {
+			RedskinCore.handleException(e);
 		}
 	}
 

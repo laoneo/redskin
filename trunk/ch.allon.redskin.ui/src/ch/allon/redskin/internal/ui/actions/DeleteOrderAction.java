@@ -18,7 +18,7 @@ public class DeleteOrderAction extends EObjectAction {
 
 	@Override
 	protected void run(final List<EObject> selectedObjects) {
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {

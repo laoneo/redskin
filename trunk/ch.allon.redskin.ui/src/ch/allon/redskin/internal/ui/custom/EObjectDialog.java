@@ -184,7 +184,7 @@ public class EObjectDialog extends CustomDialog {
 	@Override
 	protected void okPressed() {
 		final Map<EStructuralFeature, Object> data = collectDataInUIThread();
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {

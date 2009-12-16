@@ -99,7 +99,7 @@ public abstract class EObjectAction extends Action implements
 		} catch (Exception e) {
 			RedskinCore.handleException(e);
 		}
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {

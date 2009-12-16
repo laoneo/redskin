@@ -10,6 +10,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.IErrorService;
 
 /**
@@ -61,16 +62,20 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 												.length() > 0)
 									message = exception.getLocalizedMessage();
 								ErrorDialog
-										.openError(UIUtil.getDisplay()
-												.getActiveShell(), Messages.RedskinUIActivator_Error_Dialog_Title,
-												message, new Status(
-														IStatus.ERROR,
+										.openError(
+												UIUtil.getDisplay()
+														.getActiveShell(),
+												Messages.RedskinUIActivator_Error_Dialog_Title,
+												"Ein Fehler ist aufgetreten, bitte starten sie die Applikation neu und informieren sie Allon was passiert ist.",
+												new Status(IStatus.ERROR,
 														"ch.allon.redskin.ui", //$NON-NLS-1$
 														message));
 							}
 						});
 					}
 				}, null);
+		// init the resources that they will be present operating on the model
+		DBFactory.getOrdersResource();
 	}
 
 	/*

@@ -112,6 +112,7 @@ public class OrderListView extends EObjectView {
 	protected StructuredViewer createViewer(Composite parent) {
 		final TreeViewer viewer = new TreeViewer(parent, SWT.MULTI
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new AdapterFactoryContentProvider(
 				getEditingDomain().getAdapterFactory()));
 		viewer.setLabelProvider(new AdapterFactoryLabelProvider(
@@ -206,7 +207,7 @@ public class OrderListView extends EObjectView {
 				final String v = (String) value;
 				if (v.length() < 1)
 					return;
-				UIUtil.runUIJob(new IJobRunnable() {
+				UIUtil.runModelModificationJob(new IJobRunnable() {
 
 					@Override
 					public IStatus run(IProgressMonitor monitor) {
@@ -426,7 +427,7 @@ public class OrderListView extends EObjectView {
 		final String tmpPerson = nameText.getText();
 		final boolean nonPaid = nonPaidButton.getSelection();
 		final boolean showAll = showAllButton.getSelection();
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
@@ -596,7 +597,7 @@ public class OrderListView extends EObjectView {
 						return Messages.OrderListView_No_Customer_Label;
 					return "" + o.getCustomer().getSurname() + " " //$NON-NLS-1$ //$NON-NLS-2$
 							+ o.getCustomer().getFamilyName();
-				case 5:
+				case 6:
 					boolean paid = true;
 					for (EObject tr : o.getTransactions()) {
 						if (((Transaction) tr).getPaidDate() == null) {

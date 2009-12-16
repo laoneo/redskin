@@ -36,7 +36,7 @@ public class NewProductCategoryAction extends EObjectAction {
 		if (dialog.getReturnCode() == Dialog.CANCEL)
 			return;
 		final ProductCategory object = (ProductCategory) dialog.getNewObject();
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
