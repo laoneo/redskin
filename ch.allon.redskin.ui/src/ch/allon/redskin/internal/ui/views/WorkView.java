@@ -185,7 +185,7 @@ public class WorkView extends EObjectView {
 				final String v = (String) value;
 				if (v.length() < 1)
 					return;
-				UIUtil.runUIJob(new IJobRunnable() {
+				UIUtil.runModelModificationJob(new IJobRunnable() {
 
 					@Override
 					public IStatus run(IProgressMonitor monitor) {
@@ -268,7 +268,7 @@ public class WorkView extends EObjectView {
 				if (dialog.open() == Dialog.CANCEL)
 					return;
 				final String input = dialog.getValue();
-				UIUtil.runUIJob(new IJobRunnable() {
+				UIUtil.runModelModificationJob(new IJobRunnable() {
 
 					@Override
 					public IStatus run(IProgressMonitor monitor) {
@@ -375,7 +375,7 @@ public class WorkView extends EObjectView {
 		if (dialog.open() == Dialog.CANCEL || dialog.getCustomer() == null)
 			return;
 		final Customer customer = dialog.getCustomer();
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
@@ -448,7 +448,7 @@ public class WorkView extends EObjectView {
 						* prices.get(prices.size() - 1);
 			}
 			final double tmpPrice = price;
-			UIUtil.runUIJob(new IJobRunnable() {
+			UIUtil.runModelModificationJob(new IJobRunnable() {
 
 				@Override
 				public IStatus run(IProgressMonitor monitor) {
@@ -534,7 +534,7 @@ public class WorkView extends EObjectView {
 			treeViewer.setLabelProvider(new AdapterFactoryLabelProvider(
 					getEditingDomain().getAdapterFactory()));
 
-			UIUtil.runUIJob(new IJobRunnable() {
+			UIUtil.runModelModificationJob(new IJobRunnable() {
 
 				@Override
 				public IStatus run(IProgressMonitor monitor) {
@@ -568,7 +568,7 @@ public class WorkView extends EObjectView {
 				if (dialog.open() == Dialog.CANCEL)
 					return;
 				final EObject customer = dialog.getNewObject();
-				UIUtil.runUIJob(new IJobRunnable() {
+				UIUtil.runModelModificationJob(new IJobRunnable() {
 
 					@Override
 					public IStatus run(IProgressMonitor monitor) {

@@ -56,7 +56,7 @@ public class NewPriceCategoryAction extends EObjectAction {
 		if (dialog.open() == Dialog.CANCEL)
 			return;
 		final EObject object = dialog.getNewObject();
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {

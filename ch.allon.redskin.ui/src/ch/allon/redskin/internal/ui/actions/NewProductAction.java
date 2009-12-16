@@ -41,7 +41,7 @@ public class NewProductAction extends EObjectAction {
 		if (dialog.open() == Dialog.CANCEL)
 			return;
 		final Product object = (Product) dialog.getNewObject();
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 
 			@Override
 			public IStatus run(IProgressMonitor monitor) {

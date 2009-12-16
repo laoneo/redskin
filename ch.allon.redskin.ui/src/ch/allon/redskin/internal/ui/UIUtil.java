@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
+import ch.allon.redskin.core.DBFactory;
+
 /**
  * @author Allon Moritz
  * 
@@ -42,11 +44,13 @@ public class UIUtil {
 		return d;
 	}
 
-	public static void runUIJob(final IJobRunnable runnable) {
+	public static void runModelModificationJob(final IJobRunnable runnable) {
 		Job job = new Job("UI Job") { //$NON-NLS-1$
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				return runnable.run(monitor);
+				IStatus status = runnable.run(monitor);
+				DBFactory.saveResources();
+				return status;
 			}
 		};
 		if (RedskinUIActivator.getWindow().getActivePage() != null

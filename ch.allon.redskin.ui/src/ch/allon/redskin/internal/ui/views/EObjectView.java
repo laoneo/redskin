@@ -94,7 +94,7 @@ public abstract class EObjectView extends ViewPart implements
 					}
 				});
 
-		UIUtil.runUIJob(new IJobRunnable() {
+		UIUtil.runModelModificationJob(new IJobRunnable() {
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
 				final Object input = createInput(memento);
