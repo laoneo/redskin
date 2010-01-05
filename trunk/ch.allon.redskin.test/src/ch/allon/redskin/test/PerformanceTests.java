@@ -10,6 +10,7 @@ public class PerformanceTests extends HibernateBaseTestCase {
 		ProductCategory root = ShopFactory.eINSTANCE.createProductCategory();
 		root.setName("root");
 		getProductsResource().getContents().add(root);
+		saveResources();
 		for (int i = 0; i < 100; i++) {
 			ProductCategory tmp = ShopFactory.eINSTANCE.createProductCategory();
 			tmp.setName("test cat " + i);
@@ -18,8 +19,10 @@ public class PerformanceTests extends HibernateBaseTestCase {
 				product.setName("test prod " + j);
 				product.setNumber(j);
 				tmp.getProducts().add(product);
+				saveResources();
 			}
 			root.getSubCategorys().add(tmp);
+			saveResources();
 		}
 	}
 }

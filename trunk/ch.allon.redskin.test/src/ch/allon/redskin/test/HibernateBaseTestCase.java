@@ -1,6 +1,7 @@
 package ch.allon.redskin.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Properties;
@@ -10,12 +11,10 @@ import junit.framework.TestCase;
 import org.apache.derby.drda.NetworkServerControl;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.teneo.hibernate.HbDataStore;
 import org.eclipse.emf.teneo.hibernate.HbHelper;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
@@ -33,42 +32,6 @@ public class HibernateBaseTestCase extends TestCase {
 	private Resource PRODUCTS_RESOURCE;
 
 	private ResourceSetImpl resourceSet = new ResourceSetImpl();
-
-	public class ResourceSaver extends EContentAdapter {
-		private boolean innerCall = false;
-		private final Resource[] resources;
-		private boolean isTracking = true;
-
-		public ResourceSaver(Resource[] resources) {
-			this.resources = resources;
-			for (Resource resource : resources) {
-				resource.eAdapters().add(this);
-			}
-		}
-
-		@Override
-		public void notifyChanged(Notification notification) {
-			if (innerCall || !isTracking)
-				return;
-			innerCall = true;
-			try {
-				getSessionController().getSessionWrapper().beginTransaction();
-				for (Resource resource : resources) {
-					resource.save(Collections.EMPTY_MAP);
-				}
-				getSessionController().getSessionWrapper().commitTransaction();
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				innerCall = false;
-			}
-			super.notifyChanged(notification);
-		}
-
-		public void setTracking(boolean isTracking) {
-			this.isTracking = isTracking;
-		}
-	}
 
 	public Resource getPriceCategoryResource() {
 		return PRICE_CATEGORIES_RESOURCE;
@@ -90,36 +53,39 @@ public class HibernateBaseTestCase extends TestCase {
 		return sessionController;
 	}
 
-	protected void createResources() {
-		try {
-			getSessionController().getSessionWrapper().beginTransaction();
-			PRICE_CATEGORIES_RESOURCE = resourceSet.createResource(URI
-					.createURI("hibernate://?"
-							+ HibernateResource.SESSION_CONTROLLER_PARAM
-							+ "=ShopDB&query1=FROM PriceCategory"));
-			PRICE_CATEGORIES_RESOURCE.load(Collections.EMPTY_MAP);
-			PRODUCTS_RESOURCE = resourceSet
-					.createResource(URI
-							.createURI("hibernate://?"
-									+ HibernateResource.SESSION_CONTROLLER_PARAM
-									+ "=ShopDB&query1=FROM ProductCategory where parent=null"));
-			PRODUCTS_RESOURCE.load(Collections.EMPTY_MAP);
-			CUSTOMERS_RESOURCE = resourceSet.createResource(URI
-					.createURI("hibernate://?"
-							+ HibernateResource.SESSION_CONTROLLER_PARAM
-							+ "=ShopDB&query1=FROM Customer"));
-			CUSTOMERS_RESOURCE.load(Collections.EMPTY_MAP);
-			ORDERS_RESOURCE = (HibernateResource) resourceSet
-					.createResource(URI.createURI("hibernate://?"
-							+ HibernateResource.SESSION_CONTROLLER_PARAM
-							+ "=ShopDB&query1=FROM Order where number < '0'"));
-			ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
-			getSessionController().getSessionWrapper().commitTransaction();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		new ResourceSaver(new Resource[] { PRICE_CATEGORIES_RESOURCE,
-				PRODUCTS_RESOURCE, CUSTOMERS_RESOURCE, ORDERS_RESOURCE });
+	public synchronized void saveResources() throws IOException {
+		getSessionController().getSessionWrapper().beginTransaction();
+		PRICE_CATEGORIES_RESOURCE.save(Collections.EMPTY_MAP);
+		PRODUCTS_RESOURCE.save(Collections.EMPTY_MAP);
+		CUSTOMERS_RESOURCE.save(Collections.EMPTY_MAP);
+		ORDERS_RESOURCE.save(Collections.EMPTY_MAP);
+		getSessionController().getSessionWrapper().commitTransaction();
+	}
+
+	protected void createResources() throws IOException {
+		getSessionController().getSessionWrapper().beginTransaction();
+		PRICE_CATEGORIES_RESOURCE = resourceSet.createResource(URI
+				.createURI("hibernate://?"
+						+ HibernateResource.SESSION_CONTROLLER_PARAM
+						+ "=ShopDB&query1=FROM PriceCategory"));
+		PRICE_CATEGORIES_RESOURCE.load(Collections.EMPTY_MAP);
+		PRODUCTS_RESOURCE = resourceSet
+				.createResource(URI
+						.createURI("hibernate://?"
+								+ HibernateResource.SESSION_CONTROLLER_PARAM
+								+ "=ShopDB&query1=FROM ProductCategory where parent=null"));
+		PRODUCTS_RESOURCE.load(Collections.EMPTY_MAP);
+		CUSTOMERS_RESOURCE = resourceSet.createResource(URI
+				.createURI("hibernate://?"
+						+ HibernateResource.SESSION_CONTROLLER_PARAM
+						+ "=ShopDB&query1=FROM Customer"));
+		CUSTOMERS_RESOURCE.load(Collections.EMPTY_MAP);
+		ORDERS_RESOURCE = (HibernateResource) resourceSet.createResource(URI
+				.createURI("hibernate://?"
+						+ HibernateResource.SESSION_CONTROLLER_PARAM
+						+ "=ShopDB&query1=FROM Order where number < '0'"));
+		ORDERS_RESOURCE.load(Collections.EMPTY_MAP);
+		getSessionController().getSessionWrapper().commitTransaction();
 	}
 
 	protected void setUp() throws Exception {
@@ -139,6 +105,8 @@ public class HibernateBaseTestCase extends TestCase {
 		props.setProperty(Environment.DIALECT,
 				org.hibernate.dialect.DerbyDialect.class.getName());
 		props.setProperty(Environment.SHOW_SQL, "true");
+		props.setProperty("CASCADE_POLICY_ON_CONTAINMENT",
+				"REMOVE,REFRESH,PERSIST,MERGE");
 		HbDataStore hbds = (HbDataStore) HbHelper.INSTANCE
 				.createRegisterDataStore("ShopDB");
 		hbds.setProperties(props);
