@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.apache.derby.drda.NetworkServerControl;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.teneo.PersistenceOptions;
 import org.eclipse.emf.teneo.hibernate.HbDataStore;
 import org.eclipse.emf.teneo.hibernate.HbHelper;
 import org.eclipse.emf.teneo.hibernate.resource.SessionController;
@@ -86,6 +87,8 @@ public class RedskinCoreActivator extends Plugin {
 			props.setProperty(Environment.DIALECT,
 					org.hibernate.dialect.DerbyDialect.class.getName());
 			props.setProperty(Environment.SHOW_SQL, "true");
+			props.setProperty(PersistenceOptions.CASCADE_POLICY_ON_CONTAINMENT,
+					"REMOVE,REFRESH,PERSIST,MERGE");
 			HbDataStore hbds = (HbDataStore) HbHelper.INSTANCE
 					.createRegisterDataStore("ShopDB");
 			hbds.setProperties(props);
