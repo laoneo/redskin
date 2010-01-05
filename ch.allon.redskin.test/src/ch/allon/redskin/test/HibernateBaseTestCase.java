@@ -15,6 +15,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.teneo.PersistenceOptions;
 import org.eclipse.emf.teneo.hibernate.HbDataStore;
 import org.eclipse.emf.teneo.hibernate.HbHelper;
 import org.eclipse.emf.teneo.hibernate.resource.HibernateResource;
@@ -105,7 +106,7 @@ public class HibernateBaseTestCase extends TestCase {
 		props.setProperty(Environment.DIALECT,
 				org.hibernate.dialect.DerbyDialect.class.getName());
 		props.setProperty(Environment.SHOW_SQL, "true");
-		props.setProperty("CASCADE_POLICY_ON_CONTAINMENT",
+		props.setProperty(PersistenceOptions.CASCADE_POLICY_ON_CONTAINMENT,
 				"REMOVE,REFRESH,PERSIST,MERGE");
 		HbDataStore hbds = (HbDataStore) HbHelper.INSTANCE
 				.createRegisterDataStore("ShopDB");

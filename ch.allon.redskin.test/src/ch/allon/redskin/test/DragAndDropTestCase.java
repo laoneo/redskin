@@ -28,5 +28,6 @@ public class DragAndDropTestCase extends HibernateBaseTestCase {
 		saveResources();
 		product.setProductCategory(node2);
 		saveResources();
+		assert (node2.getProducts().get(0) == product);
 	}
 }
