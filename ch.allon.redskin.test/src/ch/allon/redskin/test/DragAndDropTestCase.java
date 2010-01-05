@@ -1,25 +1,15 @@
 package ch.allon.redskin.test;
 
-import ch.allon.redskin.core.model.shop.PriceCategory;
 import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 
-public class DeleteTestCase extends HibernateBaseTestCase {
+public class DragAndDropTestCase extends HibernateBaseTestCase {
 
-	public void testDelete() throws Exception {
-		PriceCategory category = ShopFactory.eINSTANCE.createPriceCategory();
-		category.setName("test");
-		category.getPrices().add(1.0);
-		getPriceCategoryResource().getContents().add(category);
-		saveResources();
-
+	public void testDragAndDrop() throws Exception {
 		Product product = ShopFactory.eINSTANCE.createProduct();
 		product.setName("testProduct");
 		product.setNumber(1);
-		product.setPriceCategory(category);
-		getProductsResource().getContents().add(product);
-		saveResources();
 
 		ProductCategory root = ShopFactory.eINSTANCE.createProductCategory();
 		root.setName("root");
@@ -29,14 +19,14 @@ public class DeleteTestCase extends HibernateBaseTestCase {
 		ProductCategory node1 = ShopFactory.eINSTANCE.createProductCategory();
 		node1.setName("node1");
 		root.getSubCategorys().add(node1);
-		saveResources();
-
-		root.getSubCategorys().remove(node1);
+		node1.getProducts().add(product);
 		saveResources();
 
 		ProductCategory node2 = ShopFactory.eINSTANCE.createProductCategory();
 		node2.setName("node2");
 		root.getSubCategorys().add(node2);
+		saveResources();
+		product.setProductCategory(node2);
 		saveResources();
 	}
 }
