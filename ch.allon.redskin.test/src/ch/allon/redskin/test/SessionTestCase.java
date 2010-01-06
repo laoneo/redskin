@@ -23,7 +23,7 @@ import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 
-public class SessionTest extends TestCase {
+public class SessionTestCase extends TestCase {
 
 	private NetworkServerControl server;
 	private Session SESSION;
