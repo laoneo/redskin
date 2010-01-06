@@ -30,7 +30,7 @@ public class HibernateBaseTestCase extends TestCase {
 	private Resource PRICE_CATEGORIES_RESOURCE;
 	private Resource ORDERS_RESOURCE;
 	private Resource CUSTOMERS_RESOURCE;
-	private Resource PRODUCTS_RESOURCE;
+	private HibernateResource PRODUCTS_RESOURCE;
 
 	private ResourceSetImpl resourceSet = new ResourceSetImpl();
 
@@ -38,7 +38,7 @@ public class HibernateBaseTestCase extends TestCase {
 		return PRICE_CATEGORIES_RESOURCE;
 	}
 
-	public Resource getProductsResource() {
+	public HibernateResource getProductsResource() {
 		return PRODUCTS_RESOURCE;
 	}
 
@@ -70,7 +70,7 @@ public class HibernateBaseTestCase extends TestCase {
 						+ HibernateResource.SESSION_CONTROLLER_PARAM
 						+ "=ShopDB&query1=FROM PriceCategory"));
 		PRICE_CATEGORIES_RESOURCE.load(Collections.EMPTY_MAP);
-		PRODUCTS_RESOURCE = resourceSet
+		PRODUCTS_RESOURCE = (HibernateResource) resourceSet
 				.createResource(URI
 						.createURI("hibernate://?"
 								+ HibernateResource.SESSION_CONTROLLER_PARAM
@@ -113,7 +113,8 @@ public class HibernateBaseTestCase extends TestCase {
 		hbds.setProperties(props);
 		hbds.setEPackages(new EPackage[] { ShopPackage.eINSTANCE });
 		hbds.initialize();
-
+//		System.out.println(hbds.getMappingXML());
+		
 		sessionController = new SessionController();
 		sessionController.setHbDataStore(hbds);
 		SessionController

@@ -4,7 +4,7 @@ import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 
-public class DragAndDropTestCase extends HibernateBaseTestCase {
+public class SetParentTestCase extends HibernateBaseTestCase {
 
 	public void testDragAndDrop() throws Exception {
 		Product product = ShopFactory.eINSTANCE.createProduct();

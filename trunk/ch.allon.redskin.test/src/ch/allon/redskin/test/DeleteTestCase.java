@@ -18,8 +18,6 @@ public class DeleteTestCase extends HibernateBaseTestCase {
 		product.setName("testProduct");
 		product.setNumber(1);
 		product.setPriceCategory(category);
-		getProductsResource().getContents().add(product);
-		saveResources();
 
 		ProductCategory root = ShopFactory.eINSTANCE.createProductCategory();
 		root.setName("root");
@@ -28,6 +26,7 @@ public class DeleteTestCase extends HibernateBaseTestCase {
 
 		ProductCategory node1 = ShopFactory.eINSTANCE.createProductCategory();
 		node1.setName("node1");
+		node1.getProducts().add(product);
 		root.getSubCategorys().add(node1);
 		saveResources();
 
@@ -38,5 +37,18 @@ public class DeleteTestCase extends HibernateBaseTestCase {
 		node2.setName("node2");
 		root.getSubCategorys().add(node2);
 		saveResources();
+
+		root.getSubCategorys().remove(node1);
+		root.getSubCategorys().remove(node2);
+		saveResources();
+
+		Object[] roots = getProductsResource().getObjectsByQuery(
+				"FROM ProductCategory where parent=null", false);
+		assert (roots.length > 0);
+		assert (roots[0] == root);
+		assert (((ProductCategory) roots[0]).getSubCategorys().size() == 0);
+		Object[] products = getProductsResource().getObjectsByQuery(
+				"FROM Product", false);
+		assert (products.length == 0);
 	}
 }

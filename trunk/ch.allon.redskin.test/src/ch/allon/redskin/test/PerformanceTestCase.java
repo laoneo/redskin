@@ -4,7 +4,7 @@ import ch.allon.redskin.core.model.shop.Product;
 import ch.allon.redskin.core.model.shop.ProductCategory;
 import ch.allon.redskin.core.model.shop.ShopFactory;
 
-public class PerformanceTests extends HibernateBaseTestCase {
+public class PerformanceTestCase extends HibernateBaseTestCase {
 
 	public void testPerformance() throws Exception {
 		ProductCategory root = ShopFactory.eINSTANCE.createProductCategory();
