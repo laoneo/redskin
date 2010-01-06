@@ -67,6 +67,7 @@ public abstract class EObjectView extends ViewPart implements
 		viewer.setUseHashlookup(true);
 		viewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		getSite().setSelectionProvider(viewer);
 
 		getEditingDomain().getCommandStack().addCommandStackListener(
 				new CommandStackListener() {
