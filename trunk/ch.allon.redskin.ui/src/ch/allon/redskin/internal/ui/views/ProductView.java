@@ -52,7 +52,7 @@ public class ProductView extends EObjectView {
 		final FilteredTree tree = new FilteredTree(parent, SWT.MULTI
 				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
 				new PatternFilter(), true);
-		tree.getViewer().setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
+//		tree.getViewer().setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
 		tree.getViewer().addDoubleClickListener(new IDoubleClickListener() {
 
 			@Override

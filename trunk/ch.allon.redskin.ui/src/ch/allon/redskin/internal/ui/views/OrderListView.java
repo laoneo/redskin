@@ -81,6 +81,7 @@ public class OrderListView extends EObjectView {
 								.getEventType() == Notification.REMOVE_MANY)
 								&& notification.getOldValue() instanceof Order) {
 							TreeViewer treeViewer = (TreeViewer) getViewer();
+							treeViewer.setSelection(new StructuredSelection());
 							treeViewer
 									.remove(((Order) notification.getOldValue())
 											.getTransactions().toArray());

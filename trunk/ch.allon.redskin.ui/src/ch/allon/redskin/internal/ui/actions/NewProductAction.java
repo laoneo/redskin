@@ -8,6 +8,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 
 import ch.allon.redskin.core.DBFactory;
 import ch.allon.redskin.core.model.shop.Product;
@@ -16,6 +18,7 @@ import ch.allon.redskin.core.model.shop.ShopFactory;
 import ch.allon.redskin.core.model.shop.ShopPackage;
 import ch.allon.redskin.internal.ui.IJobRunnable;
 import ch.allon.redskin.internal.ui.Messages;
+import ch.allon.redskin.internal.ui.RedskinUIActivator;
 import ch.allon.redskin.internal.ui.UIUtil;
 import ch.allon.redskin.internal.ui.custom.EObjectDialog;
 
@@ -47,6 +50,19 @@ public class NewProductAction extends EObjectAction {
 			public IStatus run(IProgressMonitor monitor) {
 				ProductCategory category = (ProductCategory) selectedObjects.get(0);
 				category.getProducts().add(object);
+				UIUtil.getDisplay().asyncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						ISelectionProvider selectionProvider = RedskinUIActivator
+								.getWindow().getActivePage().getActivePart()
+								.getSite().getSelectionProvider();
+						if (selectionProvider != null)
+							selectionProvider
+									.setSelection(new StructuredSelection(
+											object));
+					}
+				});
 				return Status.OK_STATUS;
 			}
 		});
