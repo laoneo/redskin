@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: ch.allon.redskin.core.model.edit;singleton:=true
+Bundle-Version: 1.1.1.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: ch.allon.redskin.internal.core.model.edit.RedskinEditActivator$Implementation
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: ch.allon.redskin.core.model.shop.provider,
+ ch.allon.redskin.internal.core.model.edit
+Require-Bundle: org.eclipse.core.runtime,
+ ch.allon.redskin.core.model;visibility:=reexport,
+ org.eclipse.emf.edit;visibility:=reexport
+Bundle-ActivationPolicy: lazy
