@@ -60,6 +60,7 @@ public class Messages extends NLS {
 	public static String OrderListView_Yes;
 	public static String PriceCategoryDialog_Title;
 	public static String RedskinUIActivator_Error_Dialog_Title;
+	public static String RedskinUIActivator_Error_Message;
 	public static String ShowOrderReportAction_Dialog_Title;
 	public static String ShowOrderReportAction_Print_Dialog_Title;
 	public static String WorkView_Comment_Dialog_Text;
