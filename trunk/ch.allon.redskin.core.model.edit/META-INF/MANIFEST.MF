@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: ch.allon.redskin.core.model.edit;singleton:=true
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.1.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: ch.allon.redskin.internal.core.model.edit.RedskinEditActivator$Implementation
 Bundle-Vendor: %providerName
