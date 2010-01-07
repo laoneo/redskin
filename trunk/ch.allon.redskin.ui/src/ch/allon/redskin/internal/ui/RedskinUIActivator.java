@@ -66,7 +66,7 @@ public class RedskinUIActivator extends AbstractUIPlugin {
 												UIUtil.getDisplay()
 														.getActiveShell(),
 												Messages.RedskinUIActivator_Error_Dialog_Title,
-												"Ein Fehler ist aufgetreten, bitte starten sie die Applikation neu und informieren sie Allon was passiert ist.",
+												Messages.RedskinUIActivator_Error_Message,
 												new Status(IStatus.ERROR,
 														"ch.allon.redskin.ui", //$NON-NLS-1$
 														message));
