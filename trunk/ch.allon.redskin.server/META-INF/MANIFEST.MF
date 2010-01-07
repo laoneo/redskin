@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Redskin Server
+Bundle-SymbolicName: ch.allon.redskin.server
+Bundle-Version: 1.1.1.qualifier
+Bundle-Activator: ch.allon.redskin.internal.server.RedskinServerActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.cdo.server.db;bundle-version="2.0.0",
+ org.eclipse.net4j.tcp;bundle-version="2.0.0",
+ org.apache.derby;bundle-version="10.1.2",
+ org.eclipse.net4j.db.derby;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
